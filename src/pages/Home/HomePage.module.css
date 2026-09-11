@@ -12,7 +12,7 @@
 /* Hero Section */
 .heroSection {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 3.5rem;
   align-items: center;
 }
@@ -59,14 +59,18 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-size: clamp(2rem, 3.5vw, 3.15rem);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.18;
   color: var(--color-text-primary);
   letter-spacing: -0.03em;
   margin: 0;
   cursor: default;
   transition: text-shadow var(--duration-fast) ease;
+}
+
+.titleLine {
+  display: block;
 }
 
 .title:hover {

@@ -23,18 +23,14 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           </div>
 
           <h1 className={styles.title}>
-            <ScrambleText
-              text="Hi, This is Moayed."
-              data-cursor="inspect"
-              data-cursor-label="MOAYED"
-            />
-            <br />
-            <ScrambleText
-              text="I build "
-              data-cursor="inspect"
-              data-cursor-label="CRAFT"
-            />
-            <span className={styles.highlight}>
+            <span className={styles.titleLine}>
+              <ScrambleText
+                text="Hi, This is Moayed. I build"
+                data-cursor="inspect"
+                data-cursor-label="MOAYED"
+              />
+            </span>
+            <span className={`${styles.titleLine} ${styles.highlight}`}>
               <ScrambleText
                 text="fast, reliable software."
                 data-cursor="inspect"
