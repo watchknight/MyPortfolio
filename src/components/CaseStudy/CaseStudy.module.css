@@ -206,6 +206,10 @@
   grid-column: span 4;
 }
 
+.bentoColFull {
+  grid-column: span 12;
+}
+
 @media (max-width: 1080px) and (min-width: 768px) {
   .bentoColFeatured {
     grid-column: span 12;
@@ -421,6 +425,41 @@
 .inspectBtn svg {
   width: 14px;
   height: 14px;
+}
+
+.cardFooterLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.liveLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  color: var(--color-accent-emerald);
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background-color: rgba(16, 185, 129, 0.08);
+  transition: all var(--duration-fast) ease;
+}
+
+.liveLink:hover {
+  background-color: rgba(16, 185, 129, 0.18);
+  border-color: var(--color-accent-emerald);
+  color: #FFFFFF;
+}
+
+.liveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--color-accent-emerald);
+  box-shadow: 0 0 6px var(--color-accent-emerald);
 }
 
 .repoLink {

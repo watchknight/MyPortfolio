@@ -35,11 +35,11 @@ export function Hero() {
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemetryLabel}>Academic Merit</span>
-                <span className={styles.telemetryValue}>Talent-Pool Scholar</span>
+                <span className={styles.telemetryValue}>Board Merit Scholar</span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemetryLabel}>Production Core</span>
-                <span className={styles.telemetryValue}>5 Full Systems</span>
+                <span className={styles.telemetryValue}>6 Full Systems</span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemetryLabel}>Engine Response</span>

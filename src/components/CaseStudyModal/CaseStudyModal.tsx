@@ -229,20 +229,42 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
             STATUS: PRODUCTION VERIFIED
           </span>
 
-          <a
-            href={project.repository}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.primaryAction}
-            onClick={() => sound.playTick()}
-            data-cursor="link"
-          >
-            <span>Inspect GitHub Repository</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="7" y1="17" x2="17" y2="7" />
-              <polyline points="7 7 17 7 17 17" />
-            </svg>
-          </a>
+          <div className={styles.modalFooterActions}>
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.liveAction}
+                onClick={() => sound.playClick(850, 0.03, 0.08)}
+                data-cursor="link"
+                title={`Launch live deployment: ${project.liveUrl}`}
+              >
+                <span className={styles.liveDot} />
+                <span>Launch Live Site</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
+            )}
+
+            <a
+              href={project.repository}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.primaryAction}
+              onClick={() => sound.playTick()}
+              data-cursor="link"
+            >
+              <span>GitHub Repo</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7" />
+                <polyline points="7 7 17 7 17 17" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </div>

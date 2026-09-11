@@ -53,7 +53,7 @@ export function CommandPalette({
       id: 'nav-foundation',
       category: 'Navigation',
       title: 'Jump to Engineering Foundation & CS Rigor',
-      subtitle: 'East West University, Talent-Pool merit, core coursework',
+      subtitle: 'East West University, Board Merit scholarships, core coursework',
       shortcut: '2',
       action: () => {
         document.getElementById('foundation')?.scrollIntoView({ behavior: 'smooth' });
@@ -108,6 +108,14 @@ export function CommandPalette({
       subtitle: 'Next.js 16 App Router, Zod validation, SSLCommerz regional payment',
       badge: 'Zod Safe',
       action: () => onSelectProject?.('poshra'),
+    },
+    {
+      id: 'inspect-portfolio',
+      category: 'Systems & Case Studies',
+      title: 'Inspect Sentinel Portfolio Architecture',
+      subtitle: 'Canvas coordinate grid, Web Audio synthesizer, zero deadspace',
+      badge: '60 FPS / 0.4s',
+      action: () => onSelectProject?.('myportfolio'),
     },
     {
       id: 'view-grid',

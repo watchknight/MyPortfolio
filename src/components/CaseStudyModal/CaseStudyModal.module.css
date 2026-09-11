@@ -245,6 +245,41 @@
   justify-content: space-between;
 }
 
+.modalFooterActions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.liveAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-pill);
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid var(--color-accent-emerald);
+  color: var(--color-accent-emerald);
+  font-family: var(--font-body);
+  font-size: var(--text-meta);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.liveAction:hover {
+  background-color: var(--color-accent-emerald);
+  color: #000;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-accent-emerald);
+  box-shadow: 0 0 8px var(--color-accent-emerald);
+}
+
 .primaryAction {
   display: inline-flex;
   align-items: center;

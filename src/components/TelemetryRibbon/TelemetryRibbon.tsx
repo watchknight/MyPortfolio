@@ -17,7 +17,7 @@ const TELEMETRY_DATA: TelemetryEntry[] = [
   { tag: 'RESPONSE_LATENCY', value: '<16MS DISPATCH LOOP', isEmerald: true },
   { tag: 'ALGORITHMS', value: 'NON-LINEAR THERMODYNAMICS & 0.8MS SQL' },
   { tag: 'PAYMENT_RAIL', value: 'RESILIENT MULTI-GATEWAY RETRY' },
-  { tag: 'MERIT_RECORD', value: 'TALENT-POOL SCHOLAR (PSC/JSC/SSC)' },
+  { tag: 'MERIT_RECORD', value: 'BOARD GENERAL SCHOLAR (JSC/SSC)' },
 ];
 
 export function TelemetryRibbon() {

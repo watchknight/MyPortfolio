@@ -36,27 +36,27 @@ const academicMilestones: Milestone[] = [
     title: 'Secondary School Certificate (SSC / Class 10)',
     institution: 'National Board of Education, Bangladesh',
     gradeBadge: 'GPA 5.0 / 5.0',
-    honorBadge: 'Golden Distinction',
+    honorBadge: 'General Scholarship',
     description:
-      'Top-tier academic ranking with government talent-pool distinction and verified perfect 5.0 grading.',
+      'Awarded Board General Merit Scholarship and verified perfect 5.0 grading across all subjects.',
   },
   {
     year: '2018',
     title: 'Junior School Certificate (JSC / Class 8)',
     institution: 'National Board of Education, Bangladesh',
     gradeBadge: 'GPA 5.0 / 5.0',
-    honorBadge: 'Talent-Pool Scholarship',
+    honorBadge: 'General Scholarship',
     description:
-      'Awarded prestigious Government Talent-Pool Merit Scholarship for regional top percentile achievement.',
+      'Awarded Board General Merit Scholarship for verified academic excellence across regional schools.',
   },
   {
     year: '2015',
     title: 'Primary School Certificate (PSC / Class 5)',
     institution: 'National Board of Education, Bangladesh',
     gradeBadge: 'GPA 5.0 / 5.0',
-    honorBadge: 'Government Merit Scholar',
+    honorBadge: 'Board Distinction',
     description:
-      'First national board distinction with perfect GPA 5.0 and verified government merit scholarship recognition.',
+      'First national board distinction with verified perfect GPA 5.0 grading.',
   },
 ];
 

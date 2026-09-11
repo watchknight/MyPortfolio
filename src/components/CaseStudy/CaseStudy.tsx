@@ -16,6 +16,7 @@ const CATEGORIES = [
   'Algorithms & Database Systems',
   'Computer Vision & Optical Frontend',
   'Full-Stack Architecture & Payments',
+  'Interactive Systems & Architecture',
 ];
 
 export function CaseStudies() {
@@ -259,7 +260,7 @@ export function CaseStudies() {
               {filteredProjects.map((project, index) => {
                 const bentoClass =
                   filteredProjects.length <= 1
-                    ? styles.bentoColFeatured
+                    ? styles.bentoColFull
                     : filteredProjects.length === 2
                     ? index === 0
                       ? styles.bentoColFeatured
@@ -268,11 +269,19 @@ export function CaseStudies() {
                     ? styles.bentoColSmall
                     : filteredProjects.length === 4
                     ? styles.bentoColMedium
+                    : filteredProjects.length === 5
+                    ? index === 0
+                      ? styles.bentoColFeatured
+                      : index === 1
+                      ? styles.bentoColMedium
+                      : styles.bentoColSmall
                     : index === 0
                     ? styles.bentoColFeatured
                     : index === 1
                     ? styles.bentoColMedium
-                    : styles.bentoColSmall;
+                    : index >= 2 && index <= 4
+                    ? styles.bentoColSmall
+                    : styles.bentoColFull;
 
                 return (
                   <motion.div
@@ -361,21 +370,50 @@ export function CaseStudies() {
                           </svg>
                         </button>
 
-                        <a
-                          href={project.repository}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.repoLink}
-                          onClick={() => sound.playTick()}
-                          data-cursor="link"
-                        >
-                          <span>Source</span>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                            <polyline points="15 3 21 3 21 9" />
-                            <line x1="10" y1="14" x2="21" y2="3" />
-                          </svg>
-                        </a>
+                        <div className={styles.cardFooterLinks}>
+                          {project.liveUrl && (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.liveLink}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.playClick(850, 0.02, 0.06);
+                              }}
+                              title={`Visit live production deployment: ${project.liveUrl}`}
+                              data-cursor="link"
+                            >
+                              <span className={styles.liveDot} />
+                              <span>Live</span>
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11 }}>
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                <polyline points="15 3 21 3 21 9" />
+                                <line x1="10" y1="14" x2="21" y2="3" />
+                              </svg>
+                            </a>
+                          )}
+
+                          <a
+                            href={project.repository}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.repoLink}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sound.playTick();
+                            }}
+                            data-cursor="link"
+                            title={`Inspect source repository: ${project.repository}`}
+                          >
+                            <span>Source</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                              <polyline points="15 3 21 3 21 9" />
+                              <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </SpotlightCard>

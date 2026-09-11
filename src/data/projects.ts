@@ -188,6 +188,7 @@ const scaledCookTime = Math.round(baseCookTime * Math.min(1.3, 1 + 0.15 * Math.l
         'Applies logarithmic and square-root scaling to recipe prep and cook times, preventing mathematical distortion when adjusting serving counts.',
     },
     repository: 'https://github.com/watchknight/Rannabanna',
+    liveUrl: 'https://rannabanna.onrender.com/',
   },
   {
     id: 'doclensbd',
@@ -244,6 +245,7 @@ smoothedRef.current = {
         'Calculates real-time eye vector angles and applies temporal interpolation to eliminate camera frame jitter during 60fps virtual try-on.',
     },
     repository: 'https://github.com/watchknight/DocLensBD',
+    liveUrl: 'https://doclensbd.onrender.com/',
   },
   {
     id: 'poshra',
@@ -308,5 +310,68 @@ export const useCartStore = create<CartState>()(
         'Provides atomic cart mutations with automatic client-side persistence, preventing lost transactions during network disconnects or page reloads.',
     },
     repository: 'https://github.com/watchknight/POSHRA',
+    liveUrl: 'https://poshra.onrender.com/',
+  },
+  {
+    id: 'myportfolio',
+    title: 'Sentinel Portfolio',
+    subtitle: 'High-density systems engineering portfolio & interactive command deck',
+    role: 'Creator & Frontend Systems Architect',
+    category: 'Interactive Systems & Architecture',
+    domain: 'watchknight.me',
+    likes: 52,
+    metric: {
+      label: 'Render Engine',
+      value: '60 FPS / 0.4s',
+    },
+    environment: ['React 19', 'TypeScript', 'Vite', 'Web Audio API', 'Canvas 2D', 'Lenis'],
+    problem:
+      'Standard software engineering portfolios rely on bloated templates or superficial visual eye candy that fail to demonstrate deep systems understanding, accessibility rigor, zero-deadspace spatial craft, and low-level browser lifecycle engineering.',
+    architecture:
+      'Zero-dependency Canvas 2D particle coordinate mesh with deflection physics, native Web Audio frequency synthesizer, Raycast/Linear-style global command deck (Ctrl+K), Brian Lovin sortable data ledger, and sub-second Vite bundling with 100% WCAG AA compliance.',
+    interventions: [
+      {
+        name: 'Hardware-Accelerated Coordinate Mesh',
+        cause:
+          'DOM-heavy decorative particle animations cause frame-rate drops and garbage collection pauses on lower-end mobile devices.',
+        fix:
+          'Engineered a lightweight HTML5 2D Canvas rendering crosshairs and dynamic particle laser filaments with elastic cursor deflection physics, consuming less than 1% CPU and auto-bypassing on prefers-reduced-motion.',
+      },
+      {
+        name: 'Zero-Asset Web Audio Synthesizer',
+        cause:
+          'Audio sound effects typically require external audio asset downloads, increasing page weight and introducing playback latency.',
+        fix:
+          'Synthesized mechanical key clicks, frequency chirps, and smooth drawer whooshes directly in code using native Web Audio API oscillators and exponential gain envelopes with 0 external network requests.',
+      },
+      {
+        name: 'Decoupled Command Architecture',
+        cause:
+          'Complex modal interactions often tightly couple UI components to parent state, degrading maintainability and keyboard navigation.',
+        fix:
+          'Architected a decoupled custom event dispatch bus (`open-project-modal`, `set-view-mode`, `toggle-command-palette`) with full keyboard navigation and live hardware keypress tracking.',
+      },
+    ],
+    codeHighlight: {
+      filename: 'audio.ts & CanvasGrid.tsx',
+      language: 'typescript',
+      code: `// Web Audio API Custom Frequency Synthesizer
+playClick(freq = 850, duration = 0.02, volume = 0.06): void {
+  const osc = this.ctx.createOscillator();
+  const gain = this.ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+  gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(this.ctx.destination);
+  osc.start();
+  osc.stop(this.ctx.currentTime + duration);
+}`,
+      explanation:
+        'Synthesizes physical tactile switch clicks dynamically using triangle oscillators and rapid exponential gain envelopes, eliminating all external audio assets.',
+    },
+    repository: 'https://github.com/watchknight/MyPortfolio',
+    liveUrl: 'https://moayed-portfolio.onrender.com/',
   },
 ];
