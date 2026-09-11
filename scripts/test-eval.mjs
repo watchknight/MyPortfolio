@@ -40,52 +40,51 @@ async function run() {
     deviceScaleFactor: 1,
     mobile: false
   });
-  await new Promise(r => setTimeout(r, 2000));
+  await send('Page.navigate', { url: 'http://localhost:5173/' });
+  await new Promise(r => setTimeout(r, 2500));
 
-  // Scroll to engineering (CaseStudy section)
-  await send('Runtime.evaluate', { expression: 'document.getElementById("engineering")?.scrollIntoView({ behavior: "instant" })' });
-  await new Promise(r => setTimeout(r, 1200));
-  const worksShot = await send('Page.captureScreenshot', { format: 'png' });
-  writeFileSync('screenshots/works_bento.png', Buffer.from(worksShot.result.data, 'base64'));
-  console.log('Saved screenshots/works_bento.png');
+  // 1. Capture Hero modern state
+  const heroShot = await send('Page.captureScreenshot', { format: 'png' });
+  writeFileSync('screenshots/hero_modern.png', Buffer.from(heroShot.result.data, 'base64'));
+  console.log('Saved screenshots/hero_modern.png');
 
-  // Scroll down more to see the second row (DocLensBD, POSHRA, Sentinel Portfolio)
-  await send('Runtime.evaluate', { expression: 'window.scrollBy(0, 650)' });
-  await new Promise(r => setTimeout(r, 1200));
-  const worksRow2Shot = await send('Page.captureScreenshot', { format: 'png' });
-  writeFileSync('screenshots/works_bento_row2.png', Buffer.from(worksRow2Shot.result.data, 'base64'));
-  console.log('Saved screenshots/works_bento_row2.png');
-
-  // Click on Rannabanna's Inspect Anatomy button to open modal
+  // 2. Click Role Tab 2 ("02 // KERNEL & NET")
   await send('Runtime.evaluate', {
     expression: `(() => {
-      const btns = Array.from(document.querySelectorAll('button[data-cursor="inspect"]'));
-      btns[2]?.click();
+      const tabs = Array.from(document.querySelectorAll('button[role="tab"]'));
+      tabs[1]?.click();
     })()`
   });
-  await new Promise(r => setTimeout(r, 1200));
-  const modalShot = await send('Page.captureScreenshot', { format: 'png' });
-  writeFileSync('screenshots/modal_live.png', Buffer.from(modalShot.result.data, 'base64'));
-  console.log('Saved screenshots/modal_live.png');
+  await new Promise(r => setTimeout(r, 800));
+  const roleShot = await send('Page.captureScreenshot', { format: 'png' });
+  writeFileSync('screenshots/hero_role_switched.png', Buffer.from(roleShot.result.data, 'base64'));
+  console.log('Saved screenshots/hero_role_switched.png');
 
-  // Close modal with Escape
-  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
-  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
-  await new Promise(r => setTimeout(r, 600));
+  // 3. Hover over the first InsightNode ("digital countermeasures")
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      const trigger = document.querySelector('span[role="button"][aria-label*="digital countermeasures"]');
+      trigger?.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      trigger?.focus();
+    })()`
+  });
+  await new Promise(r => setTimeout(r, 800));
+  const insightShot = await send('Page.captureScreenshot', { format: 'png' });
+  writeFileSync('screenshots/hero_insight_hover.png', Buffer.from(insightShot.result.data, 'base64'));
+  console.log('Saved screenshots/hero_insight_hover.png');
 
-  // Scroll to foundation
-  await send('Runtime.evaluate', { expression: 'document.getElementById("foundation")?.scrollIntoView({ behavior: "instant" })' });
-  await new Promise(r => setTimeout(r, 1000));
-  const foundationShot = await send('Page.captureScreenshot', { format: 'png' });
-  writeFileSync('screenshots/foundation_timeline.png', Buffer.from(foundationShot.result.data, 'base64'));
-  console.log('Saved screenshots/foundation_timeline.png');
-
-  // Scroll a bit down in foundation to verify Class 5 (2015)
-  await send('Runtime.evaluate', { expression: 'window.scrollBy(0, 350)' });
-  await new Promise(r => setTimeout(r, 1000));
-  const foundationBottomShot = await send('Page.captureScreenshot', { format: 'png' });
-  writeFileSync('screenshots/foundation_class5.png', Buffer.from(foundationBottomShot.result.data, 'base64'));
-  console.log('Saved screenshots/foundation_class5.png');
+  // 4. Test Mobile viewport (390x844)
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 2,
+    mobile: true
+  });
+  await send('Page.navigate', { url: 'http://localhost:5173/' });
+  await new Promise(r => setTimeout(r, 2000));
+  const mobileShot = await send('Page.captureScreenshot', { format: 'png' });
+  writeFileSync('screenshots/hero_mobile.png', Buffer.from(mobileShot.result.data, 'base64'));
+  console.log('Saved screenshots/hero_mobile.png');
 
   ws.close();
   edge.kill();

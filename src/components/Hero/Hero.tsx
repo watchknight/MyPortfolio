@@ -1,33 +1,207 @@
+import { useState, useEffect, useCallback, type CSSProperties } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ScrambleText } from '../ScrambleText/ScrambleText';
 import { HeroTerminal } from './HeroTerminal';
+import { InsightNode } from './InsightNode';
 import { Magnetic } from '../Magnetic/Magnetic';
 import { sound } from '../../utils/audio';
 import styles from './Hero.module.css';
 
+interface Specialty {
+  id: string;
+  title: string;
+  shortCode: string;
+  badge: string;
+}
+
+const SPECIALTIES: Specialty[] = [
+  {
+    id: 'adblock',
+    title: 'Ad-Block Specialist',
+    shortCode: '01 // AD-BLOCK',
+    badge: 'CHROMIUM MV3',
+  },
+  {
+    id: 'network',
+    title: 'OS Policy Architect',
+    shortCode: '02 // KERNEL & NET',
+    badge: 'REGISTRY & DNS',
+  },
+  {
+    id: 'heuristics',
+    title: 'Culinary Physicist',
+    shortCode: '03 // HEURISTICS',
+    badge: 'NON-LINEAR SCALING',
+  },
+  {
+    id: 'scale',
+    title: 'Systems Craftsman',
+    shortCode: '04 // SCALE & VISION',
+    badge: '60 FPS WEBASSEMBLY',
+  },
+];
+
 export function Hero() {
+  const [activeRoleIndex, setActiveRoleIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
+
+  // Auto-cycle through specialties every 5 seconds unless user manually interacts
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const timer = setInterval(() => {
+      setActiveRoleIndex((prev) => (prev + 1) % SPECIALTIES.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [isAutoPlaying]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos(null);
+  }, []);
+
+  const currentSpecialty = SPECIALTIES[activeRoleIndex];
+
   return (
     <section className={styles.hero} id="hero">
       <div className="container" style={{ position: 'relative' }}>
         <div className={styles.heroGrid}>
-          {/* Left Column: Typography, Narrative, Actions */}
-          <div className={styles.heroLeft}>
-            <div className={styles.eyebrow} data-cursor="link">
+          {/* Left Column: Typography, Dynamic Narrative, Actions */}
+          <div
+            className={styles.heroLeft}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={
+              {
+                '--mouse-x': `${mousePos?.x ?? 200}px`,
+                '--mouse-y': `${mousePos?.y ?? 100}px`,
+                '--spotlight-opacity': mousePos ? 1 : 0,
+              } as CSSProperties
+            }
+          >
+            {/* Ambient mouse spotlight */}
+            <div className={styles.heroSpotlight} aria-hidden="true" />
+
+            {/* Live Operational Status Eyebrow */}
+            <div
+              className={styles.eyebrow}
+              data-cursor="link"
+              onClick={() => sound.playTick()}
+              title="Sentinel Core Node Active"
+            >
               <span className={styles.eyebrowDot} />
               <ScrambleText text="SYS://0xMOAYED // DHAKA.NODE // CSE.EWU" />
             </div>
 
-            <h1 className={styles.heroTitle} data-cursor="inspect" data-cursor-label="ENGINEER">
-              <ScrambleText text="Systems Architect &" />
-              <br />
-              <span className={styles.heroTitleHighlight}>Ad-Block Engine</span> Specialist
-            </h1>
+            {/* Kinetic Title Stack */}
+            <div className={styles.titleContainer}>
+              <h1 className={styles.heroTitle} data-cursor="inspect" data-cursor-label="SYSTEMS">
+                <span className={styles.titleLine1}>
+                  <ScrambleText text="Systems Architect" />
+                </span>
 
+                <span className={styles.titleLine2}>
+                  <span className={styles.ampersand} aria-hidden="true">&amp;</span>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={currentSpecialty.id}
+                      initial={{ opacity: 0, y: 14, filter: 'blur(3px)' }}
+                      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                      exit={{ opacity: 0, y: -14, filter: 'blur(3px)' }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      className={styles.heroTitleHighlight}
+                    >
+                      {currentSpecialty.title}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+              </h1>
+
+              {/* Interactive Tactical Role Scrubber */}
+              <div
+                className={styles.roleScrubber}
+                role="tablist"
+                aria-label="Engineering Disciplines"
+              >
+                {SPECIALTIES.map((spec, idx) => {
+                  const isActive = activeRoleIndex === idx;
+                  return (
+                    <button
+                      key={spec.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={isActive}
+                      className={`${styles.roleTab} ${isActive ? styles.roleTabActive : ''}`}
+                      onClick={() => {
+                        setActiveRoleIndex(idx);
+                        sound.playClick(650 + idx * 75, 0.02, 0.06);
+                        setIsAutoPlaying(false);
+                      }}
+                      onMouseEnter={() => sound.playTick()}
+                      title={`Inspect ${spec.title}`}
+                      data-cursor="pointer"
+                    >
+                      <span className={styles.roleTabIndicator} />
+                      <span className={styles.roleTabCode}>{spec.shortCode}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Interactive Living Bio Paragraph */}
             <p className={styles.heroSubtitle}>
-              Engineering low-overhead, resilient digital countermeasures and distributed web architectures
-              built to thrive under real-world network friction. Grounded in East West University, Dhaka — architected
-              for global systems scale.
+              Engineering low-overhead, resilient{' '}
+              <InsightNode
+                keyword="digital countermeasures"
+                tag="ENGINEERING // MV3"
+                title="Chromium Blink & AST Countermeasures"
+                description="Bypassing YouTube's recursive 20ms anti-adblock loops and sponsored DOM cloaking with Main-World bridges."
+                metric="<16ms Loop // 0 FOUC"
+                href="#engineering"
+                icon="radar"
+              />{' '}
+              and distributed web architectures built to thrive under{' '}
+              <InsightNode
+                keyword="real-world network friction"
+                tag="TELEMETRY // DHAKA"
+                title="High-Friction Network Resilience"
+                description="Engineered for metered cellular bandwidth in South Asia with local SHA-256 caching and 0-packet loss fallback."
+                metric="0 Dropouts // 60 FPS"
+                href="#engineering"
+                icon="network"
+              />. Grounded in{' '}
+              <InsightNode
+                keyword="East West University, Dhaka"
+                tag="ACADEMIC CORPS // EWU"
+                title="East West University (EWU) — CSE"
+                description="Undergraduate study (2025–Present) in Systems Architecture, Operating Systems, and Distributed Computing."
+                metric="Board Merit Scholar"
+                href="#foundation"
+                icon="academic"
+              />{' '}
+              — architected for{' '}
+              <InsightNode
+                keyword="global systems scale"
+                tag="PRODUCTION CORE"
+                title="Enterprise Systems Rigor"
+                description="6 verified production web platforms deployed with 100% type safety and hardware-accelerated interfaces."
+                metric="6 Live Systems"
+                href="#engineering"
+                icon="systems"
+              />.
             </p>
 
+            {/* Telemetry Grid */}
             <div className={styles.telemetryGrid} aria-label="Key Engineer Telemetry">
               <div className={styles.telemetryItem}>
                 <span className={styles.telemetryLabel}>Origin Node</span>
@@ -47,6 +221,7 @@ export function Hero() {
               </div>
             </div>
 
+            {/* Call to Actions */}
             <div className={styles.heroActions}>
               <Magnetic strength={0.25}>
                 <a
