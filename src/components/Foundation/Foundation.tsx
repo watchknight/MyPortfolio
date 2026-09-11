@@ -57,7 +57,7 @@ export function Foundation() {
             <div className={styles.academicCard}>
               <div className={styles.cardHead}>
                 <h3 className={styles.cardTitle}>Undergraduate Studies</h3>
-                <span className={styles.gpaBadge}>GPA 5.0 / 5.0</span>
+                <span className={styles.gpaBadge}>2023 — Present</span>
               </div>
 
               <div className={styles.eduItem}>

@@ -12,7 +12,7 @@ export function Hero() {
           <div className={styles.heroLeft}>
             <div className={styles.eyebrow} data-cursor="link">
               <span className={styles.eyebrowDot} />
-              <ScrambleText text="SYS://0xMOAYED // CSE.EWU (GPA 5.0)" />
+              <ScrambleText text="SYS://0xMOAYED // CSE.EWU" />
             </div>
 
             <h1 className={styles.heroTitle} data-cursor="inspect" data-cursor-label="ENGINEER">
@@ -29,8 +29,8 @@ export function Hero() {
 
             <div className={styles.telemetryGrid} aria-label="Key Engineer Telemetry">
               <div className={styles.telemetryItem}>
-                <span className={styles.telemetryLabel}>Academic Rank</span>
-                <span className={styles.telemetryValue}>5.0 / 5.0 GPA</span>
+                <span className={styles.telemetryLabel}>Academic Standing</span>
+                <span className={styles.telemetryValue}>Talent-Pool Scholar</span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemetryLabel}>University</span>

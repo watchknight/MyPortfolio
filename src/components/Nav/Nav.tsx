@@ -67,7 +67,7 @@ export function Nav() {
               <span className={styles.breadcrumbSub}>Systems</span>
             </a>
 
-            <div className={styles.statusPill} title="East West University CSE (5.0 GPA)">
+            <div className={styles.statusPill} title="East West University CSE">
               <span className={styles.statusDot} />
               <span>Available for Internships</span>
             </div>
