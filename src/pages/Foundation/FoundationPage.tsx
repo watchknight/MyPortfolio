@@ -108,7 +108,13 @@ export function FoundationPage() {
       {/* Two Column Layout */}
       <div className={styles.twoColumns}>
         {/* Left Column: Academic Chronology */}
-        <section className={styles.card} aria-label="Academic Timeline">
+        <SpotlightCard
+          as="section"
+          className={styles.card}
+          contentClassName={styles.cardContent}
+          tiltIntensity={4}
+          aria-label="Academic Timeline"
+        >
           <h2 className={styles.cardTitle}>Academic Timeline</h2>
 
           <div className={styles.timeline}>
@@ -145,7 +151,7 @@ export function FoundationPage() {
               ))}
             </div>
           </div>
-        </section>
+        </SpotlightCard>
 
         {/* Right Column: Skills */}
         <section className={styles.skillsColumn} aria-label="Technical Skills">

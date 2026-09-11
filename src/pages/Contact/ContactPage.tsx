@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './ContactPage.module.css';
 
 export function ContactPage() {
   const [copied, setCopied] = useState(false);
+  const [dispatched, setDispatched] = useState(false);
+  const [draftCopied, setDraftCopied] = useState(false);
   const [dhakaTime, setDhakaTime] = useState('');
   const [formData, setFormData] = useState({
     name: '',
@@ -37,9 +40,18 @@ export function ContactPage() {
     setTimeout(() => setCopied(false), 2200);
   };
 
+  const handleCopyDraft = () => {
+    const draft = `To: armabdur.rahman04@gmail.com\nSubject: ${formData.subject || 'Project Inquiry'}\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+    navigator.clipboard.writeText(draft);
+    setDraftCopied(true);
+    sound.playClick(900, 0.03, 0.08);
+    setTimeout(() => setDraftCopied(false), 3000);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sound.playChirp(600, 1100, 0.06, 0.08);
+    setDispatched(true);
 
     const subjectLine = encodeURIComponent(
       formData.subject || `Inquiry from ${formData.name || 'Portfolio Visitor'}`
@@ -70,7 +82,11 @@ export function ContactPage() {
         {/* Left Column: Direct Info */}
         <div className={styles.infoColumn}>
           {/* Email Card */}
-          <div className={styles.infoCard}>
+          <SpotlightCard
+            className={styles.infoCard}
+            contentClassName={styles.infoCardContent}
+            tiltIntensity={5}
+          >
             <span className={styles.infoLabel}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -86,10 +102,14 @@ export function ContactPage() {
             >
               {copied ? '✓ Copied to clipboard' : 'Copy Email Address'}
             </button>
-          </div>
+          </SpotlightCard>
 
           {/* Location & Time Card */}
-          <div className={styles.infoCard}>
+          <SpotlightCard
+            className={styles.infoCard}
+            contentClassName={styles.infoCardContent}
+            tiltIntensity={5}
+          >
             <span className={styles.infoLabel}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -103,18 +123,25 @@ export function ContactPage() {
                 Current time: {dhakaTime}
               </span>
             )}
-          </div>
+          </SpotlightCard>
 
           {/* Availability Status */}
-          <div className={styles.infoCard}>
-            <span className={styles.infoLabel}>Availability</span>
+          <SpotlightCard
+            className={styles.infoCard}
+            contentClassName={styles.infoCardContent}
+            tiltIntensity={5}
+          >
+            <span className={styles.infoLabel}>
+              <span className={styles.availDot} />
+              Availability Status
+            </span>
             <span className={styles.infoValue} style={{ fontSize: '0.95rem' }}>
               Open for Internships &amp; Freelance Projects
             </span>
             <span style={{ fontSize: '0.82rem', color: 'var(--color-text-tertiary)', lineHeight: '1.4' }}>
               Typically respond within 24 hours.
             </span>
-          </div>
+          </SpotlightCard>
 
           {/* Social Profiles */}
           <div className={styles.socialRow}>
@@ -149,8 +176,33 @@ export function ContactPage() {
         </div>
 
         {/* Right Column: Message Form */}
-        <form className={styles.formCard} onSubmit={handleSubmit}>
+        <SpotlightCard
+          as="form"
+          className={styles.formCard}
+          contentClassName={styles.formCardContent}
+          tiltIntensity={4}
+          onSubmit={handleSubmit}
+        >
           <h2 className={styles.formTitle}>Send a Message</h2>
+
+          {dispatched && (
+            <div className={styles.dispatchBanner}>
+              <div className={styles.dispatchHeader}>
+                <span className={styles.availDot} />
+                <span>Dispatched to Default Mail Client</span>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
+                If your browser didn&apos;t automatically launch your email app, you can copy the full draft:
+              </p>
+              <button
+                type="button"
+                className={styles.dispatchFallbackBtn}
+                onClick={handleCopyDraft}
+              >
+                {draftCopied ? '✓ Full message draft copied to clipboard!' : 'Copy formatted email draft to clipboard &rarr;'}
+              </button>
+            </div>
+          )}
 
           <div className={styles.formGroup}>
             <label htmlFor="contact-name" className={styles.formLabel}>Your Name</label>
@@ -209,7 +261,7 @@ export function ContactPage() {
               <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
           </button>
-        </form>
+        </SpotlightCard>
       </div>
     </div>
   );

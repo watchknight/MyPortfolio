@@ -3,86 +3,9 @@ import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
-import { projects as richProjects } from '../../data/projects';
+import { projects } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import styles from './WorksPage.module.css';
-
-interface ProjectItem {
-  id: string;
-  title: string;
-  category: 'Web App' | 'Tool' | 'Commercial';
-  status: string;
-  description: string;
-  tech: string[];
-  liveUrl?: string;
-  githubUrl?: string;
-}
-
-const projects: ProjectItem[] = [
-  {
-    id: 'purefeed',
-    title: 'PureFeed — YouTube Ad Countermeasure',
-    category: 'Tool',
-    status: 'Extension',
-    description:
-      'A browser extension that cleanly eliminates sponsored posts and YouTube video ads in under 16ms without slowing down page load or triggering ad-blocker warning banners.',
-    tech: ['TypeScript', 'Chromium MV3', 'DOM Observers', 'Web APIs'],
-    githubUrl: 'https://github.com/watchknight/purefeed',
-  },
-  {
-    id: 'focusguard',
-    title: 'FocusGuard — Distraction Blocker',
-    category: 'Tool',
-    status: 'Desktop App',
-    description:
-      'A desktop tool that blocks addictive websites at the operating-system level, helping students and professionals maintain deep focus without relying on flimsy browser plugins.',
-    tech: ['C++', 'Windows Registry', 'DNS Sinkhole', 'Node.js'],
-    githubUrl: 'https://github.com/watchknight/focusguard',
-  },
-  {
-    id: 'doclensbd',
-    title: 'DocLensBD — Eyewear Store with 3D Try-On',
-    category: 'Web App',
-    status: 'Live on Render',
-    description:
-      'A modern online glasses shop with an instant 3D webcam virtual try-on. Customers can see real-time frame fittings on their face using accurate face tracking at 60 FPS.',
-    tech: ['React', 'MediaPipe 3D', 'Tailwind CSS', 'Node.js'],
-    liveUrl: 'https://doclensbd.onrender.com/',
-    githubUrl: 'https://github.com/watchknight/doclensbd',
-  },
-  {
-    id: 'rannabanna',
-    title: 'Rannabanna — Smart Bengali Recipe Matcher',
-    category: 'Web App',
-    status: 'Live on Render',
-    description:
-      'A web app that helps you discover delicious Bengali meals based on whatever vegetables, fish, and spices you currently have in your kitchen, with instant recipe scaling.',
-    tech: ['React', 'Express', 'SQLite', 'Node.js'],
-    liveUrl: 'https://rannabanna.onrender.com/',
-    githubUrl: 'https://github.com/watchknight/rannabanna',
-  },
-  {
-    id: 'poshra',
-    title: 'POSHRA — Fashion Commerce Store',
-    category: 'Commercial',
-    status: 'Live on Render',
-    description:
-      'A fast, responsive clothing and lifestyle store featuring category filters, an intuitive cart drawer, and regional payment gateway integration.',
-    tech: ['Next.js', 'React', 'Zod', 'SSLCommerz'],
-    liveUrl: 'https://poshra.onrender.com/',
-    githubUrl: 'https://github.com/watchknight/poshra',
-  },
-  {
-    id: 'myportfolio',
-    title: 'Portfolio Website',
-    category: 'Web App',
-    status: 'This Website',
-    description:
-      'A custom-built, lightweight personal portfolio with audio sound synthesis, dark/light themes, keyboard shortcuts, and zero unnecessary bloat.',
-    tech: ['React', 'TypeScript', 'Vite', 'Web Audio API'],
-    githubUrl: 'https://github.com/watchknight/MyPortfolio',
-  },
-];
 
 interface WorksPageProps {
   onSelectProject?: (projectId: string) => void;
@@ -111,7 +34,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return projects;
-    return projects.filter((p) => p.category === activeFilter);
+    return projects.filter((p) => p.categoryType === activeFilter);
   }, [activeFilter]);
 
   const handleFilterClick = (filter: 'all' | 'Web App' | 'Tool' | 'Commercial') => {
@@ -209,23 +132,13 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
       {viewMode === 'table' ? (
         <div className={styles.tableWrapper}>
           <ProjectLedger
-            projects={richProjects}
+            projects={projects}
             onSelectProject={(p) => onSelectProject?.(p.id)}
           />
         </div>
       ) : (
         <div className={styles.projectsGrid}>
         {filteredProjects.map((p) => {
-          const projectMetaMap: Record<string, { serial: string; perf: string }> = {
-            purefeed: { serial: 'SYS_01 // MV3', perf: '<16ms Latency' },
-            focusguard: { serial: 'SYS_02 // OS_DNS', perf: '0.1ms Sinkhole' },
-            doclensbd: { serial: 'SYS_03 // 3D_TRYON', perf: '60 FPS WebGL' },
-            rannabanna: { serial: 'SYS_04 // RECIPE_AI', perf: '0.8ms Matchmaker' },
-            poshra: { serial: 'SYS_05 // ECOM_STACK', perf: '100% Production' },
-            portfolio: { serial: 'SYS_06 // DSP_ENGINE', perf: '0 Audio Libs' },
-          };
-          const meta = projectMetaMap[p.id] || { serial: 'SYS_SPEC', perf: 'Verified' };
-
           return (
             <SpotlightCard
               key={p.id}
@@ -237,7 +150,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
               {/* Precision Architectural Header */}
               <div className={styles.cardHeaderBar}>
                 <div className={styles.headerLeft}>
-                  <span className={styles.systemSerial}>{meta.serial}</span>
+                  <span className={styles.systemSerial}>{p.serial}</span>
                   <span className={styles.categoryBadge}>
                     <span className={styles.categoryDot} /> {p.category}
                   </span>
@@ -251,9 +164,9 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
               <div className={styles.cardContent}>
                 <div className={styles.titleRow}>
                   <h2 className={styles.projectTitle}>{p.title}</h2>
-                  <span className={styles.perfBadge}>{meta.perf}</span>
+                  <span className={styles.perfBadge}>{p.perf}</span>
                 </div>
-                <p className={styles.projectSummary}>{p.description}</p>
+                <p className={styles.projectSummary}>{p.shortDescription}</p>
                 <div className={styles.techStack}>
                   {p.tech.map((t) => (
                     <span key={t} className={styles.techTag}>

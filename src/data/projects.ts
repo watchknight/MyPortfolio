@@ -10,6 +10,12 @@ export interface ProjectData {
   subtitle: string;
   role: string;
   category: string;
+  categoryType: 'Web App' | 'Tool' | 'Commercial';
+  status: string;
+  serial: string;
+  perf: string;
+  shortDescription: string;
+  tech: string[];
   domain: string;
   likes: number;
   metric: {
@@ -27,6 +33,7 @@ export interface ProjectData {
     explanation: string;
   };
   repository: string;
+  githubUrl: string;
   liveUrl?: string;
 }
 
@@ -37,6 +44,13 @@ export const projects: ProjectData[] = [
     subtitle: 'Browser engine and anti-adblock countermeasures',
     role: 'Lead Systems & Extension Engineer',
     category: 'Browser Internals & Security',
+    categoryType: 'Tool',
+    status: 'Extension',
+    serial: 'SYS_01 // MV3',
+    perf: '<16ms Latency',
+    shortDescription:
+      'A browser extension that cleanly eliminates sponsored posts and YouTube video ads in under 16ms without slowing down page load or triggering ad-blocker warning banners.',
+    tech: ['TypeScript', 'Chromium MV3', 'DOM Observers', 'Web APIs'],
     domain: 'purefeed.engine',
     likes: 48,
     metric: {
@@ -85,6 +99,7 @@ function isSponsoredText(cleanText) {
         'Uses the HTML root dataset as a zero-latency CSP-compliant message channel between worlds, paired with letter-frequency sorting to detect scrambled DOM strings.',
     },
     repository: 'https://github.com/watchknight/PureFeed',
+    githubUrl: 'https://github.com/watchknight/purefeed',
   },
   {
     id: 'focusguard',
@@ -92,6 +107,13 @@ function isSponsoredText(cleanText) {
     subtitle: 'Multi-layer network and operating-system policy enforcement',
     role: 'Systems & Security Engineer',
     category: 'Systems Engineering & Security',
+    categoryType: 'Tool',
+    status: 'Desktop App',
+    serial: 'SYS_02 // OS_DNS',
+    perf: '0.1ms Sinkhole',
+    shortDescription:
+      'A desktop tool that blocks addictive websites at the operating-system level, helping students and professionals maintain deep focus without relying on flimsy browser plugins.',
+    tech: ['C++', 'Windows Registry', 'DNS Sinkhole', 'Node.js'],
     domain: 'focusguard.sys',
     likes: 34,
     metric: {
@@ -136,6 +158,7 @@ Set-ItemProperty -Path "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge" -Name "Force
         'Locks browser-level SafeSearch toggles at the machine policy layer, rendering client-side bypass attempts ineffective across all Chromium browsers.',
     },
     repository: 'https://github.com/watchknight/FocusGuard',
+    githubUrl: 'https://github.com/watchknight/focusguard',
   },
   {
     id: 'rannabanna',
@@ -143,6 +166,13 @@ Set-ItemProperty -Path "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge" -Name "Force
     subtitle: 'Heuristic matchmaking engine and non-linear scaling physics',
     role: 'Full-Stack Architect & Algorithm Designer',
     category: 'Algorithms & Database Systems',
+    categoryType: 'Web App',
+    status: 'Live on Render',
+    serial: 'SYS_04 // RECIPE_AI',
+    perf: '0.8ms Matchmaker',
+    shortDescription:
+      'A web app that helps you discover delicious Bengali meals based on whatever vegetables, fish, and spices you currently have in your kitchen, with instant recipe scaling.',
+    tech: ['React', 'Express', 'SQLite', 'Node.js'],
     domain: 'rannabanna.app',
     likes: 29,
     metric: {
@@ -188,6 +218,7 @@ const scaledCookTime = Math.round(baseCookTime * Math.min(1.3, 1 + 0.15 * Math.l
         'Applies logarithmic and square-root scaling to recipe prep and cook times, preventing mathematical distortion when adjusting serving counts.',
     },
     repository: 'https://github.com/watchknight/Rannabanna',
+    githubUrl: 'https://github.com/watchknight/rannabanna',
     liveUrl: 'https://rannabanna.onrender.com/',
   },
   {
@@ -196,6 +227,13 @@ const scaledCookTime = Math.round(baseCookTime * Math.min(1.3, 1 + 0.15 * Math.l
     subtitle: 'Real-time computer vision virtual try-on and optical storefront',
     role: 'Frontend & Computer Vision Engineer',
     category: 'Computer Vision & Optical Frontend',
+    categoryType: 'Web App',
+    status: 'Live on Render',
+    serial: 'SYS_03 // 3D_TRYON',
+    perf: '60 FPS WebGL',
+    shortDescription:
+      'A modern online glasses shop with an instant 3D webcam virtual try-on. Customers can see real-time frame fittings on their face using accurate face tracking at 60 FPS.',
+    tech: ['React', 'MediaPipe 3D', 'Tailwind CSS', 'Node.js'],
     domain: 'doclensbd.ai',
     likes: 41,
     metric: {
@@ -245,6 +283,7 @@ smoothedRef.current = {
         'Calculates real-time eye vector angles and applies temporal interpolation to eliminate camera frame jitter during 60fps virtual try-on.',
     },
     repository: 'https://github.com/watchknight/DocLensBD',
+    githubUrl: 'https://github.com/watchknight/doclensbd',
     liveUrl: 'https://doclensbd.onrender.com/',
   },
   {
@@ -253,6 +292,13 @@ smoothedRef.current = {
     subtitle: 'Scalable Next.js commerce architecture and regional payment pipeline',
     role: 'Full-Stack Engineer',
     category: 'Full-Stack Architecture & Payments',
+    categoryType: 'Commercial',
+    status: 'Live on Render',
+    serial: 'SYS_05 // ECOM_STACK',
+    perf: '100% Production',
+    shortDescription:
+      'A fast, responsive clothing and lifestyle store featuring category filters, an intuitive cart drawer, and regional payment gateway integration.',
+    tech: ['Next.js', 'React', 'Zod', 'SSLCommerz'],
     domain: 'poshra.store',
     likes: 36,
     metric: {
@@ -310,6 +356,7 @@ export const useCartStore = create<CartState>()(
         'Provides atomic cart mutations with automatic client-side persistence, preventing lost transactions during network disconnects or page reloads.',
     },
     repository: 'https://github.com/watchknight/POSHRA',
+    githubUrl: 'https://github.com/watchknight/poshra',
     liveUrl: 'https://poshra.onrender.com/',
   },
   {
@@ -318,6 +365,13 @@ export const useCartStore = create<CartState>()(
     subtitle: 'High-density systems engineering portfolio & interactive command deck',
     role: 'Creator & Frontend Systems Architect',
     category: 'Interactive Systems & Architecture',
+    categoryType: 'Web App',
+    status: 'This Website',
+    serial: 'SYS_06 // DSP_ENGINE',
+    perf: '0 Audio Libs',
+    shortDescription:
+      'A custom-built, lightweight personal portfolio with audio sound synthesis, dark/light themes, keyboard shortcuts, and zero unnecessary bloat.',
+    tech: ['React 19', 'TypeScript', 'Vite', 'Web Audio API'],
     domain: 'watchknight.me',
     likes: 52,
     metric: {
@@ -372,6 +426,7 @@ playClick(freq = 850, duration = 0.02, volume = 0.06): void {
         'Synthesizes physical tactile switch clicks dynamically using triangle oscillators and rapid exponential gain envelopes, eliminating all external audio assets.',
     },
     repository: 'https://github.com/watchknight/MyPortfolio',
+    githubUrl: 'https://github.com/watchknight/MyPortfolio',
     liveUrl: 'https://moayed-portfolio.onrender.com/',
   },
 ];

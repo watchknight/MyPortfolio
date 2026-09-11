@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SpotlightCard } from '../SpotlightCard/SpotlightCard';
 import { sound } from '../../utils/audio';
 import styles from './DeveloperASTCard.module.css';
 
@@ -41,7 +42,12 @@ export interface SystemsArchitect {
   };
 
   return (
-    <div className={styles.cardContainer} aria-label="Systems Architect Type Schema">
+    <SpotlightCard
+      className={styles.cardContainer}
+      contentClassName={styles.cardInner}
+      tiltIntensity={4}
+      aria-label="Systems Architect Type Schema"
+    >
       <header className={styles.cardHeader}>
         <div className={styles.headerLeft}>
           <span className={styles.fileIcon}>
@@ -120,6 +126,6 @@ export interface SystemsArchitect {
         </div>
         <div>SHA-256 // VERIFIED SCHEMA</div>
       </footer>
-    </div>
+    </SpotlightCard>
   );
 }

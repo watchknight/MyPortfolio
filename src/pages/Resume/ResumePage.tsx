@@ -1,3 +1,4 @@
+import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './ResumePage.module.css';
@@ -51,9 +52,18 @@ export function ResumePage() {
       </div>
 
       {/* Digital Résumé Paper Sheet */}
-      <article className={styles.resumeSheet}>
+      <SpotlightCard
+        as="article"
+        className={styles.resumeSheet}
+        contentClassName={styles.resumeSheetContent}
+        tiltIntensity={2}
+      >
         {/* Header */}
         <header className={styles.resumeHeader}>
+          <div className={styles.credentialPill}>
+            <span className={styles.credentialDot} />
+            <span>VERIFIED CREDENTIAL // EWU CSE UNDERGRADUATE</span>
+          </div>
           <h2 className={styles.candidateName}>Abdur Rahman Moayed</h2>
           <p className={styles.candidateTitle}>Software Engineer &bull; Computer Science Undergraduate</p>
 
@@ -222,7 +232,7 @@ export function ResumePage() {
             <li><strong>National Board Distinction (GPA 5.0)</strong> &mdash; PSC Class 5 (2015)</li>
           </ul>
         </section>
-      </article>
+      </SpotlightCard>
     </div>
   );
 }

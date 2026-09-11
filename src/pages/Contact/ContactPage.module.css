@@ -62,19 +62,28 @@
 }
 
 .infoCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
+  width: 100%;
+}
+
+.infoCardContent {
+  padding: 1.4rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  transition: all var(--duration-fast) ease;
 }
 
-.infoCard:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--card-shadow);
+.availDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent-primary);
+  box-shadow: 0 0 8px var(--color-accent-primary);
+  animation: pulseBeacon 2s infinite ease-in-out;
+}
+
+@keyframes pulseBeacon {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
 }
 
 .infoLabel {
@@ -147,14 +156,51 @@
 
 /* Right Column: Message Form */
 .formCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+.formCardContent {
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  box-shadow: var(--card-shadow);
+}
+
+.dispatchBanner {
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent-glow);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+}
+
+.dispatchHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dispatchFallbackBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-align: left;
+  margin-top: 0.2rem;
 }
 
 .formTitle {

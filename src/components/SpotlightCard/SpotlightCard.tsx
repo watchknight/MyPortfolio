@@ -2,12 +2,13 @@ import React, { useRef, useCallback } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import styles from './SpotlightCard.module.css';
 
-export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SpotlightCardProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   className?: string;
   contentClassName?: string;
   tiltIntensity?: number;
-  as?: 'div' | 'article' | 'section';
+  as?: 'div' | 'article' | 'section' | 'form' | React.ElementType;
+  onSubmit?: React.FormEventHandler<HTMLElement>;
 }
 
 export function SpotlightCard({

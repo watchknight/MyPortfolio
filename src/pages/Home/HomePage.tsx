@@ -5,7 +5,7 @@ import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimul
 import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
-import { projects as richProjects } from '../../data/projects';
+import { projects } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
 
@@ -220,159 +220,106 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         {viewMode === 'table' ? (
           <div className={styles.tableWrapper}>
             <ProjectLedger
-              projects={richProjects}
+              projects={projects}
               onSelectProject={(p) => onSelectProject?.(p.id)}
             />
           </div>
         ) : (
           <div className={styles.featuredGrid}>
-          {/* Featured Project 1: PureFeed */}
-          <SpotlightCard
-            as="article"
-            className={styles.featuredCard}
-            contentClassName={styles.featuredCardContent}
-            tiltIntensity={9}
-          >
-            {/* Precision Architectural Header */}
-            <div className={styles.cardHeaderBar}>
-              <div className={styles.headerLeft}>
-                <span className={styles.systemSerial}>SYS_01 // MV3</span>
-                <span className={styles.categoryBadge}>
-                  <span className={styles.categoryDot} /> Browser Tool
-                </span>
-              </div>
-              <div className={styles.beaconBadge}>
-                <span className={styles.beaconDot} />
-                <span>Tested on YouTube</span>
-              </div>
-            </div>
-
-            <div className={styles.cardBody}>
-              <div className={styles.titleRow}>
-                <h3 className={styles.cardTitle}>PureFeed</h3>
-                <span className={styles.perfBadge}>&lt;16ms Latency</span>
-              </div>
-              <p className={styles.cardDescription}>
-                A high-performance Chromium MV3 extension that removes video ads and sponsored recommendations
-                on YouTube smoothly, without slowing down your browser or breaking video playback.
-              </p>
-              <div className={styles.techList}>
-                <span className={styles.techPill}>TypeScript</span>
-                <span className={styles.techPill}>Chromium MV3</span>
-                <span className={styles.techPill}>DOM Observers</span>
-              </div>
-            </div>
-
-            <div className={styles.simulatorDeck}>
-              <ProjectSimulator projectId="purefeed" />
-            </div>
-
-            <div className={styles.cardFooter}>
-              <button
-                type="button"
-                className={styles.primaryActionBtn}
-                onClick={() => {
-                  sound.playClick();
-                  if (onSelectProject) {
-                    onSelectProject('purefeed');
-                  } else {
-                    onNavigate('/works');
-                  }
-                }}
-                data-cursor="link"
+          {projects
+            .filter((p) => p.id === 'purefeed' || p.id === 'doclensbd')
+            .map((p) => (
+              <SpotlightCard
+                key={p.id}
+                as="article"
+                className={styles.featuredCard}
+                contentClassName={styles.featuredCardContent}
+                tiltIntensity={9}
               >
-                <span>Explore Architecture</span>
-                <span className={styles.actionArrow}>&rarr;</span>
-              </button>
+                {/* Precision Architectural Header */}
+                <div className={styles.cardHeaderBar}>
+                  <div className={styles.headerLeft}>
+                    <span className={styles.systemSerial}>{p.serial}</span>
+                    <span className={styles.categoryBadge}>
+                      <span className={styles.categoryDot} /> {p.category}
+                    </span>
+                  </div>
+                  <div className={styles.beaconBadge}>
+                    <span className={styles.beaconDot} />
+                    <span>{p.status}</span>
+                  </div>
+                </div>
 
-              <a
-                href="https://github.com/watchknight/purefeed"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.secondaryActionBtn}
-                onClick={() => sound.playTick()}
-                data-cursor="link"
-                title="View Source on GitHub"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                </svg>
-                <span>Source</span>
-              </a>
-            </div>
-          </SpotlightCard>
+                <div className={styles.cardBody}>
+                  <div className={styles.titleRow}>
+                    <h3 className={styles.cardTitle}>{p.title}</h3>
+                    <span className={styles.perfBadge}>{p.perf}</span>
+                  </div>
+                  <p className={styles.cardDescription}>{p.shortDescription}</p>
+                  <div className={styles.techList}>
+                    {p.tech.map((t) => (
+                      <span key={t} className={styles.techPill}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-          {/* Featured Project 2: DocLensBD */}
-          <SpotlightCard
-            as="article"
-            className={styles.featuredCard}
-            contentClassName={styles.featuredCardContent}
-            tiltIntensity={9}
-          >
-            {/* Precision Architectural Header */}
-            <div className={styles.cardHeaderBar}>
-              <div className={styles.headerLeft}>
-                <span className={styles.systemSerial}>SYS_02 // 3D_TRYON</span>
-                <span className={styles.categoryBadge}>
-                  <span className={styles.categoryDot} /> Web Application
-                </span>
-              </div>
-              <div className={styles.beaconBadge}>
-                <span className={styles.beaconDot} />
-                <span>Live on Render</span>
-              </div>
-            </div>
+                <div className={styles.simulatorDeck}>
+                  <ProjectSimulator projectId={p.id} />
+                </div>
 
-            <div className={styles.cardBody}>
-              <div className={styles.titleRow}>
-                <h3 className={styles.cardTitle}>DocLensBD</h3>
-                <span className={styles.perfBadge}>60 FPS WebGL</span>
-              </div>
-              <p className={styles.cardDescription}>
-                An online eyewear store with a real-time 3D virtual try-on engine. Customers can
-                preview prescription frames calibrated directly on their face using MediaPipe 3D.
-              </p>
-              <div className={styles.techList}>
-                <span className={styles.techPill}>React</span>
-                <span className={styles.techPill}>MediaPipe 3D</span>
-                <span className={styles.techPill}>Node.js</span>
-              </div>
-            </div>
+                <div className={styles.cardFooter}>
+                  {p.liveUrl && (
+                    <a
+                      href={p.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.primaryActionBtn}
+                      onClick={() => sound.playTick()}
+                      data-cursor="link"
+                    >
+                      <span>Visit Live Site</span>
+                      <span className={styles.actionArrow}>&rarr;</span>
+                    </a>
+                  )}
 
-            <div className={styles.simulatorDeck}>
-              <ProjectSimulator projectId="doclensbd" />
-            </div>
+                  <button
+                    type="button"
+                    className={p.liveUrl ? styles.secondaryActionBtn : styles.primaryActionBtn}
+                    onClick={() => {
+                      sound.playClick();
+                      if (onSelectProject) {
+                        onSelectProject(p.id);
+                      } else {
+                        onNavigate('/works');
+                      }
+                    }}
+                    data-cursor="link"
+                  >
+                    <span>Explore Architecture</span>
+                    {!p.liveUrl && <span className={styles.actionArrow}>&rarr;</span>}
+                  </button>
 
-            <div className={styles.cardFooter}>
-              <a
-                href="https://doclensbd.onrender.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.primaryActionBtn}
-                onClick={() => sound.playTick()}
-                data-cursor="link"
-              >
-                <span>Visit Live Site</span>
-                <span className={styles.actionArrow}>&rarr;</span>
-              </a>
-
-              <button
-                type="button"
-                className={styles.secondaryActionBtn}
-                onClick={() => {
-                  sound.playClick();
-                  if (onSelectProject) {
-                    onSelectProject('doclensbd');
-                  } else {
-                    onNavigate('/works');
-                  }
-                }}
-                data-cursor="link"
-              >
-                <span>Architecture</span>
-              </button>
-            </div>
-          </SpotlightCard>
+                  {p.githubUrl && (
+                    <a
+                      href={p.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.secondaryActionBtn}
+                      onClick={() => sound.playTick()}
+                      data-cursor="link"
+                      title="View Source on GitHub"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                      </svg>
+                      <span>Source</span>
+                    </a>
+                  )}
+                </div>
+              </SpotlightCard>
+            ))}
         </div>
       )}
       </section>

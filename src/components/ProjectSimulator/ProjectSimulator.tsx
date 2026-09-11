@@ -354,5 +354,92 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
     );
   }
 
+  // Portfolio DSP Synthesizer Simulator
+  if (projectId === 'myportfolio') {
+    return (
+      <div className={styles.simWrapper} data-lenis-prevent="true">
+        <div className={styles.simHeader}>
+          <div className={styles.macControls}>
+            <span className={`${styles.dot} ${styles.dotRed}`} />
+            <span className={`${styles.dot} ${styles.dotYellow}`} />
+            <span className={`${styles.dot} ${styles.dotGreen}`} />
+            <span className={styles.simUrl}>audio.ts // Web Audio DSP Synthesizer</span>
+          </div>
+          <span className={styles.simTag}>0 AUDIO ASSETS // REALTIME</span>
+        </div>
+
+        <div className={styles.simBody}>
+          <div className={styles.dspHeader}>
+            <span>Interactive Frequency Synthesizer Pads:</span>
+            <span className={styles.dspStatus}>
+              {sound.isEnabled() ? '● Audio Online' : '○ Click to Test Audio'}
+            </span>
+          </div>
+
+          <div className={styles.dspPadGrid}>
+            <button
+              type="button"
+              className={styles.dspPadBtn}
+              onClick={() => {
+                if (!sound.isEnabled()) sound.toggle();
+                sound.playClick(850, 0.02, 0.08);
+              }}
+              data-cursor="link"
+            >
+              <span className={styles.dspFreq}>850 Hz</span>
+              <span className={styles.dspName}>Switch Click</span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.dspPadBtn}
+              onClick={() => {
+                if (!sound.isEnabled()) sound.toggle();
+                sound.playChirp(400, 1100, 0.06, 0.08);
+              }}
+              data-cursor="link"
+            >
+              <span className={styles.dspFreq}>400&rarr;1.1k Hz</span>
+              <span className={styles.dspName}>Chirp Ramp</span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.dspPadBtn}
+              onClick={() => {
+                if (!sound.isEnabled()) sound.toggle();
+                sound.playDrawer();
+              }}
+              data-cursor="link"
+            >
+              <span className={styles.dspFreq}>240&rarr;420 Hz</span>
+              <span className={styles.dspName}>Drawer Whoosh</span>
+            </button>
+
+            <button
+              type="button"
+              className={styles.dspPadBtn}
+              onClick={() => {
+                if (!sound.isEnabled()) sound.toggle();
+                sound.playTick();
+              }}
+              data-cursor="link"
+            >
+              <span className={styles.dspFreq}>1.2 kHz</span>
+              <span className={styles.dspName}>Subtle Tick</span>
+            </button>
+          </div>
+
+          <div className={styles.dspTelemetry}>
+            <span className={styles.dspBadge}>DSP HARDWARE SYNTHESIS</span>
+            <span className={styles.dspDesc}>
+              Pure Web Audio triangle and sine oscillators with exponential decay. Zero external audio downloads.
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return null;
 }
