@@ -58,6 +58,7 @@ export default function App() {
     });
 
     registerLenis(lenis);
+    (window as any).__lenis = lenis;
 
     let rafId: number;
 

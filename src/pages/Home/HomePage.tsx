@@ -1,4 +1,7 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
+import { HeroSandbox } from '../../components/HeroSandbox/HeroSandbox';
+import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
+import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
 
@@ -10,65 +13,71 @@ interface HomePageProps {
 export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
   return (
     <div className={styles.homeContainer}>
-      {/* 1. Minimalist Hero */}
-      <section className={styles.hero} aria-label="Introduction">
-        <div className={styles.statusPill}>
-          <span className={styles.statusDot} />
-          <span>Available for Internships &amp; Projects</span>
+      {/* 1. Interactive Hero */}
+      <section className={styles.heroSection} aria-label="Introduction">
+        <div className={styles.heroLeft}>
+          <div className={styles.statusPill}>
+            <span className={styles.statusDot} />
+            <span>Available for Internships &amp; Projects</span>
+          </div>
+
+          <h1 className={styles.title}>
+            Hi, I&apos;m Abdur Rahman Moayed. <br />
+            I build <span className={styles.highlight}>fast, reliable software</span>.
+          </h1>
+
+          <p className={styles.lead}>
+            I&apos;m a Computer Science student at East West University in Dhaka, Bangladesh.
+            I specialize in building clean web applications, browser tools, and practical software
+            that solves real everyday problems.
+          </p>
+
+          <div className={styles.heroActions}>
+            <button
+              type="button"
+              className={styles.primaryBtn}
+              onClick={() => {
+                sound.playClick();
+                onNavigate('/works');
+              }}
+            >
+              <span>View My Works</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              className={styles.secondaryBtn}
+              onClick={() => {
+                sound.playClick();
+                onNavigate('/contact');
+              }}
+            >
+              <span>Get in Touch</span>
+            </button>
+
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.secondaryBtn}
+              onClick={() => sound.playTick()}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span>Download Résumé</span>
+            </a>
+          </div>
         </div>
 
-        <h1 className={styles.title}>
-          Hi, I&apos;m Abdur Rahman Moayed. <br />
-          I build <span className={styles.highlight}>fast, reliable software</span>.
-        </h1>
-
-        <p className={styles.lead}>
-          I&apos;m a Computer Science student at East West University in Dhaka, Bangladesh.
-          I specialize in building clean web applications, browser tools, and practical software
-          that solves real everyday problems.
-        </p>
-
-        <div className={styles.heroActions}>
-          <button
-            type="button"
-            className={styles.primaryBtn}
-            onClick={() => {
-              sound.playClick();
-              onNavigate('/works');
-            }}
-          >
-            <span>View My Works</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            className={styles.secondaryBtn}
-            onClick={() => {
-              sound.playClick();
-              onNavigate('/contact');
-            }}
-          >
-            <span>Get in Touch</span>
-          </button>
-
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondaryBtn}
-            onClick={() => sound.playTick()}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <span>Download Résumé</span>
-          </a>
+        <div className={styles.heroRight}>
+          <HeroSandbox onNavigate={onNavigate} />
         </div>
       </section>
 
@@ -118,6 +127,8 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               </div>
             </div>
 
+            <ProjectSimulator projectId="purefeed" />
+
             <button
               type="button"
               className={styles.cardAction}
@@ -158,6 +169,8 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 <span className={styles.techPill}>Node.js</span>
               </div>
             </div>
+
+            <ProjectSimulator projectId="doclensbd" />
 
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
               <a
@@ -257,7 +270,12 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         </SpotlightCard>
       </section>
 
-      {/* 4. Simple Contact Invite */}
+      {/* 4. Interactive Visitor Guestbook Canvas */}
+      <section className={styles.section} aria-label="Digital Guestbook">
+        <SignatureCanvas />
+      </section>
+
+      {/* 5. Simple Contact Invite */}
       <section className={styles.contactStrip} aria-label="Get in touch">
         <h2 className={styles.contactHeadline}>Interested in working together?</h2>
         <p className={styles.contactSubtext}>

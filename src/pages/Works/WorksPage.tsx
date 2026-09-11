@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
+import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { sound } from '../../utils/audio';
 import styles from './WorksPage.module.css';
 
@@ -169,6 +170,8 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                 ))}
               </div>
             </div>
+
+            <ProjectSimulator projectId={p.id} />
 
             <div className={styles.cardActions}>
               {p.liveUrl && (

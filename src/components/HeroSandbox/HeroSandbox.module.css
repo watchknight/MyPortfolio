@@ -1,0 +1,442 @@
+.sandboxContainer {
+  width: 100%;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.4),
+              0 0 25px var(--color-accent-glow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 380px;
+}
+
+:global([data-theme="light"]) .sandboxContainer {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.08),
+              0 0 20px rgba(2, 132, 199, 0.06);
+}
+
+.windowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border-hairline);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+:global([data-theme="light"]) .windowHeader {
+  background: #f8fafc;
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.windowControls {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dotRed { background: #ef4444; }
+.dotYellow { background: #f59e0b; }
+.dotGreen { background: #10b981; }
+
+.windowTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+.tabGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tabBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.tabBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-subtle);
+}
+
+.tabBtnActive {
+  background: var(--color-bg-card);
+  border-color: var(--color-border-strong);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+:global([data-theme="light"]) .tabBtnActive {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: var(--color-accent);
+}
+
+/* Tab 1: Terminal Body */
+.terminalBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--color-bg-base);
+}
+
+:global([data-theme="light"]) .terminalBody {
+  background: #f8fafc;
+}
+
+.terminalOutput {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  max-height: 230px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+.logRow {
+  word-break: break-word;
+}
+
+.log_cmd {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.log_output {
+  color: var(--color-text-secondary);
+}
+
+.log_success {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.log_warn {
+  color: var(--color-warning);
+}
+
+.log_info {
+  color: var(--color-text-tertiary);
+  font-size: 11px;
+}
+
+.quickBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--color-bg-subtle);
+  border-top: 1px solid var(--color-border-hairline);
+  overflow-x: auto;
+}
+
+:global([data-theme="light"]) .quickBar {
+  background: #f1f5f9;
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+.quickLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.quickChip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--duration-fast) ease;
+}
+
+:global([data-theme="light"]) .quickChip {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.quickChip:hover {
+  background: var(--color-bg-card-hover);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.inputBar {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-bg-surface);
+  border-top: 1px solid var(--color-border-hairline);
+  gap: 0.5rem;
+}
+
+:global([data-theme="light"]) .inputBar {
+  background: #ffffff;
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+.promptArrow {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.cmdInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.cmdInput::placeholder {
+  color: var(--color-text-tertiary);
+  font-size: 11px;
+}
+
+.execBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.execBtn:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+/* Tab 2: Telemetry Body */
+.telemetryBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: var(--color-bg-base);
+  flex: 1;
+}
+
+:global([data-theme="light"]) .telemetryBody {
+  background: #f8fafc;
+}
+
+.telemetryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.telemetryCard {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+:global([data-theme="light"]) .telemetryCard {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.tcLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+
+.tcValue {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.tcSub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.telemetryFooter {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border-hairline);
+}
+
+.livePulseGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.radarPing {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 10px var(--color-success);
+  animation: pingPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pingPulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.radarText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* Tab 3: Matrix Body */
+.matrixBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: var(--color-bg-base);
+  flex: 1;
+}
+
+:global([data-theme="light"]) .matrixBody {
+  background: #f8fafc;
+}
+
+.matrixHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-border-hairline);
+  padding-bottom: 0.75rem;
+}
+
+.matrixTitle {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.matrixSub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.matrixBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.matrixList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.matrixItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+}
+
+:global([data-theme="light"]) .matrixItem {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.miBullet {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.miTitle {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.miDesc {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .telemetryGrid {
+    grid-template-columns: 1fr;
+  }
+}

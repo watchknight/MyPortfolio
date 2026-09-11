@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { sound } from '../../utils/audio';
 import styles from './ShortcutsDock.module.css';
 
@@ -12,80 +12,105 @@ interface ShortcutDef {
 export function ShortcutsDock() {
   const [activeKeys, setActiveKeys] = useState<Record<string, boolean>>({});
 
-  const shortcuts: ShortcutDef[] = [
-    {
-      keyId: 'k',
-      displayKey: '⌘K',
-      label: 'Deck',
-      onTrigger: () => {
-        window.dispatchEvent(new CustomEvent('toggle-command-palette'));
-        sound.playDrawer();
+  const shortcuts: ShortcutDef[] = useMemo(
+    () => [
+      {
+        keyId: 'k',
+        displayKey: '⌘K',
+        label: 'Deck',
+        onTrigger: () => {
+          window.dispatchEvent(new CustomEvent('toggle-command-palette'));
+          sound.playDrawer();
+        },
       },
-    },
-    {
-      keyId: 'g',
-      displayKey: 'G',
-      label: 'Grid',
-      onTrigger: () => {
-        window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
-        sound.playClick(650, 0.02, 0.06);
+      {
+        keyId: 'g',
+        displayKey: 'G',
+        label: 'Grid',
+        onTrigger: () => {
+          window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
+          sound.playClick(650, 0.02, 0.06);
+        },
       },
-    },
-    {
-      keyId: 't',
-      displayKey: 'T',
-      label: 'Table',
-      onTrigger: () => {
-        window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
-        sound.playClick(720, 0.02, 0.06);
+      {
+        keyId: 't',
+        displayKey: 'T',
+        label: 'Table',
+        onTrigger: () => {
+          window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
+          sound.playClick(720, 0.02, 0.06);
+        },
       },
-    },
-    {
-      keyId: 'm',
-      displayKey: 'M',
-      label: 'Mute',
-      onTrigger: () => {
-        const next = sound.toggle();
-        sound.playClick(next ? 800 : 400, 0.03, 0.07);
+      {
+        keyId: 'm',
+        displayKey: 'M',
+        label: 'Mute',
+        onTrigger: () => {
+          const next = sound.toggle();
+          sound.playClick(next ? 800 : 400, 0.03, 0.07);
+        },
       },
-    },
-    {
-      keyId: 'd',
-      displayKey: 'D',
-      label: 'Theme',
-      onTrigger: () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', nextTheme);
-        localStorage.setItem('theme', nextTheme);
-        sound.playChirp(400, 800, 0.03, 0.05);
+      {
+        keyId: 'd',
+        displayKey: 'D',
+        label: 'Theme',
+        onTrigger: () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          localStorage.setItem('theme', nextTheme);
+          sound.playChirp(400, 800, 0.03, 0.05);
+        },
       },
-    },
-    {
-      keyId: 's',
-      displayKey: 'S',
-      label: 'Sys',
-      onTrigger: () => {
-        window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
-        sound.playChirp(500, 900, 0.04, 0.06);
+      {
+        keyId: 's',
+        displayKey: 'S',
+        label: 'Sys',
+        onTrigger: () => {
+          window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
+          sound.playChirp(500, 900, 0.04, 0.06);
+        },
       },
-    },
-  ];
+      {
+        keyId: 'f',
+        displayKey: 'F',
+        label: 'Grain',
+        onTrigger: () => {
+          const isGrain = document.documentElement.getAttribute('data-grain') === 'true';
+          const next = !isGrain;
+          document.documentElement.setAttribute('data-grain', next ? 'true' : 'false');
+          localStorage.setItem('grain', next ? 'true' : 'false');
+          sound.playChirp(600, 300, 0.03, 0.05);
+        },
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
+    // Restore grain preference
+    const savedGrain = localStorage.getItem('grain');
+    if (savedGrain === 'true') {
+      document.documentElement.setAttribute('data-grain', 'true');
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't intercept when user is typing in an input or textarea
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
 
       const key = e.key.toLowerCase();
-      if (['k', 'g', 't', 'm', 'd', 's'].includes(key)) {
+      if (['k', 'g', 't', 'm', 'd', 's', 'f'].includes(key)) {
         setActiveKeys((prev) => ({ ...prev, [key]: true }));
+        const match = shortcuts.find((s) => s.keyId === key);
+        if (match && key !== 'k') { // 'k' handled by command palette listener
+          match.onTrigger();
+        }
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      if (['k', 'g', 't', 'm', 'd', 's'].includes(key)) {
+      if (['k', 'g', 't', 'm', 'd', 's', 'f'].includes(key)) {
         setActiveKeys((prev) => ({ ...prev, [key]: false }));
       }
     };
@@ -97,7 +122,7 @@ export function ShortcutsDock() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [shortcuts]);
 
   return (
     <aside className={styles.dockContainer} aria-label="Keyboard Shortcuts Micro-Dock">
