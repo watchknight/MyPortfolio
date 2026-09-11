@@ -86,6 +86,7 @@
   --color-border-focus:    #38BDF8;
 
   --color-accent:          #38BDF8;
+  --color-accent-primary:  #38BDF8;
   --color-accent-cyan:     #00F2FE;
   --color-accent-emerald:  #10B981;
   --color-accent-amber:    #F59E0B;
@@ -125,6 +126,7 @@
   --color-border-focus:    #0284C7;
 
   --color-accent:          #0284C7;
+  --color-accent-primary:  #0284C7;
   --color-accent-glow:     rgba(2, 132, 199, 0.15);
   --color-accent-muted:    rgba(2, 132, 199, 0.08);
   --color-success:         #059669;

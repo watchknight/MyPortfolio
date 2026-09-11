@@ -20,6 +20,7 @@ interface CommandPaletteProps {
   onToggleSound?: () => void;
   onToggleView?: (view: 'grid' | 'table') => void;
   onOpenSysCheck?: () => void;
+  onNavigate?: (path: string) => void;
   currentTheme?: 'dark' | 'light';
   isSoundActive?: boolean;
 }
@@ -32,6 +33,7 @@ export function CommandPalette({
   onToggleSound,
   onToggleView,
   onOpenSysCheck,
+  onNavigate,
   currentTheme = 'dark',
   isSoundActive = true,
 }: CommandPaletteProps) {
@@ -42,33 +44,58 @@ export function CommandPalette({
 
   const commands: CommandItem[] = useMemo(() => [
     {
+      id: 'nav-home',
+      category: 'Navigation',
+      title: 'Go to Home Overview',
+      subtitle: 'Clean & minimalist portfolio introduction',
+      shortcut: '0',
+      action: () => {
+        onClose();
+        onNavigate?.('/');
+      },
+    },
+    {
       id: 'nav-works',
       category: 'Navigation',
-      title: 'Jump to Curated Systems & Countermeasures',
-      subtitle: 'Browser internals, AST unmasking, systems engineering',
+      title: 'Go to Works & Projects',
+      subtitle: 'Browse all 6 web apps, extensions, and tools',
       shortcut: '1',
       action: () => {
-        document.getElementById('engineering')?.scrollIntoView({ behavior: 'smooth' });
+        onClose();
+        onNavigate?.('/works');
       },
     },
     {
       id: 'nav-foundation',
       category: 'Navigation',
-      title: 'Jump to Engineering Foundation & CS Rigor',
-      subtitle: 'East West University, Board Merit scholarships, core coursework',
+      title: 'Go to Education & Skills (Foundation)',
+      subtitle: 'East West University, board scholarships, coursework',
       shortcut: '2',
       action: () => {
-        document.getElementById('foundation')?.scrollIntoView({ behavior: 'smooth' });
+        onClose();
+        onNavigate?.('/foundation');
+      },
+    },
+    {
+      id: 'nav-resume',
+      category: 'Navigation',
+      title: 'Go to Curriculum Vitae (Résumé)',
+      subtitle: 'Print-ready credentials, education, and experience',
+      shortcut: '3',
+      action: () => {
+        onClose();
+        onNavigate?.('/resume');
       },
     },
     {
       id: 'nav-contact',
       category: 'Navigation',
-      title: 'Jump to Direct Communication Dispatch',
-      subtitle: 'Initiate email, check UTC+6 availability window',
-      shortcut: '3',
+      title: 'Go to Contact',
+      subtitle: 'Send a message, copy email, or check availability',
+      shortcut: '4',
       action: () => {
-        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        onClose();
+        onNavigate?.('/contact');
       },
     },
     {
@@ -200,7 +227,7 @@ export function CommandPalette({
         }
       },
     },
-  ], [currentTheme, isSoundActive, onClose, onOpenSysCheck, onSelectProject, onToggleSound, onToggleTheme, onToggleView]);
+  ], [currentTheme, isSoundActive, onClose, onNavigate, onOpenSysCheck, onSelectProject, onToggleSound, onToggleTheme, onToggleView]);
 
   const filteredCommands = useMemo(() => {
     const q = query.trim().toLowerCase();

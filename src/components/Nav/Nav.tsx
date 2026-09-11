@@ -2,16 +2,22 @@ import { useState, useEffect, useCallback } from 'react';
 import { sound } from '../../utils/audio';
 import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
+import type { RoutePath } from '../../hooks/useRouter';
 import styles from './Nav.module.css';
 
-const links = [
-  { label: 'Works', href: '#engineering' },
-  { label: 'Foundation', href: '#foundation' },
-  { label: 'Résumé', href: '/resume.pdf', external: true },
-  { label: 'Contact', href: '#contact' },
+const navItems: { label: string; path: RoutePath }[] = [
+  { label: 'Works', path: '/works' },
+  { label: 'Foundation', path: '/foundation' },
+  { label: 'Résumé', path: '/resume' },
+  { label: 'Contact', path: '/contact' },
 ];
 
-export function Nav() {
+interface NavProps {
+  currentPath: RoutePath;
+  onNavigate: (path: string) => void;
+}
+
+export function Nav({ currentPath, onNavigate }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
@@ -125,10 +131,20 @@ export function Nav() {
       >
         <div className={styles.navInner}>
           <div className={styles.brandGroup}>
-            <a href="#" className={styles.navBrand} onClick={closeMobile} data-cursor="link">
+            <a
+              href="/"
+              className={styles.navBrand}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/');
+                sound.playTick();
+                closeMobile();
+              }}
+              data-cursor="link"
+            >
               <span>Abdur Rahman Moayed</span>
               <span className={styles.breadcrumbSlash}>/</span>
-              <span className={styles.breadcrumbSub}>Systems</span>
+              <span className={styles.breadcrumbSub}>Software</span>
             </a>
 
             <div className={styles.statusPill} title="East West University CSE">
@@ -140,16 +156,19 @@ export function Nav() {
           <div className={styles.navRight}>
             {/* Desktop Navigation */}
             <div className={styles.navLinks}>
-              {links.map((link) => (
+              {navItems.map((item) => (
                 <a
-                  key={link.href}
-                  href={link.href}
-                  className={styles.navLink}
-                  onClick={() => sound.playTick()}
+                  key={item.path}
+                  href={item.path}
+                  className={`${styles.navLink} ${currentPath === item.path ? styles.navLinkActive : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate(item.path);
+                    sound.playTick();
+                  }}
                   data-cursor="link"
-                  {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
-                  {link.label}
+                  {item.label}
                 </a>
               ))}
             </div>
@@ -263,15 +282,19 @@ export function Nav() {
         className={`${styles.mobileMenu} ${mobileOpen ? styles.mobileMenuOpen : ''}`}
         aria-hidden={!mobileOpen}
       >
-        {links.map((link) => (
+        {navItems.map((item) => (
           <a
-            key={link.href}
-            href={link.href}
-            className={styles.mobileLink}
-            onClick={closeMobile}
-            {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            key={item.path}
+            href={item.path}
+            className={`${styles.mobileLink} ${currentPath === item.path ? styles.mobileLinkActive : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate(item.path);
+              sound.playTick();
+              closeMobile();
+            }}
           >
-            {link.label}
+            {item.label}
           </a>
         ))}
       </div>
@@ -291,6 +314,7 @@ export function Nav() {
         onOpenSysCheck={() => {
           window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
         }}
+        onNavigate={onNavigate}
         currentTheme={theme}
         isSoundActive={soundActive}
       />

@@ -1,28 +1,44 @@
 import { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
+import { useRouter } from './hooks/useRouter';
 import { useReducedMotion } from './hooks/useReducedMotion';
+import { projects, type ProjectData } from './data/projects';
 import { SignalSweep } from './components/SignalSweep/SignalSweep';
 import { CanvasGrid } from './components/CanvasGrid/CanvasGrid';
 import { CustomCursor } from './components/CustomCursor/CustomCursor';
 import { ShortcutsDock } from './components/ShortcutsDock/ShortcutsDock';
-import { WaypointDock } from './components/WaypointDock/WaypointDock';
 import { SysDiagnosticModal } from './components/SysDiagnosticModal/SysDiagnosticModal';
+import { CaseStudyModal } from './components/CaseStudyModal/CaseStudyModal';
 import { Nav } from './components/Nav/Nav';
-import { Hero } from './components/Hero/Hero';
-import { TelemetryRibbon } from './components/TelemetryRibbon/TelemetryRibbon';
-import { CaseStudies } from './components/CaseStudy/CaseStudy';
-import { Foundation } from './components/Foundation/Foundation';
-import { Contact } from './components/Contact/Contact';
+
+import { HomePage } from './pages/Home/HomePage';
+import { WorksPage } from './pages/Works/WorksPage';
+import { FoundationPage } from './pages/Foundation/FoundationPage';
+import { ResumePage } from './pages/Resume/ResumePage';
+import { ContactPage } from './pages/Contact/ContactPage';
 
 export default function App() {
   const prefersReducedMotion = useReducedMotion();
+  const { currentPath, navigate } = useRouter();
   const [sysCheckOpen, setSysCheckOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
 
   useEffect(() => {
     const handleOpenSys = () => setSysCheckOpen(true);
+    const handleOpenProject = (e: Event) => {
+      const custom = e as CustomEvent<string>;
+      const p = projects.find((proj) => proj.id === custom.detail);
+      if (p) setSelectedProject(p);
+    };
+
     window.addEventListener('open-sys-diagnostic', handleOpenSys);
-    return () => window.removeEventListener('open-sys-diagnostic', handleOpenSys);
+    window.addEventListener('open-project-modal', handleOpenProject);
+
+    return () => {
+      window.removeEventListener('open-sys-diagnostic', handleOpenSys);
+      window.removeEventListener('open-project-modal', handleOpenProject);
+    };
   }, []);
 
   useEffect(() => {
@@ -49,21 +65,31 @@ export default function App() {
     };
   }, [prefersReducedMotion]);
 
+  const handleSelectProjectById = (projectId: string) => {
+    const p = projects.find((proj) => proj.id === projectId);
+    if (p) setSelectedProject(p);
+  };
+
   return (
     <>
       <CanvasGrid />
       <CustomCursor />
       <ShortcutsDock />
-      <WaypointDock onOpenSysCheck={() => setSysCheckOpen(true)} />
       <SysDiagnosticModal isOpen={sysCheckOpen} onClose={() => setSysCheckOpen(false)} />
-      <Nav />
+      <CaseStudyModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      <Nav currentPath={currentPath} onNavigate={navigate} />
+
       <SignalSweep>
-        <main style={{ position: 'relative', zIndex: 1 }}>
-          <Hero />
-          <TelemetryRibbon />
-          <CaseStudies />
-          <Foundation />
-          <Contact />
+        <main style={{ position: 'relative', zIndex: 1, minHeight: '100vh' }}>
+          {currentPath === '/' && (
+            <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
+          )}
+          {currentPath === '/works' && (
+            <WorksPage onSelectProject={handleSelectProjectById} />
+          )}
+          {currentPath === '/foundation' && <FoundationPage />}
+          {currentPath === '/resume' && <ResumePage />}
+          {currentPath === '/contact' && <ContactPage />}
         </main>
       </SignalSweep>
     </>
