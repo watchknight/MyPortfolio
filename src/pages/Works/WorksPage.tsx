@@ -132,7 +132,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
       {viewMode === 'table' ? (
         <div className={styles.tableWrapper}>
           <ProjectLedger
-            projects={projects}
+            projects={filteredProjects}
             onSelectProject={(p) => onSelectProject?.(p.id)}
           />
         </div>
