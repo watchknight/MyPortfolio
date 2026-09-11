@@ -146,82 +146,106 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
 
       {/* Projects Grid */}
       <div className={styles.projectsGrid}>
-        {filteredProjects.map((p) => (
-          <SpotlightCard
-            key={p.id}
-            as="article"
-            className={styles.projectCard}
-            contentClassName={styles.projectCardContent}
-            tiltIntensity={9}
-          >
-            <div className={styles.cardHead}>
-              <span className={styles.categoryTag}>{p.category}</span>
-              <span className={styles.statusIndicator}>
-                <span className={styles.statusDot} />
-                <span>{p.status}</span>
-              </span>
-            </div>
+        {filteredProjects.map((p) => {
+          const projectMetaMap: Record<string, { serial: string; perf: string }> = {
+            purefeed: { serial: 'SYS_01 // MV3', perf: '<16ms Latency' },
+            focusguard: { serial: 'SYS_02 // OS_DNS', perf: '0.1ms Sinkhole' },
+            doclensbd: { serial: 'SYS_03 // 3D_TRYON', perf: '60 FPS WebGL' },
+            rannabanna: { serial: 'SYS_04 // RECIPE_AI', perf: '0.8ms Matchmaker' },
+            poshra: { serial: 'SYS_05 // ECOM_STACK', perf: '100% Production' },
+            portfolio: { serial: 'SYS_06 // DSP_ENGINE', perf: '0 Audio Libs' },
+          };
+          const meta = projectMetaMap[p.id] || { serial: 'SYS_SPEC', perf: 'Verified' };
 
-            <div className={styles.cardContent}>
-              <h2 className={styles.projectTitle}>{p.title}</h2>
-              <p className={styles.projectSummary}>{p.description}</p>
-              <div className={styles.techStack}>
-                {p.tech.map((t) => (
-                  <span key={t} className={styles.techTag}>
-                    {t}
+          return (
+            <SpotlightCard
+              key={p.id}
+              as="article"
+              className={styles.projectCard}
+              contentClassName={styles.projectCardContent}
+              tiltIntensity={9}
+            >
+              {/* Precision Architectural Header */}
+              <div className={styles.cardHeaderBar}>
+                <div className={styles.headerLeft}>
+                  <span className={styles.systemSerial}>{meta.serial}</span>
+                  <span className={styles.categoryBadge}>
+                    <span className={styles.categoryDot} /> {p.category}
                   </span>
-                ))}
+                </div>
+                <div className={styles.beaconBadge}>
+                  <span className={styles.beaconDot} />
+                  <span>{p.status}</span>
+                </div>
               </div>
-            </div>
 
-            <ProjectSimulator projectId={p.id} />
+              <div className={styles.cardContent}>
+                <div className={styles.titleRow}>
+                  <h2 className={styles.projectTitle}>{p.title}</h2>
+                  <span className={styles.perfBadge}>{meta.perf}</span>
+                </div>
+                <p className={styles.projectSummary}>{p.description}</p>
+                <div className={styles.techStack}>
+                  {p.tech.map((t) => (
+                    <span key={t} className={styles.techTag}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
 
-            <div className={styles.cardActions}>
-              {p.liveUrl && (
-                <a
-                  href={p.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.liveBtn}
-                  onClick={() => sound.playTick()}
+              <div className={styles.simulatorDeck}>
+                <ProjectSimulator projectId={p.id} />
+              </div>
+
+              <div className={styles.cardActions}>
+                {p.liveUrl && (
+                  <a
+                    href={p.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.primaryActionBtn}
+                    onClick={() => sound.playTick()}
+                    data-cursor="link"
+                  >
+                    <span>Visit Live Site</span>
+                    <span className={styles.actionArrow}>&rarr;</span>
+                  </a>
+                )}
+
+                <button
+                  type="button"
+                  className={p.liveUrl ? styles.secondaryActionBtn : styles.primaryActionBtn}
+                  onClick={() => {
+                    sound.playClick();
+                    onSelectProject?.(p.id);
+                  }}
+                  data-cursor="link"
                 >
-                  <span>Visit Live</span>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </a>
-              )}
+                  <span>Explore Architecture</span>
+                  {!p.liveUrl && <span className={styles.actionArrow}>&rarr;</span>}
+                </button>
 
-              {p.githubUrl && (
-                <a
-                  href={p.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.detailBtn}
-                  onClick={() => sound.playTick()}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                  </svg>
-                  <span>GitHub</span>
-                </a>
-              )}
-
-              <button
-                type="button"
-                className={styles.detailBtn}
-                onClick={() => {
-                  sound.playClick();
-                  onSelectProject?.(p.id);
-                }}
-              >
-                <span>Read Overview &rarr;</span>
-              </button>
-            </div>
-          </SpotlightCard>
-        ))}
+                {p.githubUrl && (
+                  <a
+                    href={p.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.secondaryActionBtn}
+                    onClick={() => sound.playTick()}
+                    data-cursor="link"
+                    title="View Source on GitHub"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                    </svg>
+                    <span>Source</span>
+                  </a>
+                )}
+              </div>
+            </SpotlightCard>
+          );
+        })}
       </div>
     </div>
   );

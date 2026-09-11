@@ -225,54 +225,139 @@
 }
 
 .featuredCardContent {
-  padding: 1.75rem;
+  padding: 1.4rem 1.55rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.15rem;
   height: 100%;
 }
 
-.cardMeta {
+/* Precision Architectural Header Bar */
+.cardHeaderBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--color-border-hairline);
+  flex-wrap: wrap;
 }
 
-.categoryTag {
+:global([data-theme="light"]) .cardHeaderBar {
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.systemSerial {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-accent-glow);
+}
+
+.categoryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--color-accent-primary);
-  background: var(--color-accent-muted);
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
 }
 
-.liveBadge {
+.categoryDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.beaconBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--color-text-tertiary);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-bg-subtle);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-hairline);
+}
+
+:global([data-theme="light"]) .beaconBadge {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.beaconDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success);
+  animation: beaconPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes beaconPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.25); }
 }
 
 .cardBody {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.65rem;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .cardTitle {
   font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.45rem;
+  font-weight: 700;
   color: var(--color-text-primary);
+  letter-spacing: -0.02em;
   margin: 0;
+  transition: color var(--duration-fast) ease;
+}
+
+.cardWrapper:hover .cardTitle {
+  color: var(--color-accent);
+}
+
+.perfBadge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-success);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.03em;
 }
 
 .cardDescription {
   font-size: 0.92rem;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--color-text-secondary);
   margin: 0;
 }
@@ -281,35 +366,111 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+  margin-top: 0.2rem;
 }
 
 .techPill {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 11px;
   font-weight: 500;
-  padding: 0.2rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-xs);
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-card);
   color: var(--color-text-secondary);
-  border: 1px solid var(--color-border-hairline);
+  border: 1px solid var(--color-border-subtle);
+  transition: all var(--duration-fast) ease;
 }
 
-.cardAction {
+:global([data-theme="light"]) .techPill {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.techPill:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+}
+
+.simulatorDeck {
+  width: 100%;
+}
+
+/* Bottom Action Deck */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border-hairline);
+  margin-top: auto;
+}
+
+:global([data-theme="light"]) .cardFooter {
+  border-top-color: rgba(0, 0, 0, 0.07);
+}
+
+.primaryActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent-contrast, #ffffff);
+  background: var(--color-accent);
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-accent);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--duration-fast) ease;
+  box-shadow: 0 2px 10px var(--color-accent-glow);
+}
+
+.primaryActionBtn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px var(--color-accent-glow);
+}
+
+.actionArrow {
+  transition: transform var(--duration-fast) ease;
+}
+
+.primaryActionBtn:hover .actionArrow {
+  transform: translateX(3px);
+}
+
+.secondaryActionBtn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 12.5px;
   font-weight: 600;
-  color: var(--color-text-primary);
-  background: transparent;
-  border: none;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  padding: 0;
+  text-decoration: none;
+  transition: all var(--duration-fast) ease;
 }
 
-.cardAction:hover {
-  color: var(--color-accent-primary);
+:global([data-theme="light"]) .secondaryActionBtn {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #334155;
+}
+
+.secondaryActionBtn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-card-hover);
+  transform: translateY(-1px);
 }
 
 /* Background & Education Strip */

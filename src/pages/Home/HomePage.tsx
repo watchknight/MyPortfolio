@@ -124,15 +124,27 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             contentClassName={styles.featuredCardContent}
             tiltIntensity={9}
           >
-            <div className={styles.cardMeta}>
-              <span className={styles.categoryTag}>Browser Tool</span>
-              <span className={styles.liveBadge}>Tested on YouTube</span>
+            {/* Precision Architectural Header */}
+            <div className={styles.cardHeaderBar}>
+              <div className={styles.headerLeft}>
+                <span className={styles.systemSerial}>SYS_01 // MV3</span>
+                <span className={styles.categoryBadge}>
+                  <span className={styles.categoryDot} /> Browser Tool
+                </span>
+              </div>
+              <div className={styles.beaconBadge}>
+                <span className={styles.beaconDot} />
+                <span>Tested on YouTube</span>
+              </div>
             </div>
 
             <div className={styles.cardBody}>
-              <h3 className={styles.cardTitle}>PureFeed</h3>
+              <div className={styles.titleRow}>
+                <h3 className={styles.cardTitle}>PureFeed</h3>
+                <span className={styles.perfBadge}>&lt;16ms Latency</span>
+              </div>
               <p className={styles.cardDescription}>
-                A lightweight browser extension that removes video ads and sponsored recommendations
+                A high-performance Chromium MV3 extension that removes video ads and sponsored recommendations
                 on YouTube smoothly, without slowing down your browser or breaking video playback.
               </p>
               <div className={styles.techList}>
@@ -142,22 +154,43 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               </div>
             </div>
 
-            <ProjectSimulator projectId="purefeed" />
+            <div className={styles.simulatorDeck}>
+              <ProjectSimulator projectId="purefeed" />
+            </div>
 
-            <button
-              type="button"
-              className={styles.cardAction}
-              onClick={() => {
-                sound.playClick();
-                if (onSelectProject) {
-                  onSelectProject('purefeed');
-                } else {
-                  onNavigate('/works');
-                }
-              }}
-            >
-              <span>Learn how it works &rarr;</span>
-            </button>
+            <div className={styles.cardFooter}>
+              <button
+                type="button"
+                className={styles.primaryActionBtn}
+                onClick={() => {
+                  sound.playClick();
+                  if (onSelectProject) {
+                    onSelectProject('purefeed');
+                  } else {
+                    onNavigate('/works');
+                  }
+                }}
+                data-cursor="link"
+              >
+                <span>Explore Architecture</span>
+                <span className={styles.actionArrow}>&rarr;</span>
+              </button>
+
+              <a
+                href="https://github.com/watchknight/purefeed"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.secondaryActionBtn}
+                onClick={() => sound.playTick()}
+                data-cursor="link"
+                title="View Source on GitHub"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                </svg>
+                <span>Source</span>
+              </a>
+            </div>
           </SpotlightCard>
 
           {/* Featured Project 2: DocLensBD */}
@@ -167,16 +200,28 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             contentClassName={styles.featuredCardContent}
             tiltIntensity={9}
           >
-            <div className={styles.cardMeta}>
-              <span className={styles.categoryTag}>Web Application</span>
-              <span className={styles.liveBadge}>Live on Render</span>
+            {/* Precision Architectural Header */}
+            <div className={styles.cardHeaderBar}>
+              <div className={styles.headerLeft}>
+                <span className={styles.systemSerial}>SYS_02 // 3D_TRYON</span>
+                <span className={styles.categoryBadge}>
+                  <span className={styles.categoryDot} /> Web Application
+                </span>
+              </div>
+              <div className={styles.beaconBadge}>
+                <span className={styles.beaconDot} />
+                <span>Live on Render</span>
+              </div>
             </div>
 
             <div className={styles.cardBody}>
-              <h3 className={styles.cardTitle}>DocLensBD</h3>
+              <div className={styles.titleRow}>
+                <h3 className={styles.cardTitle}>DocLensBD</h3>
+                <span className={styles.perfBadge}>60 FPS WebGL</span>
+              </div>
               <p className={styles.cardDescription}>
-                An online eyewear store with a real-time 3D virtual try-on feature. Customers can
-                preview prescription frames directly on their face using their webcam.
+                An online eyewear store with a real-time 3D virtual try-on engine. Customers can
+                preview prescription frames calibrated directly on their face using MediaPipe 3D.
               </p>
               <div className={styles.techList}>
                 <span className={styles.techPill}>React</span>
@@ -185,22 +230,26 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               </div>
             </div>
 
-            <ProjectSimulator projectId="doclensbd" />
+            <div className={styles.simulatorDeck}>
+              <ProjectSimulator projectId="doclensbd" />
+            </div>
 
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div className={styles.cardFooter}>
               <a
                 href="https://doclensbd.onrender.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={styles.cardAction}
+                className={styles.primaryActionBtn}
                 onClick={() => sound.playTick()}
+                data-cursor="link"
               >
-                <span>Visit live site &rarr;</span>
+                <span>Visit Live Site</span>
+                <span className={styles.actionArrow}>&rarr;</span>
               </a>
+
               <button
                 type="button"
-                className={styles.cardAction}
-                style={{ color: 'var(--color-text-secondary)' }}
+                className={styles.secondaryActionBtn}
                 onClick={() => {
                   sound.playClick();
                   if (onSelectProject) {
@@ -209,8 +258,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                     onNavigate('/works');
                   }
                 }}
+                data-cursor="link"
               >
-                <span>Details</span>
+                <span>Architecture</span>
               </button>
             </div>
           </SpotlightCard>

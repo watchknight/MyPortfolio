@@ -166,6 +166,44 @@ async function run() {
     await new Promise(r => setTimeout(r, 600));
     await takeScreenshot('16_hero_sandbox_telemetry_tab.png');
 
+    // 6. Scroll down to Featured Projects in Dark Mode
+    console.log('Scrolling down to Featured Projects in Dark Mode...');
+    await sendSession('Runtime.evaluate', {
+      expression: `(() => {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        const featuredSec = document.querySelector('section[aria-label="Featured Projects"]');
+        if (featuredSec) featuredSec.scrollIntoView({ behavior: 'instant', block: 'start' });
+      })()`
+    });
+    await new Promise(r => setTimeout(r, 800));
+    await takeScreenshot('17_featured_project_cards_dark.png');
+
+    // 7. Featured Projects in Light Mode
+    console.log('Capturing Featured Projects in Light Mode...');
+    await sendSession('Runtime.evaluate', {
+      expression: `(() => {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      })()`
+    });
+    await new Promise(r => setTimeout(r, 600));
+    await takeScreenshot('18_featured_project_cards_light.png');
+
+    // 8. Navigate to Works Page in Dark Mode
+    console.log('Navigating to Works Page...');
+    await sendSession('Runtime.evaluate', {
+      expression: `(() => {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        window.history.pushState({}, '', '/works');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        window.scrollTo(0, 0);
+      })()`
+    });
+    await new Promise(r => setTimeout(r, 1000));
+    await takeScreenshot('19_works_page_cards_dark.png');
+
     console.log('All verification screenshots captured successfully!');
     ws.close();
   } catch (err) {
