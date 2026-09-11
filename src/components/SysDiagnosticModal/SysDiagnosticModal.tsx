@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { sound } from '../../utils/audio';
+import { useScrollLock } from '../../utils/scrollLock';
 import styles from './SysDiagnosticModal.module.css';
 
 interface SysDiagnosticModalProps {
@@ -243,6 +244,8 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
     setTimeout(() => setCopied(false), 2500);
   };
 
+  useScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   return (
@@ -254,8 +257,14 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
       role="dialog"
       aria-modal="true"
       aria-labelledby="diag-title"
+      data-lenis-prevent="true"
     >
-      <div className={styles.modal} ref={modalRef}>
+      <div
+        className={styles.modal}
+        ref={modalRef}
+        data-lenis-prevent="true"
+        onWheel={(e) => e.stopPropagation()}
+      >
         <header className={styles.header}>
           <div className={styles.headerTitleGroup}>
             <span className={styles.statusIndicator} />
@@ -272,13 +281,19 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
             type="button"
             className={styles.closeButton}
             onClick={onClose}
-            aria-label="Close Diagnostic Suite"
+            aria-label="Close Diagnostic Suite (Esc)"
+            title="Close (Esc)"
+            data-cursor="link"
           >
             [ESC] CLOSE
           </button>
         </header>
 
-        <div className={styles.body}>
+        <div
+          className={styles.body}
+          data-lenis-prevent="true"
+          onWheel={(e) => e.stopPropagation()}
+        >
           <div className={styles.terminalView}>
             {steps.map((s, idx) => (
               <div key={s.id} className={styles.testRow}>

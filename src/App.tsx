@@ -18,11 +18,15 @@ import { FoundationPage } from './pages/Foundation/FoundationPage';
 import { ResumePage } from './pages/Resume/ResumePage';
 import { ContactPage } from './pages/Contact/ContactPage';
 
+import { registerLenis, useScrollLock } from './utils/scrollLock';
+
 export default function App() {
   const prefersReducedMotion = useReducedMotion();
   const { currentPath, navigate } = useRouter();
   const [sysCheckOpen, setSysCheckOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+
+  useScrollLock(Boolean(selectedProject) || sysCheckOpen);
 
   useEffect(() => {
     const handleOpenSys = () => setSysCheckOpen(true);
@@ -42,13 +46,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      registerLenis(null);
+      return;
+    }
 
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+
+    registerLenis(lenis);
 
     let rafId: number;
 
@@ -61,6 +70,7 @@ export default function App() {
 
     return () => {
       cancelAnimationFrame(rafId);
+      registerLenis(null);
       lenis.destroy();
     };
   }, [prefersReducedMotion]);

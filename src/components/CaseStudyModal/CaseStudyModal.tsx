@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ProjectData } from '../../data/projects';
 import { sound } from '../../utils/audio';
+import { useScrollLock } from '../../utils/scrollLock';
 import styles from './CaseStudyModal.module.css';
 
 interface CaseStudyModalProps {
@@ -13,6 +14,8 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
   const [activeTab, setActiveTab] = useState<'architecture' | 'interventions' | 'code'>('architecture');
   const [copied, setCopied] = useState(false);
   const [prevId, setPrevId] = useState<string | null>(null);
+
+  useScrollLock(Boolean(project));
 
   if (project && project.id !== prevId) {
     setPrevId(project.id);
@@ -31,13 +34,10 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
-
     modalRef.current?.focus();
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
   }, [project, onClose]);
 
@@ -64,8 +64,15 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-project-title"
+      data-lenis-prevent="true"
     >
-      <div className={styles.sheet} ref={modalRef} tabIndex={-1}>
+      <div
+        className={styles.sheet}
+        ref={modalRef}
+        tabIndex={-1}
+        data-lenis-prevent="true"
+        onWheel={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.titleArea}>
@@ -83,12 +90,14 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
               sound.playDrawer();
               onClose();
             }}
-            aria-label="Close command sheet"
+            aria-label="Close case study (Esc)"
+            title="Close (Esc)"
             data-cursor="link"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <span className={styles.closeKbd}>ESC</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="18" x2="18" y2="6" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
@@ -138,7 +147,11 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
         </div>
 
         {/* Content Body */}
-        <div className={styles.contentBody}>
+        <div
+          className={styles.contentBody}
+          data-lenis-prevent="true"
+          onWheel={(e) => e.stopPropagation()}
+        >
           {activeTab === 'architecture' && (
             <>
               <div className={styles.sectionBlock}>

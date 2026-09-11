@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { sound } from '../../utils/audio';
+import { useScrollLock } from '../../utils/scrollLock';
 import styles from './CommandPalette.module.css';
 
 export interface CommandItem {
@@ -247,17 +248,13 @@ export function CommandPalette({
     onClose();
   }, [onClose]);
 
+  useScrollLock(isOpen);
+
   useEffect(() => {
     if (isOpen) {
       sound.playDrawer();
       setTimeout(() => inputRef.current?.focus(), 40);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -293,8 +290,20 @@ export function CommandPalette({
   if (!isOpen) return null;
 
   return (
-    <div className={styles.backdrop} onClick={handleClose} role="dialog" aria-modal="true" aria-label="Command Deck">
-      <div className={styles.palette} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.backdrop}
+      onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command Deck"
+      data-lenis-prevent="true"
+    >
+      <div
+        className={styles.palette}
+        onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+        data-lenis-prevent="true"
+      >
         {/* Search Input Bar */}
         <div className={styles.searchBar}>
           <svg className={styles.searchIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -313,11 +322,30 @@ export function CommandPalette({
             }}
             aria-autocomplete="list"
           />
-          <kbd className={styles.escKey}>ESC</kbd>
+          <button
+            type="button"
+            className={styles.escButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+              sound.playTick();
+            }}
+            aria-label="Close command palette (Esc)"
+            title="Close (Esc)"
+            data-cursor="link"
+          >
+            <span className={styles.escKey}>ESC</span>
+          </button>
         </div>
 
         {/* Results List */}
-        <div ref={listRef} className={styles.resultsList} role="listbox">
+        <div
+          ref={listRef}
+          className={styles.resultsList}
+          role="listbox"
+          data-lenis-prevent="true"
+          onWheel={(e) => e.stopPropagation()}
+        >
           {filteredCommands.length === 0 ? (
             <div className={styles.noResults}>No commands matching &quot;{query}&quot;</div>
           ) : (
@@ -357,7 +385,19 @@ export function CommandPalette({
           <div className={styles.footerHints}>
             <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
             <span><kbd>↵</kbd> Select</span>
-            <span><kbd>ESC</kbd> Close</span>
+            <button
+              type="button"
+              className={styles.footerCloseBtn}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+                sound.playTick();
+              }}
+              title="Close command palette (Esc)"
+              data-cursor="link"
+            >
+              <kbd>ESC</kbd> Close
+            </button>
           </div>
           <span className={styles.footerNode}>DHAKA_NODE // ACTIVE</span>
         </footer>

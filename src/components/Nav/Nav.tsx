@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { sound } from '../../utils/audio';
+import { useScrollLock } from '../../utils/scrollLock';
 import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
 import type { RoutePath } from '../../hooks/useRouter';
@@ -116,12 +117,13 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
+  useScrollLock(mobileOpen);
+
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mobileOpen]);
+    const handleToggleCmd = () => setCommandOpen((prev) => !prev);
+    window.addEventListener('toggle-command-palette', handleToggleCmd);
+    return () => window.removeEventListener('toggle-command-palette', handleToggleCmd);
+  }, []);
 
   return (
     <>
