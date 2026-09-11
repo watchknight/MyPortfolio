@@ -1,0 +1,87 @@
+.dockContainer {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  user-select: none;
+  transition: all var(--transition-normal);
+}
+
+.dockLabel {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  padding: 0 0.4rem 0 0.2rem;
+  border-right: 1px solid var(--color-border);
+}
+
+.shortcutItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  transition: all var(--transition-fast);
+}
+
+.shortcutItem:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-bright);
+}
+
+.keyCap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--color-text-bright);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.08s ease;
+}
+
+.keyCapActive {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  background: var(--color-accent-cyan);
+  color: #000;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+}
+
+.shortcutName {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 900px) {
+  .dockContainer {
+    display: none;
+  }
+}

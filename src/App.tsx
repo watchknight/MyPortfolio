@@ -5,8 +5,10 @@ import { useReducedMotion } from './hooks/useReducedMotion';
 import { SignalSweep } from './components/SignalSweep/SignalSweep';
 import { CanvasGrid } from './components/CanvasGrid/CanvasGrid';
 import { CustomCursor } from './components/CustomCursor/CustomCursor';
+import { ShortcutsDock } from './components/ShortcutsDock/ShortcutsDock';
 import { Nav } from './components/Nav/Nav';
 import { Hero } from './components/Hero/Hero';
+import { TelemetryRibbon } from './components/TelemetryRibbon/TelemetryRibbon';
 import { CaseStudies } from './components/CaseStudy/CaseStudy';
 import { Foundation } from './components/Foundation/Foundation';
 import { Contact } from './components/Contact/Contact';
@@ -42,10 +44,12 @@ export default function App() {
     <>
       <CanvasGrid />
       <CustomCursor />
+      <ShortcutsDock />
       <Nav />
       <SignalSweep>
         <main style={{ position: 'relative', zIndex: 1 }}>
           <Hero />
+          <TelemetryRibbon />
           <CaseStudies />
           <Foundation />
           <Contact />

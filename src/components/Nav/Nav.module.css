@@ -166,6 +166,18 @@
   box-shadow: 0 0 6px var(--color-accent-cyan);
 }
 
+.pingMetric {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-accent-emerald);
+  letter-spacing: 0.04em;
+}
+
+.timeDivider {
+  color: var(--color-border);
+  font-size: 9px;
+}
+
 .actionGroup {
   display: flex;
   align-items: center;

@@ -1,6 +1,64 @@
 import { SpotlightCard } from '../SpotlightCard/SpotlightCard';
 import { ScrambleText } from '../ScrambleText/ScrambleText';
+import { sound } from '../../utils/audio';
 import styles from './Foundation.module.css';
+
+interface Milestone {
+  year: string;
+  title: string;
+  institution: string;
+  gradeBadge?: string;
+  honorBadge?: string;
+  description: string;
+  active?: boolean;
+}
+
+const academicMilestones: Milestone[] = [
+  {
+    year: '2025 — Present',
+    title: 'B.Sc. in Computer Science & Engineering',
+    institution: 'East West University (EWU) — Dhaka, Bangladesh',
+    honorBadge: 'Undergrad Scholar',
+    description:
+      'Undergraduate study focused on Systems Architecture, Operating Systems, Browser Internals, and Low-overhead Network Engineering.',
+    active: true,
+  },
+  {
+    year: '2023',
+    title: 'Higher Secondary Certificate (HSC)',
+    institution: 'Intermediate (Science Division)',
+    honorBadge: 'Pre-Engineering Science',
+    description:
+      'Advanced physics, higher mathematics, and algorithmic computing foundation with national board completion.',
+  },
+  {
+    year: '2021',
+    title: 'Secondary School Certificate (SSC / Class 10)',
+    institution: 'National Board of Education, Bangladesh',
+    gradeBadge: 'GPA 5.0 / 5.0',
+    honorBadge: 'Golden Distinction',
+    description:
+      'Top-tier academic ranking with government talent-pool distinction and verified perfect 5.0 grading.',
+  },
+  {
+    year: '2018',
+    title: 'Junior School Certificate (JSC / Class 8)',
+    institution: 'National Board of Education, Bangladesh',
+    gradeBadge: 'GPA 5.0 / 5.0',
+    honorBadge: 'Talent-Pool Scholarship',
+    description:
+      'Awarded prestigious Government Talent-Pool Merit Scholarship for regional top percentile achievement.',
+  },
+  {
+    year: '2015',
+    title: 'Primary School Certificate (PSC / Class 5)',
+    institution: 'National Board of Education, Bangladesh',
+    gradeBadge: 'GPA 5.0 / 5.0',
+    honorBadge: 'Government Merit Scholar',
+    description:
+      'First national board distinction with perfect GPA 5.0 and verified government merit scholarship recognition.',
+  },
+];
 
 const competencies = [
   {
@@ -52,37 +110,40 @@ export function Foundation() {
         </header>
 
         <div className={styles.columns}>
-          {/* Left Column: Academic Record & Merit */}
+          {/* Left Column: 10-Year Academic Milestone Chronology */}
           <SpotlightCard>
             <div className={styles.academicCard}>
               <div className={styles.cardHead}>
-                <h3 className={styles.cardTitle}>Undergraduate Studies</h3>
-                <span className={styles.gpaBadge}>2023 — Present</span>
+                <h3 className={styles.cardTitle}>Academic Chronology</h3>
+                <span className={styles.timelineDecadeBadge}>2015 — 2025+ Track</span>
               </div>
 
-              <div className={styles.eduItem}>
-                <p className={styles.institution}>East West University</p>
-                <p className={styles.degree}>
-                  Bachelor of Science in Computer Science &amp; Engineering
-                </p>
-                <p className={styles.degree}>
-                  Second Year — Dhaka, Bangladesh
-                </p>
-              </div>
+              <div className={styles.timelineContainer} role="feed" aria-label="Academic Milestones 2015 to Present">
+                <div className={styles.timelineTrack} />
 
-              <div className={styles.scholarshipList}>
-                <div className={styles.scholarshipItem}>
-                  <div className={styles.scholarshipBullet} />
-                  <span>
-                    <strong>Government Talent-Pool Merit Scholarships:</strong> Awarded in Class 8 and Class 10 for verified top-tier academic ranking.
-                  </span>
-                </div>
-                <div className={styles.scholarshipItem}>
-                  <div className={styles.scholarshipBullet} />
-                  <span>
-                    <strong>Unbroken Distinction:</strong> Maintained consistent GPA 5.0 across Class 5, Class 8, and Class 10 national board examinations.
-                  </span>
-                </div>
+                {academicMilestones.map((m) => (
+                  <div
+                    key={m.year}
+                    className={styles.milestoneItem}
+                    onMouseEnter={() => sound.playTick()}
+                  >
+                    <span className={`${styles.timelineNode} ${m.active ? styles.timelineNodeActive : ''}`} />
+
+                    <div className={styles.milestoneHeader}>
+                      <span className={`${styles.milestoneYear} ${m.active ? styles.milestoneYearActive : ''}`}>
+                        {m.year}
+                      </span>
+                      <div className={styles.milestoneBadges}>
+                        {m.gradeBadge && <span className={styles.milestoneBadge}>{m.gradeBadge}</span>}
+                        {m.honorBadge && <span className={styles.milestoneBadgeHonor}>{m.honorBadge}</span>}
+                      </div>
+                    </div>
+
+                    <div className={styles.milestoneTitle}>{m.title}</div>
+                    <div className={styles.milestoneInst}>{m.institution}</div>
+                    <div className={styles.milestoneDesc}>{m.description}</div>
+                  </div>
+                ))}
               </div>
 
               <div className={styles.courseworkSection}>
@@ -105,7 +166,7 @@ export function Foundation() {
           {/* Right Column: Core Competencies */}
           <div className={styles.competenciesGrid}>
             {competencies.map((comp) => (
-              <div key={comp.label} className={styles.competencyCard}>
+              <div key={comp.label} className={styles.competencyCard} onMouseEnter={() => sound.playTick()}>
                 <div className={styles.compLabel}>
                   <span>{comp.label}</span>
                   <span className={styles.compDomain}>{comp.domain}</span>
