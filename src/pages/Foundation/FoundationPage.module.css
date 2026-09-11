@@ -173,9 +173,9 @@
 }
 
 .itemDesc {
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--color-text-tertiary);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
 }
 
 /* Coursework */

@@ -8,7 +8,7 @@ const userDataDir = 'C:\\Users\\Moayed\\.gemini\\antigravity\\edge-profile-tilt'
 const port = 9345;
 
 const edgeProcess = spawn(edgePath, [
-  '--remote-debugging-port=9345',
+  '--remote-debugging-port=' + port,
   '--headless=new',
   '--user-data-dir=' + userDataDir,
   '--no-first-run',

@@ -69,7 +69,7 @@
 
 .filterBtnActive {
   background: var(--color-accent-primary);
-  color: #04070d;
+  color: var(--color-accent-contrast);
   border-color: var(--color-accent-primary);
   font-weight: 700;
 }
@@ -163,10 +163,11 @@
 .techTag {
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  font-weight: 500;
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-xs);
   background: var(--color-bg-subtle);
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   border: 1px solid var(--color-border-hairline);
 }
 
@@ -186,7 +187,7 @@
   padding: 0.5rem 0.95rem;
   border-radius: var(--radius-sm);
   background: var(--color-accent-primary);
-  color: #04070d;
+  color: var(--color-accent-contrast);
   font-family: var(--font-display);
   font-size: 0.82rem;
   font-weight: 600;

@@ -98,7 +98,7 @@
 }
 
 .propKey {
-  color: #f1f5f9; /* light */
+  color: #f1f5f9; /* bright light in dark mode */
   font-weight: 500;
 }
 
@@ -112,7 +112,7 @@
 }
 
 .punct {
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .activeToken {
@@ -149,6 +149,59 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 6px #34d399;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+/* ── Light Theme High-Contrast Code Tokens ── */
+:global([data-theme="light"]) .codeArea {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+:global([data-theme="light"]) .keyword {
+  color: #7c3aed; /* deep royal purple */
+  font-weight: 700;
+}
+
+:global([data-theme="light"]) .typeName {
+  color: #0284c7; /* deep sky blue */
+  font-weight: 700;
+}
+
+:global([data-theme="light"]) .propKey {
+  color: #0f172a; /* deep near-black */
+  font-weight: 600;
+}
+
+:global([data-theme="light"]) .stringVal {
+  color: #059669; /* rich forest emerald */
+  font-weight: 500;
+}
+
+:global([data-theme="light"]) .comment {
+  color: #64748b; /* slate gray */
+}
+
+:global([data-theme="light"]) .punct {
+  color: #334155; /* deep slate */
+  font-weight: 600;
+}
+
+:global([data-theme="light"]) .fileBadge {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.16);
+  color: #334155;
+  font-weight: 600;
+}
+
+:global([data-theme="light"]) .copyButton {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #0f172a;
+}
+
+:global([data-theme="light"]) .cardFooter {
+  background: #ffffff;
+  color: #475569;
 }
