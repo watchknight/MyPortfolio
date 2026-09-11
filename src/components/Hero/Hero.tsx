@@ -12,7 +12,7 @@ export function Hero() {
           <div className={styles.heroLeft}>
             <div className={styles.eyebrow} data-cursor="link">
               <span className={styles.eyebrowDot} />
-              <ScrambleText text="SYS://0xMOAYED // CSE.EWU" />
+              <ScrambleText text="SYS://0xMOAYED // DHAKA.NODE // CSE.EWU" />
             </div>
 
             <h1 className={styles.heroTitle} data-cursor="inspect" data-cursor-label="ENGINEER">
@@ -22,19 +22,19 @@ export function Hero() {
             </h1>
 
             <p className={styles.heroSubtitle}>
-              Building high-performance digital countermeasures against algorithmic noise and feed bloat.
-              Specialized in Chromium Manifest V3 runtime bypasses, zero-latency state reconciliation, and
-              operating-system policy locks.
+              Engineering low-overhead, resilient digital countermeasures and distributed web architectures
+              built to thrive under real-world network friction. Grounded in East West University, Dhaka — architected
+              for global systems scale.
             </p>
 
             <div className={styles.telemetryGrid} aria-label="Key Engineer Telemetry">
               <div className={styles.telemetryItem}>
-                <span className={styles.telemetryLabel}>Academic Standing</span>
-                <span className={styles.telemetryValue}>Talent-Pool Scholar</span>
+                <span className={styles.telemetryLabel}>Origin Node</span>
+                <span className={styles.telemetryValue}>Dhaka (UTC+6)</span>
               </div>
               <div className={styles.telemetryItem}>
-                <span className={styles.telemetryLabel}>University</span>
-                <span className={styles.telemetryValue}>East West Univ</span>
+                <span className={styles.telemetryLabel}>Academic Merit</span>
+                <span className={styles.telemetryValue}>Talent-Pool Scholar</span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemetryLabel}>Production Core</span>

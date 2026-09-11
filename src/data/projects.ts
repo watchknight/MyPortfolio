@@ -45,9 +45,9 @@ export const projects: ProjectData[] = [
     },
     environment: ['Chromium Manifest V3', 'JavaScript', 'HTML5 Media', 'Netlify'],
     problem:
-      'YouTube and Facebook rely on recursive player loops, strict Content Security Policies, and dynamic DOM obfuscation to bypass ad blockers and keep users trapped in algorithmic feeds.',
+      'In South Asian mobile-first environments like Bangladesh with metered cellular data, aggressive algorithmic feed injection and recursive anti-adblock loops (YouTube black-screen traps, Facebook scrambled sponsored DOM) heavily drain bandwidth, CPU cycles, and user attention.',
     architecture:
-      'Decoupled hybrid engine separating network-level declarative filtering from in-player runtime execution, using Manifest V3 Main World registration to bridge execution states.',
+      'Decoupled hybrid engine separating network-level declarative filtering from in-player runtime execution, using Manifest V3 Main World registration to bridge execution states without triggering CSP script-src violations.',
     interventions: [
       {
         name: 'The 15-Second Black Screen Trap',
@@ -100,7 +100,7 @@ function isSponsoredText(cleanText) {
     },
     environment: ['Chrome Extension APIs', 'Windows System APIs', 'Windows Registry', 'Node.js'],
     problem:
-      'Single-layer browser extensions fail because users can easily disable them, switch browsers, or change network adapters to bypass restrictions.',
+      'Single-layer browser extensions fail on shared academic workstations, university lab PCs in Dhaka, and multi-user environments where users easily switch browser profiles, disable extensions, or alter DNS settings to bypass content discipline.',
     architecture:
       '5-tier enforcement matrix synchronizing browser-level declarativeNetRequest rules with OS-level hosts file routing, Windows Registry policy locks, and an independent background watchdog service.',
     interventions: [
@@ -151,9 +151,9 @@ Set-ItemProperty -Path "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Edge" -Name "Force
     },
     environment: ['React', 'Node.js', 'SQLite', 'Gemini 3.8 Flash API'],
     problem:
-      'Conventional recipe applications rely on strict database queries that fail when ingredients are missing, or they trigger combinatorial performance bottlenecks when calculating ingredient combinations across large catalogs.',
+      'Traditional recipe engines fail catastrophically on authentic Bengali cuisine where complex spice tempering (mustard oil, turmeric, panch phoron), reduction physics, and volatile pantry availability require nuanced heuristic matchmaking rather than brittle query matching.',
     architecture:
-      'Relational junction graph over SQLite paired with a weighted set-intersection scoring engine and a SHA-256 hashed tiered caching layer for LLM-driven bilingual localization.',
+      'Relational junction graph over SQLite paired with a weighted set-intersection scoring engine and a SHA-256 hashed tiered caching layer for LLM-driven bilingual (Bengali/English) localization.',
     interventions: [
       {
         name: 'Heuristic Scoring Pipeline',
@@ -203,9 +203,9 @@ const scaledCookTime = Math.round(baseCookTime * Math.min(1.3, 1 + 0.15 * Math.l
     },
     environment: ['React', 'TypeScript', 'MediaPipe Face Mesh', 'Tailwind CSS', 'Netlify'],
     problem:
-      'Optical retail e-commerce suffers from frame fit uncertainty and sluggish specification filtering, leading to high return rates and customer drop-off.',
+      'Optical retail e-commerce across Bangladesh (centered around Dhaka optical hubs) suffers from extreme customer hesitation and high return rates because buyers cannot verify frame geometry, pupillary distance, or temple fit without visiting physical optometrists.',
     architecture:
-      'Client-side optical storefront integrating Google MediaPipe Face Mesh for 6DOF landmark tracking, webcam streaming, and real-time canvas glasses rendering paired with zero-shift faceted product filtering.',
+      'Client-side optical storefront integrating Google MediaPipe Face Mesh for 468-point 3D landmark tracking, webcam streaming, and real-time canvas glasses rendering paired with zero-shift faceted product filtering on standard laptops and mobile clients.',
     interventions: [
       {
         name: 'Real-Time Facial Landmark Mesh',
@@ -259,9 +259,9 @@ smoothedRef.current = {
     },
     environment: ['Next.js 16 (App Router)', 'React 19', 'Supabase (PostgreSQL)', 'Zustand', 'SSLCommerz'],
     problem:
-      'Regional e-commerce applications frequently suffer from state desynchronization between tabs, unverified client transaction payloads, and brittle payment gateway handshakes.',
+      'Regional e-commerce in Bangladesh faces chronic checkout dropouts, state desynchronization across open browser tabs, and duplicate debiting during Mobile Financial Services (bKash, Nagad) and SSLCommerz multi-step redirect handshakes on volatile mobile data.',
     architecture:
-      'Full-stack Next.js App Router application powered by Supabase SSR, Zustand atomic cart persistence, strict Zod schema validation, and SSLCommerz regional payment processing.',
+      'Distributed Next.js 16 App Router application powered by Supabase SSR, atomic Zustand cart state synchronization, strict Zod schema validation, and idempotent SSLCommerz regional payment verification.',
     interventions: [
       {
         name: 'Atomic Cart State Reconciliation',

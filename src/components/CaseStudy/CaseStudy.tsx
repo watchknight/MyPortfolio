@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { projects, type ProjectData } from '../../data/projects';
 import { SpotlightCard } from '../SpotlightCard/SpotlightCard';
@@ -23,6 +23,43 @@ export function CaseStudies() {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+
+  useEffect(() => {
+    const handleOpen = (e: Event) => {
+      const custom = e as CustomEvent<string>;
+      const p = projects.find((proj) => proj.id === custom.detail);
+      if (p) setSelectedProject(p);
+    };
+    const handleView = (e: Event) => {
+      const custom = e as CustomEvent<'grid' | 'table'>;
+      if (custom.detail) setViewMode(custom.detail);
+    };
+
+    window.addEventListener('open-project-modal', handleOpen);
+    window.addEventListener('set-view-mode', handleView);
+    return () => {
+      window.removeEventListener('open-project-modal', handleOpen);
+      window.removeEventListener('set-view-mode', handleView);
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (e.key === 'g' || e.key === 'G') {
+        setViewMode('grid');
+        sound.playClick(620, 0.03, 0.07);
+      } else if (e.key === 't' || e.key === 'T') {
+        setViewMode('table');
+        sound.playClick(780, 0.03, 0.07);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   // Local like states for gallery cards
   const [likesMap, setLikesMap] = useState<Record<string, number>>(() => {

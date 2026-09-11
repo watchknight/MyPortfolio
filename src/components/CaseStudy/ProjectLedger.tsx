@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { ProjectData } from '../../data/projects';
 import { MechanicalCounter } from '../MechanicalCounter/MechanicalCounter';
 import { sound } from '../../utils/audio';
@@ -46,18 +46,78 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
     sound.playClick(hasLiked ? 450 : 850, 0.03, 0.08);
   };
 
+  const [sortField, setSortField] = useState<'title' | 'category' | 'likes'>('likes');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  const handleSort = (field: 'title' | 'category' | 'likes') => {
+    if (sortField === field) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+    sound.playClick(720, 0.02, 0.05);
+  };
+
+  const sortedProjects = useMemo(() => {
+    return [...projects].sort((a, b) => {
+      let comparison = 0;
+      if (sortField === 'title') {
+        comparison = a.title.localeCompare(b.title);
+      } else if (sortField === 'category') {
+        comparison = a.category.localeCompare(b.category);
+      } else if (sortField === 'likes') {
+        const aLikes = likesMap[a.id] ?? a.likes;
+        const bLikes = likesMap[b.id] ?? b.likes;
+        comparison = aLikes - bLikes;
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [projects, sortField, sortDirection, likesMap]);
+
   return (
     <div className={styles.ledgerContainer} role="table" aria-label="System Projects Table">
       <div className={styles.ledgerHeader} role="row">
-        <div role="columnheader">System &amp; Domain</div>
-        <div role="columnheader">Domain Role</div>
+        <button
+          type="button"
+          className={styles.sortHeaderBtn}
+          onClick={() => handleSort('title')}
+          role="columnheader"
+          aria-sort={sortField === 'title' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+        >
+          <span>System &amp; Domain</span>
+          <span>{sortField === 'title' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}</span>
+        </button>
+
+        <button
+          type="button"
+          className={styles.sortHeaderBtn}
+          onClick={() => handleSort('category')}
+          role="columnheader"
+          aria-sort={sortField === 'category' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+        >
+          <span>Domain Role</span>
+          <span>{sortField === 'category' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}</span>
+        </button>
+
         <div role="columnheader">Environment Stack</div>
         <div role="columnheader">Key Metric</div>
-        <div role="columnheader">Telemetry</div>
+
+        <button
+          type="button"
+          className={styles.sortHeaderBtn}
+          onClick={() => handleSort('likes')}
+          role="columnheader"
+          aria-sort={sortField === 'likes' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+        >
+          <span>Telemetry</span>
+          <span>{sortField === 'likes' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}</span>
+        </button>
+
         <div role="columnheader">Action</div>
       </div>
 
-      {projects.map((project) => (
+      {sortedProjects.map((project: ProjectData) => (
         <div
           key={project.id}
           className={styles.ledgerRow}
@@ -91,7 +151,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
 
           {/* Column 3: Stack */}
           <div className={styles.stackCol} role="cell">
-            {project.environment.slice(0, 3).map((env) => (
+            {project.environment.slice(0, 3).map((env: string) => (
               <span key={env} className={styles.stackPill}>
                 {env}
               </span>

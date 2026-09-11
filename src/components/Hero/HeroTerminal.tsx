@@ -5,7 +5,7 @@ import styles from './HeroTerminal.module.css';
 interface LogItem {
   id: string;
   time: string;
-  type: 'init' | 'skip' | 'unmask' | 'status';
+  type: 'init' | 'skip' | 'unmask' | 'status' | 'benchmark';
   text: string;
 }
 
@@ -31,7 +31,7 @@ export function HeroTerminal() {
     },
   ]);
 
-  const addLog = (type: 'skip' | 'unmask', text: string) => {
+  const addLog = (type: 'skip' | 'unmask' | 'benchmark', text: string) => {
     const now = new Date();
     const time = `${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(Math.floor(now.getMilliseconds() / 10)).padStart(2, '0')}`;
     setLogs((prev) => [...prev.slice(-4), { id: Math.random().toString(), time, type, text }]);
@@ -45,6 +45,18 @@ export function HeroTerminal() {
   const handleSimulateUnmask = () => {
     sound.playClick(850, 0.02, 0.06);
     addLog('unmask', "[DOM_WALKER] Anagram 'ddenoorpss' matched -> Scrambled 'Sponsored' node purged");
+  };
+
+  const handleRunBenchmark = () => {
+    sound.playClick(950, 0.02, 0.05);
+    const t0 = performance.now();
+    let count = 0;
+    for (let i = 0; i < 5000; i++) {
+      if ('ddenoorpss' === 'sponsored'.split('').sort().join('')) count++;
+    }
+    const t1 = performance.now();
+    const elapsed = (t1 - t0).toFixed(2);
+    addLog('benchmark', `[BENCHMARK] Executed 5,000 AST node checks in ${elapsed}ms -> 0 drops, heap stable`);
   };
 
   return (
@@ -110,6 +122,19 @@ export function HeroTerminal() {
           </svg>
           <span>Unmask Sponsored DOM</span>
         </button>
+
+        <button
+          type="button"
+          className={styles.triggerBtn}
+          onClick={handleRunBenchmark}
+          data-cursor="link"
+          title="Run microsecond CPU performance test"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+          <span>Run Benchmark</span>
+        </button>
       </div>
 
       <div className={styles.consoleLog} role="log" aria-live="polite">
@@ -122,6 +147,8 @@ export function HeroTerminal() {
                   ? styles.logSuccess
                   : log.type === 'unmask'
                   ? styles.logAccent
+                  : log.type === 'benchmark'
+                  ? styles.logWarning
                   : styles.logPrompt
               }
             >

@@ -23,6 +23,28 @@
   color: var(--color-text-tertiary);
 }
 
+.sortHeaderBtn {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: color var(--duration-fast) ease;
+}
+
+.sortHeaderBtn:hover {
+  color: var(--color-accent);
+}
+
 .ledgerRow {
   display: grid;
   grid-template-columns: 3.5fr 2fr 3fr 1.5fr 1fr 1fr;

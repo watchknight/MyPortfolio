@@ -190,3 +190,8 @@
 .logPrompt {
   color: var(--color-text-primary);
 }
+
+.logWarning {
+  color: var(--color-accent-amber);
+}
+

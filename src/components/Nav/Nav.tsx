@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { sound } from '../../utils/audio';
+import { CommandPalette } from '../CommandPalette/CommandPalette';
 import styles from './Nav.module.css';
 
 const links = [
@@ -12,7 +13,9 @@ const links = [
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
   const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
+  const [dhakaTime, setDhakaTime] = useState('');
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme') as 'dark' | 'light' | null;
@@ -20,6 +23,60 @@ export function Nav() {
     }
     return 'dark';
   });
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const formatted = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Dhaka',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }).format(now);
+      setDhakaTime(formatted);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const nextTheme = prev === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem('theme', nextTheme);
+      sound.playClick(900, 0.03, 0.06);
+      return nextTheme;
+    });
+  }, []);
+
+  const toggleSound = useCallback(() => {
+    const active = sound.toggle();
+    setSoundActive(active);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setCommandOpen((prev) => !prev);
+      } else if ((e.key === 'm' || e.key === 'M') && !commandOpen) {
+        e.preventDefault();
+        toggleSound();
+      } else if ((e.key === 'd' || e.key === 'D') && !commandOpen) {
+        e.preventDefault();
+        toggleTheme();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [commandOpen, toggleSound, toggleTheme]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -30,19 +87,6 @@ export function Nav() {
 
     return () => window.removeEventListener('scroll', onScroll);
   }, [theme]);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    document.documentElement.dataset.theme = nextTheme;
-    localStorage.setItem('theme', nextTheme);
-    sound.playClick(900, 0.03, 0.06);
-  };
-
-  const toggleSound = () => {
-    const active = sound.toggle();
-    setSoundActive(active);
-  };
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -90,14 +134,33 @@ export function Nav() {
               ))}
             </div>
 
-            {/* Quick Action Switches (Sound & Theme) */}
+            {/* Quick Action Switches (Clock, Command Palette, Sound & Theme) */}
             <div className={styles.actionGroup}>
+              {dhakaTime && (
+                <div className={styles.dhakaClock} title="Current Local Time in Dhaka, Bangladesh (UTC+6)">
+                  <span className={styles.dhakaPulse} />
+                  <span>{dhakaTime}</span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                className={styles.cmdKPill}
+                onClick={() => setCommandOpen(true)}
+                title="Open Command Deck (Ctrl+K or ⌘K)"
+                aria-label="Open Command Deck"
+                data-cursor="link"
+              >
+                <span>Command</span>
+                <kbd className={styles.cmdKBadge}>⌘K</kbd>
+              </button>
+
               <button
                 type="button"
                 className={styles.iconBtn}
                 onClick={toggleSound}
                 aria-label={soundActive ? 'Mute audio synthesizer' : 'Enable tactile audio synthesizer'}
-                title={soundActive ? 'Sound Synthesizer: Active' : 'Sound Synthesizer: Muted'}
+                title={soundActive ? 'Sound: Active [M]' : 'Sound: Muted [M]'}
                 data-cursor="link"
               >
                 {soundActive ? (
@@ -120,7 +183,7 @@ export function Nav() {
                 className={styles.iconBtn}
                 onClick={toggleTheme}
                 aria-label={theme === 'dark' ? 'Switch to Studio Light' : 'Switch to Obsidian Dark'}
-                title={theme === 'dark' ? 'Theme: Obsidian Dark' : 'Theme: Studio Light'}
+                title={theme === 'dark' ? 'Theme: Obsidian Dark [D]' : 'Theme: Studio Light [D]'}
                 data-cursor="link"
               >
                 {theme === 'dark' ? (
@@ -184,6 +247,22 @@ export function Nav() {
           </a>
         ))}
       </div>
+
+      {/* Global Interactive Command Palette */}
+      <CommandPalette
+        isOpen={commandOpen}
+        onClose={() => setCommandOpen(false)}
+        onSelectProject={(id) => {
+          window.dispatchEvent(new CustomEvent('open-project-modal', { detail: id }));
+        }}
+        onToggleTheme={toggleTheme}
+        onToggleSound={toggleSound}
+        onToggleView={(view) => {
+          window.dispatchEvent(new CustomEvent('set-view-mode', { detail: view }));
+        }}
+        currentTheme={theme}
+        isSoundActive={soundActive}
+      />
     </>
   );
 }

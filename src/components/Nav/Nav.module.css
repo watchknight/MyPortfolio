@@ -110,6 +110,62 @@
   color: var(--color-text-primary);
 }
 
+.cmdKPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 32px;
+  padding: 0 0.65rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-hairline);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.cmdKPill:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent-glow);
+  background-color: var(--color-accent-muted);
+}
+
+.cmdKBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-hairline);
+  color: var(--color-text-tertiary);
+}
+
+.cmdKPill:hover .cmdKBadge {
+  color: var(--color-accent);
+  border-color: var(--color-accent-glow);
+}
+
+.dhakaClock {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-right: 0.5rem;
+  border-right: 1px solid var(--color-border-hairline);
+}
+
+.dhakaPulse {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--color-accent-cyan);
+  box-shadow: 0 0 6px var(--color-accent-cyan);
+}
+
 .actionGroup {
   display: flex;
   align-items: center;
