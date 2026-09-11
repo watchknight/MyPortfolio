@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { HeroSandbox } from '../../components/HeroSandbox/HeroSandbox';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
@@ -12,6 +13,16 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   return (
     <div className={styles.homeContainer}>
       {/* 1. Interactive Hero */}
@@ -92,10 +103,38 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         <div className={styles.heroRight}>
           <HeroSandbox onNavigate={onNavigate} />
         </div>
+
+        {/* Tactical Scroll Explorer Prompt */}
+        <div
+          className={`${styles.scrollIndicator} ${scrolled ? styles.scrollIndicatorHidden : ''}`}
+          onClick={() => {
+            document.getElementById('featured-work')?.scrollIntoView({ behavior: 'smooth' });
+            sound.playTick();
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Scroll to featured work"
+          data-cursor="link"
+        >
+          <span className={styles.scrollText}>Scroll to explore</span>
+          <svg
+            className={styles.scrollArrow}
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
       </section>
 
       {/* 2. Featured Projects (Only 2 top highlights, clean & simple) */}
-      <section className={styles.section} aria-label="Featured Projects">
+      <section id="featured-work" className={styles.section} aria-label="Featured Projects">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
             <span className={styles.sectionEyebrow}>Selected Projects</span>

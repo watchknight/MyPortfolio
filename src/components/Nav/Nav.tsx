@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'motion/react';
 import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
 import { CommandPalette } from '../CommandPalette/CommandPalette';
@@ -22,6 +23,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
   const [dhakaTime, setDhakaTime] = useState('');
   const [latency, setLatency] = useState(14);
@@ -157,22 +159,53 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
           <div className={styles.navRight}>
             {/* Desktop Navigation */}
-            <div className={styles.navLinks}>
-              {navItems.map((item) => (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  className={`${styles.navLink} ${currentPath === item.path ? styles.navLinkActive : ''}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavigate(item.path);
-                    sound.playTick();
-                  }}
-                  data-cursor="link"
-                >
-                  {item.label}
-                </a>
-              ))}
+            <div
+              className={styles.navLinks}
+              onMouseLeave={() => setHoveredNav(null)}
+            >
+              {navItems.map((item, index) => {
+                const isActive = currentPath === item.path;
+                const isHovered = hoveredNav === item.path;
+
+                return (
+                  <Magnetic key={item.path} strength={0.22}>
+                    <a
+                      href={item.path}
+                      className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onNavigate(item.path);
+                        sound.playTick();
+                      }}
+                      onMouseEnter={() => {
+                        setHoveredNav(item.path);
+                        sound.playClick(920 + index * 90, 0.015, 0.035);
+                      }}
+                      data-cursor="link"
+                    >
+                      {/* Sliding hover pill */}
+                      {isHovered && (
+                        <motion.span
+                          layoutId="navHoverPill"
+                          className={styles.navHoverPill}
+                          transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                        />
+                      )}
+
+                      {/* Active route laser underline */}
+                      {isActive && (
+                        <motion.span
+                          layoutId="navActiveGlow"
+                          className={styles.navActiveGlow}
+                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        />
+                      )}
+
+                      <span className={styles.navLinkLabel}>{item.label}</span>
+                    </a>
+                  </Magnetic>
+                );
+              })}
             </div>
 
             {/* Quick Action Switches (Clock & Ping, Command Palette, Sound & Theme) */}
