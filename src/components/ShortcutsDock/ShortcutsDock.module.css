@@ -48,6 +48,11 @@
   color: var(--color-text-primary);
 }
 
+.shortcutItemActive .shortcutName {
+  color: var(--color-accent-primary);
+  font-weight: 700;
+}
+
 .keyCap {
   display: inline-flex;
   align-items: center;

@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
+import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
+import { projects as richProjects } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import styles from './WorksPage.module.css';
 
@@ -88,6 +90,24 @@ interface WorksPageProps {
 
 export function WorksPage({ onSelectProject }: WorksPageProps) {
   const [activeFilter, setActiveFilter] = useState<'all' | 'Web App' | 'Tool' | 'Commercial'>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('view_mode') as 'grid' | 'table') || 'grid';
+    }
+    return 'grid';
+  });
+
+  useEffect(() => {
+    const handleView = (e: Event) => {
+      const custom = e as CustomEvent<'grid' | 'table'>;
+      if (custom.detail) {
+        setViewMode(custom.detail);
+        localStorage.setItem('view_mode', custom.detail);
+      }
+    };
+    window.addEventListener('set-view-mode', handleView);
+    return () => window.removeEventListener('set-view-mode', handleView);
+  }, []);
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return projects;
@@ -112,40 +132,89 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
         </p>
       </header>
 
-      {/* Filter Bar */}
-      <div className={styles.filterBar}>
-        <button
-          type="button"
-          className={`${styles.filterBtn} ${activeFilter === 'all' ? styles.filterBtnActive : ''}`}
-          onClick={() => handleFilterClick('all')}
-        >
-          All Works ({projects.length})
-        </button>
-        <button
-          type="button"
-          className={`${styles.filterBtn} ${activeFilter === 'Web App' ? styles.filterBtnActive : ''}`}
-          onClick={() => handleFilterClick('Web App')}
-        >
-          Web Applications
-        </button>
-        <button
-          type="button"
-          className={`${styles.filterBtn} ${activeFilter === 'Tool' ? styles.filterBtnActive : ''}`}
-          onClick={() => handleFilterClick('Tool')}
-        >
-          Tools &amp; Extensions
-        </button>
-        <button
-          type="button"
-          className={`${styles.filterBtn} ${activeFilter === 'Commercial' ? styles.filterBtnActive : ''}`}
-          onClick={() => handleFilterClick('Commercial')}
-        >
-          E-Commerce
-        </button>
+      {/* Controls Bar: Filter Pills + Grid/Table Toggle */}
+      <div className={styles.controlsBar}>
+        <div className={styles.filterBar}>
+          <button
+            type="button"
+            className={`${styles.filterBtn} ${activeFilter === 'all' ? styles.filterBtnActive : ''}`}
+            onClick={() => handleFilterClick('all')}
+          >
+            All Works ({projects.length})
+          </button>
+          <button
+            type="button"
+            className={`${styles.filterBtn} ${activeFilter === 'Web App' ? styles.filterBtnActive : ''}`}
+            onClick={() => handleFilterClick('Web App')}
+          >
+            Web Applications
+          </button>
+          <button
+            type="button"
+            className={`${styles.filterBtn} ${activeFilter === 'Tool' ? styles.filterBtnActive : ''}`}
+            onClick={() => handleFilterClick('Tool')}
+          >
+            Tools &amp; Extensions
+          </button>
+          <button
+            type="button"
+            className={`${styles.filterBtn} ${activeFilter === 'Commercial' ? styles.filterBtnActive : ''}`}
+            onClick={() => handleFilterClick('Commercial')}
+          >
+            E-Commerce
+          </button>
+        </div>
+
+        {/* View Mode Toggle (Grid vs Table) */}
+        <div className={styles.viewModeToggle} role="group" aria-label="View format">
+          <button
+            type="button"
+            className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+            onClick={() => {
+              setViewMode('grid');
+              window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
+              sound.playClick(650, 0.02, 0.06);
+            }}
+            title="Card Grid Mode [G]"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            <span>Grid [G]</span>
+          </button>
+          <button
+            type="button"
+            className={`${styles.viewToggleBtn} ${viewMode === 'table' ? styles.viewToggleBtnActive : ''}`}
+            onClick={() => {
+              setViewMode('table');
+              window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
+              sound.playClick(720, 0.02, 0.06);
+            }}
+            title="Data Table Mode [T]"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+            <span>Table [T]</span>
+          </button>
+        </div>
       </div>
 
-      {/* Projects Grid */}
-      <div className={styles.projectsGrid}>
+      {/* Projects Showcase (Grid or Table) */}
+      {viewMode === 'table' ? (
+        <div className={styles.tableWrapper}>
+          <ProjectLedger
+            projects={richProjects}
+            onSelectProject={(p) => onSelectProject?.(p.id)}
+          />
+        </div>
+      ) : (
+        <div className={styles.projectsGrid}>
         {filteredProjects.map((p) => {
           const projectMetaMap: Record<string, { serial: string; perf: string }> = {
             purefeed: { serial: 'SYS_01 // MV3', perf: '<16ms Latency' },
@@ -246,7 +315,8 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
             </SpotlightCard>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

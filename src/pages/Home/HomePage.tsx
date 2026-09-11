@@ -4,6 +4,8 @@ import { HeroSandbox } from '../../components/HeroSandbox/HeroSandbox';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
+import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
+import { projects as richProjects } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
 
@@ -14,6 +16,12 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
   const [scrolled, setScrolled] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('view_mode') as 'grid' | 'table') || 'grid';
+    }
+    return 'grid';
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +30,18 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleView = (e: Event) => {
+      const custom = e as CustomEvent<'grid' | 'table'>;
+      if (custom.detail) {
+        setViewMode(custom.detail);
+        localStorage.setItem('view_mode', custom.detail);
+      }
+    };
+    window.addEventListener('set-view-mode', handleView);
+    return () => window.removeEventListener('set-view-mode', handleView);
   }, []);
   return (
     <div className={styles.homeContainer}>
@@ -142,20 +162,70 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               <ScrambleText text="Featured Work" />
             </h2>
           </div>
-          <button
-            type="button"
-            className={styles.viewAllLink}
-            onClick={() => {
-              sound.playTick();
-              onNavigate('/works');
-            }}
-          >
-            <span>View all 6 projects</span>
-            <span>&rarr;</span>
-          </button>
+
+          <div className={styles.headerRightControls}>
+            {/* View Mode Switcher */}
+            <div className={styles.viewModeToggle} role="group" aria-label="View format">
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => {
+                  setViewMode('grid');
+                  window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
+                  sound.playClick(650, 0.02, 0.06);
+                }}
+                title="Switch to 3D Card Grid [G]"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                <span>Grid [G]</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.viewToggleBtn} ${viewMode === 'table' ? styles.viewToggleBtnActive : ''}`}
+                onClick={() => {
+                  setViewMode('table');
+                  window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
+                  sound.playClick(720, 0.02, 0.06);
+                }}
+                title="Switch to Data Ledger Table [T]"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+                <span>Table [T]</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className={styles.viewAllLink}
+              onClick={() => {
+                sound.playTick();
+                onNavigate('/works');
+              }}
+            >
+              <span>View all 6 projects</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
         </header>
 
-        <div className={styles.featuredGrid}>
+        {viewMode === 'table' ? (
+          <div className={styles.tableWrapper}>
+            <ProjectLedger
+              projects={richProjects}
+              onSelectProject={(p) => onSelectProject?.(p.id)}
+            />
+          </div>
+        ) : (
+          <div className={styles.featuredGrid}>
           {/* Featured Project 1: PureFeed */}
           <SpotlightCard
             as="article"
@@ -304,6 +374,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             </div>
           </SpotlightCard>
         </div>
+      )}
       </section>
 
       {/* 3. Background & Education Teaser */}

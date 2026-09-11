@@ -11,6 +11,24 @@ interface ShortcutDef {
 
 export function ShortcutsDock() {
   const [activeKeys, setActiveKeys] = useState<Record<string, boolean>>({});
+  const [currentViewMode, setCurrentViewMode] = useState<'grid' | 'table'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('view_mode') as 'grid' | 'table') || 'grid';
+    }
+    return 'grid';
+  });
+
+  useEffect(() => {
+    const handleView = (e: Event) => {
+      const custom = e as CustomEvent<'grid' | 'table'>;
+      if (custom.detail) {
+        setCurrentViewMode(custom.detail);
+        localStorage.setItem('view_mode', custom.detail);
+      }
+    };
+    window.addEventListener('set-view-mode', handleView);
+    return () => window.removeEventListener('set-view-mode', handleView);
+  }, []);
 
   const shortcuts: ShortcutDef[] = useMemo(
     () => [
@@ -28,6 +46,8 @@ export function ShortcutsDock() {
         displayKey: 'G',
         label: 'Grid',
         onTrigger: () => {
+          setCurrentViewMode('grid');
+          localStorage.setItem('view_mode', 'grid');
           window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
           sound.playClick(650, 0.02, 0.06);
         },
@@ -37,6 +57,8 @@ export function ShortcutsDock() {
         displayKey: 'T',
         label: 'Table',
         onTrigger: () => {
+          setCurrentViewMode('table');
+          localStorage.setItem('view_mode', 'table');
           window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
           sound.playClick(720, 0.02, 0.06);
         },
@@ -128,12 +150,17 @@ export function ShortcutsDock() {
     <aside className={styles.dockContainer} aria-label="Keyboard Shortcuts Micro-Dock">
       <div className={styles.dockLabel}>HUD</div>
       {shortcuts.map((s) => {
-        const isActive = activeKeys[s.keyId];
+        const isPressed = activeKeys[s.keyId];
+        const isViewActive =
+          (s.keyId === 'g' && currentViewMode === 'grid') ||
+          (s.keyId === 't' && currentViewMode === 'table');
+        const isActive = isPressed || isViewActive;
+
         return (
           <button
             key={s.keyId}
             type="button"
-            className={styles.shortcutItem}
+            className={`${styles.shortcutItem} ${isViewActive ? styles.shortcutItemActive : ''}`}
             onClick={s.onTrigger}
             title={`Trigger ${s.label} (${s.displayKey})`}
           >
