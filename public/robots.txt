@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://moayed.onrender.com/sitemap.xml

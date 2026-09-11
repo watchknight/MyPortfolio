@@ -1,0 +1,139 @@
+/*
+ * Design Tokens — The Systems Engineering Command Deck
+ * Synthesizing Brian Lovin's product craft with Awwwards spatial choreography.
+ */
+
+:root {
+  /* ── Typography: Families ── */
+  --font-display:          'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body:             'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:             'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ── Typography: Scale (responsive) ── */
+  --text-hero:             clamp(2.25rem, 5.5vw + 0.5rem, 4.5rem);
+  --text-section:          clamp(1.5rem, 2.5vw + 0.5rem, 2.25rem);
+  --text-subsection:       clamp(1.125rem, 1.8vw + 0.25rem, 1.375rem);
+  --text-body:             clamp(0.9375rem, 0.5vw + 0.75rem, 1.0625rem);
+  --text-meta:             clamp(0.8125rem, 0.3vw + 0.7rem, 0.875rem);
+  --text-micro:            0.75rem;
+
+  /* ── Typography: Line Heights ── */
+  --leading-hero:          1.05;
+  --leading-section:       1.2;
+  --leading-subsection:    1.35;
+  --leading-body:          1.65;
+  --leading-meta:          1.45;
+
+  /* ── Typography: Weights ── */
+  --weight-bold:           700;
+  --weight-semibold:       600;
+  --weight-medium:         500;
+  --weight-regular:        400;
+
+  /* ── Typography: Measure ── */
+  --measure-body:          65ch;
+
+  /* ── Spacing ── */
+  --space-2xs:             0.25rem;
+  --space-xs:              0.5rem;
+  --space-sm:              1rem;
+  --space-md:              1.5rem;
+  --space-lg:              clamp(2rem, 4vw, 3rem);
+  --space-xl:              clamp(2.5rem, 5vw, 4rem);
+  --space-2xl:             clamp(4rem, 7vw, 6rem);
+  --space-section:         clamp(5rem, 9vw, 8rem);
+
+  /* ── Layout ── */
+  --content-max:           76rem;
+  --content-padding:       clamp(1.25rem, 5vw, 4rem);
+  --nav-height:            3.75rem;
+
+  /* ── Motion & Easing ── */
+  --duration-instant:      80ms;
+  --duration-fast:         150ms;
+  --duration-normal:       260ms;
+  --duration-slow:         450ms;
+  --ease-out-expo:         cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:           cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-default:          cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ── Border Radii ── */
+  --radius-xs:             4px;
+  --radius-sm:             8px;
+  --radius-md:             12px;
+  --radius-lg:             16px;
+  --radius-pill:           9999px;
+}
+
+/* ── Dark Theme (Default: Obsidian Command Deck) ── */
+:root,
+[data-theme="dark"] {
+  --color-bg-base:         #0B0E11;
+  --color-bg-elevated:     #12171D;
+  --color-bg-card:         #161D24;
+  --color-bg-card-hover:   #1C242D;
+  --color-bg-subtle:       #202933;
+  --color-bg-glass:        rgba(11, 14, 17, 0.82);
+
+  --color-text-primary:    #F1F5F9;
+  --color-text-secondary:  #94A3B8;
+  --color-text-tertiary:   #64748B;
+  --color-text-muted:      #475569;
+
+  --color-border-hairline: rgba(255, 255, 255, 0.08);
+  --color-border-subtle:   rgba(255, 255, 255, 0.12);
+  --color-border-strong:   rgba(255, 255, 255, 0.22);
+  --color-border-focus:    #38BDF8;
+
+  --color-accent:          #38BDF8;
+  --color-accent-glow:     rgba(56, 189, 248, 0.15);
+  --color-accent-muted:    rgba(56, 189, 248, 0.10);
+  --color-success:         #10B981;
+  --color-warning:         #F59E0B;
+
+  --card-shadow:           0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --card-shadow-hover:     0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(56, 189, 248, 0.35);
+
+  --canvas-grid-color:     rgba(148, 163, 184, 0.07);
+  --canvas-particle-color: rgba(56, 189, 248, 0.5);
+  --canvas-line-color:     rgba(56, 189, 248, 0.18);
+
+  --focus-ring:            2px solid #38BDF8;
+  --focus-offset:          3px;
+}
+
+/* ── Light Theme (Studio White / Brian Lovin Style) ── */
+[data-theme="light"] {
+  --color-bg-base:         #F8F9FA;
+  --color-bg-elevated:     #FFFFFF;
+  --color-bg-card:         #FFFFFF;
+  --color-bg-card-hover:   #F1F5F9;
+  --color-bg-subtle:       #E2E8F0;
+  --color-bg-glass:        rgba(248, 249, 250, 0.88);
+
+  --color-text-primary:    #0F172A;
+  --color-text-secondary:  #475569;
+  --color-text-tertiary:   #64748B;
+  --color-text-muted:      #94A3B8;
+
+  --color-border-hairline: rgba(0, 0, 0, 0.08);
+  --color-border-subtle:   rgba(0, 0, 0, 0.12);
+  --color-border-strong:   rgba(0, 0, 0, 0.22);
+  --color-border-focus:    #0284C7;
+
+  --color-accent:          #0284C7;
+  --color-accent-glow:     rgba(2, 132, 199, 0.15);
+  --color-accent-muted:    rgba(2, 132, 199, 0.08);
+  --color-success:         #059669;
+  --color-warning:         #D97706;
+
+  --card-shadow:           0 4px 20px -4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover:     0 12px 30px -8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(2, 132, 199, 0.4);
+
+  --canvas-grid-color:     rgba(15, 23, 42, 0.04);
+  --canvas-particle-color: rgba(2, 132, 199, 0.4);
+  --canvas-line-color:     rgba(2, 132, 199, 0.12);
+
+  --focus-ring:            2px solid #0284C7;
+  --focus-offset:          3px;
+}

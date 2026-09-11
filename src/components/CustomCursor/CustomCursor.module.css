@@ -1,0 +1,92 @@
+.cursorContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+@media (pointer: coarse) {
+  .cursorContainer {
+    display: none;
+  }
+}
+
+.reticle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  margin-left: -14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-accent);
+  background: var(--color-accent-glow);
+  box-shadow: 0 0 16px var(--color-accent-glow);
+  transition: width 0.22s var(--ease-out-expo),
+              height 0.22s var(--ease-out-expo),
+              margin 0.22s var(--ease-out-expo),
+              border-radius 0.22s var(--ease-out-expo),
+              background 0.22s var(--ease-out-expo),
+              opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Hover States */
+.hoverInspect .reticle {
+  width: 68px;
+  height: 68px;
+  margin-top: -34px;
+  margin-left: -34px;
+  background: rgba(56, 189, 248, 0.28);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-color: #38BDF8;
+}
+
+.hoverInspect .dot {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.hoverLink .reticle {
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  margin-left: -24px;
+  background: var(--color-accent-glow);
+  border-color: var(--color-accent);
+}
+
+.hoverLink .dot {
+  opacity: 0;
+  transform: scale(0);
+}

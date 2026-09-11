@@ -1,0 +1,40 @@
+.cardWrapper {
+  position: relative;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-hairline);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow var(--duration-normal) var(--ease-default),
+              border-color var(--duration-normal) var(--ease-default),
+              transform 0.15s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+  overflow: hidden;
+}
+
+.cardWrapper:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.spotlightOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--duration-fast) ease;
+  z-index: 2;
+}
+
+.cardWrapper:hover .spotlightOverlay {
+  opacity: 1;
+}
+
+.innerContent {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,225 @@
+.ledgerContainer {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-hairline);
+  background-color: var(--color-bg-card);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.ledgerHeader {
+  display: grid;
+  grid-template-columns: 3.5fr 2fr 3fr 1.5fr 1fr 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background-color: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border-hairline);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+
+.ledgerRow {
+  display: grid;
+  grid-template-columns: 3.5fr 2fr 3fr 1.5fr 1fr 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border-hairline);
+  transition: background-color var(--duration-fast) ease;
+  cursor: pointer;
+}
+
+.ledgerRow:last-child {
+  border-bottom: none;
+}
+
+.ledgerRow:hover {
+  background-color: var(--color-bg-card-hover);
+}
+
+.nameCol {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.projectIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.projectIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.nameMeta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.projectTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.projectDomain {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--color-text-tertiary);
+}
+
+.categoryCol {
+  font-size: var(--text-meta);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stackCol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.stackPill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-hairline);
+  white-space: nowrap;
+}
+
+.metricCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricVal {
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.metricLab {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+}
+
+.likeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-hairline);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.likeBtn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.likeBtn.liked {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background-color: var(--color-accent-muted);
+}
+
+.likeBtn svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--duration-fast) ease;
+}
+
+.likeBtn:hover svg {
+  transform: scale(1.15);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-xs);
+  background: var(--color-text-primary);
+  color: var(--color-bg-base);
+  font-family: var(--font-body);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.actionBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 960px) {
+  .ledgerHeader {
+    display: none;
+  }
+
+  .ledgerRow {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .stackCol {
+    order: 2;
+  }
+
+  .metricCol {
+    order: 3;
+  }
+
+  .likeBtn, .actionBtn {
+    display: inline-flex;
+    width: auto;
+  }
+
+  .rowActions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    order: 4;
+    margin-top: 0.25rem;
+  }
+}
