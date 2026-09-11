@@ -90,3 +90,9 @@
   opacity: 0;
   transform: scale(0);
 }
+
+.hoverRepel .reticle {
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
+}

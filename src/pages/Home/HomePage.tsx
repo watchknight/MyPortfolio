@@ -3,6 +3,7 @@ import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { HeroSandbox } from '../../components/HeroSandbox/HeroSandbox';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
+import { ParticleText } from '../../components/ParticleText/ParticleText';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
 import { projects } from '../../data/projects';
@@ -53,22 +54,16 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             <span>Available for Internships &amp; Projects</span>
           </div>
 
-          <h1 className={styles.title}>
-            <span className={styles.titleLine}>
-              <ScrambleText
-                text="Hi, This is Moayed. I build"
-                data-cursor="inspect"
-                data-cursor-label="MOAYED"
-              />
-            </span>
-            <span className={`${styles.titleLine} ${styles.highlight}`}>
-              <ScrambleText
-                text="fast, reliable software."
-                data-cursor="inspect"
-                data-cursor-label="CRAFT"
-              />
-            </span>
-          </h1>
+          <div className={styles.titleWrapper}>
+            <ParticleText
+              lines={[
+                { text: 'Hi, This is Moayed. I build', highlight: false },
+                { text: 'fast, reliable software.', highlight: true },
+              ]}
+              dataCursor="repel"
+              dataCursorLabel="MAGNETIC"
+            />
+          </div>
 
           <p className={styles.lead}>
             I&apos;m a Computer Science student at East West University in Dhaka, Bangladesh.

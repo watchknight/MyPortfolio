@@ -78,6 +78,8 @@ export function CustomCursor() {
       ? styles.hoverInspect
       : hoverType === 'link'
       ? styles.hoverLink
+      : hoverType === 'repel'
+      ? styles.hoverRepel
       : '';
 
   return (

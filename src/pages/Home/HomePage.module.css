@@ -125,6 +125,12 @@
   box-shadow: 0 0 8px var(--color-success);
 }
 
+.titleWrapper {
+  width: 100%;
+  margin: 0;
+  display: block;
+}
+
 .title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 3.5vw, 3.15rem);
