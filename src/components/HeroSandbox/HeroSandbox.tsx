@@ -8,20 +8,22 @@ interface TerminalLog {
   text: string;
 }
 
+type BenchmarkType = 'purefeed' | 'focusguard' | 'doclens' | 'ping';
+
 export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void }) {
-  const [activeTab, setActiveTab] = useState<'terminal' | 'telemetry' | 'matrix'>('terminal');
-  const [inputVal, setInputVal] = useState('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'telemetry' | 'matrix'>('overview');
+  const [activeBenchmark, setActiveBenchmark] = useState<BenchmarkType | null>(null);
   const [dhakaTime, setDhakaTime] = useState('');
   const [ping, setPing] = useState(14);
   const [fps, setFps] = useState(60);
   const outputContainerRef = useRef<HTMLDivElement>(null);
 
   const [logs, setLogs] = useState<TerminalLog[]>([
-    { id: '1', type: 'info', text: 'DHAKA_SENTINEL_NODE // v2.4.0-PROD INITIALIZED' },
-    { id: '2', type: 'output', text: 'Type a command or click a quick action below:' },
+    { id: '1', type: 'info', text: 'SYSTEM_STATUS // ONLINE (Dhaka Edge Node v2.4)' },
+    { id: '2', type: 'output', text: 'Click any benchmark tile above to stream live performance telemetry.' },
   ]);
 
-  // Clock
+  // Dhaka Real-time Clock
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -58,7 +60,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  // Ping jitter
+  // Live Ping Jitter
   useEffect(() => {
     const interval = setInterval(() => {
       setPing(Math.floor(12 + Math.random() * 5));
@@ -66,107 +68,8 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
     return () => clearInterval(interval);
   }, []);
 
-  const handleRunCommand = (cmd: string) => {
-    const clean = cmd.trim().toLowerCase();
-    if (!clean) return;
-
-    sound.playClick(750, 0.02, 0.05);
-
-    const newLogs: TerminalLog[] = [
-      ...logs,
-      { id: Date.now() + '-cmd', type: 'cmd', text: `$ ${clean}` },
-    ];
-
-    if (clean === 'whoami') {
-      newLogs.push({
-        id: Date.now() + '-out',
-        type: 'success',
-        text: 'Abdur Rahman Moayed — Software Engineer & Systems Builder (EWU B.Sc. CSE)',
-      });
-      newLogs.push({
-        id: Date.now() + '-sub',
-        type: 'output',
-        text: 'Specializing in browser internals, OS-level security countermeasures, and high-performance web systems.',
-      });
-    } else if (clean === 'projects' || clean === 'ls projects') {
-      newLogs.push({
-        id: Date.now() + '-out',
-        type: 'success',
-        text: '6 Production & Research Systems Found:',
-      });
-      newLogs.push({
-        id: Date.now() + '-p1',
-        type: 'info',
-        text: '1. PureFeed — Chromium MV3 Main-World Anti-Adblock Engine (<16ms)',
-      });
-      newLogs.push({
-        id: Date.now() + '-p2',
-        type: 'info',
-        text: '2. FocusGuard — OS-Level Windows Registry & DNS Sinkhole (580+ hosts)',
-      });
-      newLogs.push({
-        id: Date.now() + '-p3',
-        type: 'info',
-        text: '3. DocLensBD — MediaPipe 468-Point 3D Virtual Eyewear Try-On (60 FPS)',
-      });
-      newLogs.push({
-        id: Date.now() + '-p4',
-        type: 'info',
-        text: '4. Rannabanna — Heuristic Recipe Scaling & SQLite Matchmaker (0.8ms)',
-      });
-      newLogs.push({
-        id: Date.now() + '-act',
-        type: 'warn',
-        text: 'Tip: Run "works" to inspect full code architectures and live demos.',
-      });
-    } else if (clean === 'skills' || clean === 'stack') {
-      newLogs.push({
-        id: Date.now() + '-out',
-        type: 'success',
-        text: 'Core Architecture Stack:',
-      });
-      newLogs.push({
-        id: Date.now() + '-s1',
-        type: 'output',
-        text: 'Languages: TypeScript, JavaScript (ESNext), C++, HTML5/CSS3',
-      });
-      newLogs.push({
-        id: Date.now() + '-s2',
-        type: 'output',
-        text: 'Systems: Chromium MV3, Windows Registry APIs, OS DNS Sockets, Web Audio DSP',
-      });
-      newLogs.push({
-        id: Date.now() + '-s3',
-        type: 'output',
-        text: 'Frameworks: React 19, Next.js, Node.js, Express, MediaPipe 3D, SQLite',
-      });
-    } else if (clean === 'works' || clean === 'cd /works') {
-      newLogs.push({ id: Date.now() + '-out', type: 'success', text: 'Navigating to Selected Works...' });
-      setTimeout(() => onNavigate('/works'), 500);
-    } else if (clean === 'contact' || clean === 'hire') {
-      newLogs.push({ id: Date.now() + '-out', type: 'success', text: 'Opening Direct Communications Channel...' });
-      setTimeout(() => onNavigate('/contact'), 500);
-    } else if (clean === 'clear' || clean === 'cls') {
-      setLogs([{ id: Date.now().toString(), type: 'info', text: 'Console cleared. Ready for input.' }]);
-      setInputVal('');
-      return;
-    } else if (clean === 'easter-egg' || clean === 'matrix') {
-      sound.playChirp(400, 1200, 0.08, 0.08);
-      newLogs.push({
-        id: Date.now() + '-ee',
-        type: 'success',
-        text: 'SYSTEM OVERRIDE DETECTED // Zero deadspace verified. Welcome to the machine.',
-      });
-    } else {
-      newLogs.push({
-        id: Date.now() + '-err',
-        type: 'warn',
-        text: `Command not recognized: "${clean}". Try: whoami, projects, skills, works, contact, clear.`,
-      });
-    }
-
-    setLogs(newLogs);
-    setInputVal('');
+  // Auto-scroll log stream on append
+  const scrollToBottom = () => {
     setTimeout(() => {
       if (outputContainerRef.current) {
         outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight;
@@ -174,31 +77,145 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
     }, 40);
   };
 
+  const runBenchmark = (type: BenchmarkType) => {
+    sound.playClick(720, 0.02, 0.05);
+    setActiveBenchmark(type);
+
+    const now = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    const newLogs: TerminalLog[] = [];
+
+    if (type === 'purefeed') {
+      newLogs.push({
+        id: `${Date.now()}-1`,
+        type: 'cmd',
+        text: `[${now}] benchmark --target=PureFeed-MV3 --engine=chromium`,
+      });
+      newLogs.push({
+        id: `${Date.now()}-2`,
+        type: 'output',
+        text: '→ Intercepting YouTube video DOM player lifecycle stream...',
+      });
+      newLogs.push({
+        id: `${Date.now()}-3`,
+        type: 'success',
+        text: '✓ Ad-injection blocked in 11.4ms (Bypassed 100% video ads, 0 frame drops).',
+      });
+    } else if (type === 'focusguard') {
+      newLogs.push({
+        id: `${Date.now()}-1`,
+        type: 'cmd',
+        text: `[${now}] benchmark --target=FocusGuard-DNS --os=windows`,
+      });
+      newLogs.push({
+        id: `${Date.now()}-2`,
+        type: 'output',
+        text: '→ Polling Windows Registry & OS-level hosts loopback table...',
+      });
+      newLogs.push({
+        id: `${Date.now()}-3`,
+        type: 'success',
+        text: '✓ 580+ tracking hosts sinkholed in 0.1ms with 0.0% background CPU.',
+      });
+    } else if (type === 'doclens') {
+      newLogs.push({
+        id: `${Date.now()}-1`,
+        type: 'cmd',
+        text: `[${now}] benchmark --target=DocLensBD-3D --pipeline=mediapipe`,
+      });
+      newLogs.push({
+        id: `${Date.now()}-2`,
+        type: 'output',
+        text: '→ Initializing WebGL canvas & 468-point 3D facial mesh tracker...',
+      });
+      newLogs.push({
+        id: `${Date.now()}-3`,
+        type: 'success',
+        text: '✓ Real-time eyewear rendered at 60.0 FPS with pupillary auto-scale.',
+      });
+    } else if (type === 'ping') {
+      newLogs.push({
+        id: `${Date.now()}-1`,
+        type: 'cmd',
+        text: `[${now}] ping --host=dhaka.sentinel.internal --c=3`,
+      });
+      newLogs.push({
+        id: `${Date.now()}-2`,
+        type: 'output',
+        text: `→ Route verified via Dhaka Edge: 23.8103° N, 90.4125° E.`,
+      });
+      newLogs.push({
+        id: `${Date.now()}-3`,
+        type: 'success',
+        text: `✓ Round-Trip Time: ${ping}ms | Packet Loss: 0.0% | Status: Pristine.`,
+      });
+    }
+
+    setLogs((prev) => [...prev.slice(-6), ...newLogs]);
+    scrollToBottom();
+  };
+
+  const handleQuickAction = (action: string) => {
+    sound.playClick(600, 0.02, 0.04);
+    const now = new Date().toLocaleTimeString('en-GB', { hour12: false });
+
+    if (action === 'whoami') {
+      setLogs((prev) => [
+        ...prev.slice(-5),
+        { id: `${Date.now()}-cmd`, type: 'cmd', text: `[${now}] whoami` },
+        { id: `${Date.now()}-out`, type: 'success', text: 'Abdur Rahman Moayed — Software Engineer & Systems Builder' },
+        { id: `${Date.now()}-sub`, type: 'output', text: 'EWU B.Sc. CSE | High-Performance Web, Chromium MV3, OS Security' },
+      ]);
+    } else if (action === 'projects') {
+      setLogs((prev) => [
+        ...prev.slice(-5),
+        { id: `${Date.now()}-cmd`, type: 'cmd', text: `[${now}] ls projects/` },
+        { id: `${Date.now()}-out`, type: 'success', text: '6 Production Projects: PureFeed, FocusGuard, DocLensBD, Rannabanna, Poshra, Portfolio' },
+      ]);
+      setTimeout(() => onNavigate('/works'), 600);
+    } else if (action === 'skills') {
+      setLogs((prev) => [
+        ...prev.slice(-5),
+        { id: `${Date.now()}-cmd`, type: 'cmd', text: `[${now}] cat stack.spec` },
+        { id: `${Date.now()}-out`, type: 'output', text: 'TypeScript, React 19, Chromium MV3, Windows Registry, MediaPipe 3D, SQLite, Web Audio DSP' },
+      ]);
+    } else if (action === 'contact') {
+      setLogs((prev) => [
+        ...prev.slice(-5),
+        { id: `${Date.now()}-cmd`, type: 'cmd', text: `[${now}] open /contact` },
+        { id: `${Date.now()}-out`, type: 'success', text: 'Opening direct communications...' },
+      ]);
+      setTimeout(() => onNavigate('/contact'), 500);
+    }
+    scrollToBottom();
+  };
+
   return (
     <div className={styles.sandboxContainer} data-lenis-prevent="true">
-      {/* Top Window Bar */}
+      {/* Sleek Window Header */}
       <div className={styles.windowHeader}>
         <div className={styles.windowControls}>
           <span className={`${styles.dot} ${styles.dotRed}`} />
           <span className={`${styles.dot} ${styles.dotYellow}`} />
           <span className={`${styles.dot} ${styles.dotGreen}`} />
-          <span className={styles.windowTitle}>moayed@node-dhaka ~ /workspace</span>
+          <span className={styles.fileBadge}>
+            <span className={styles.tsIcon}>TS</span> moayed.config.ts
+          </span>
         </div>
 
-        {/* Tab Controls */}
+        {/* Minimal Tab Switcher */}
         <div className={styles.tabGroup} role="tablist">
           <button
             type="button"
-            className={`${styles.tabBtn} ${activeTab === 'terminal' ? styles.tabBtnActive : ''}`}
+            className={`${styles.tabBtn} ${activeTab === 'overview' ? styles.tabBtnActive : ''}`}
             onClick={() => {
-              setActiveTab('terminal');
+              setActiveTab('overview');
               sound.playClick(600, 0.02, 0.04);
             }}
             role="tab"
-            aria-selected={activeTab === 'terminal'}
+            aria-selected={activeTab === 'overview'}
             data-cursor="link"
           >
-            &gt;_ Terminal
+            Overview
           </button>
           <button
             type="button"
@@ -224,84 +241,214 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
             aria-selected={activeTab === 'matrix'}
             data-cursor="link"
           >
-            Verified Matrix
+            Credentials
           </button>
         </div>
       </div>
 
-      {/* Tab 1: Interactive Terminal */}
-      {activeTab === 'terminal' && (
-        <div className={styles.terminalBody}>
-          <div className={styles.terminalOutput} ref={outputContainerRef}>
-            {logs.map((log) => (
-              <div key={log.id} className={`${styles.logRow} ${styles['log_' + log.type]}`}>
-                {log.text}
+      {/* Tab 1: Overview (Aesthetic Code Spec + Live Benchmarks + Stream) */}
+      {activeTab === 'overview' && (
+        <div className={styles.overviewBody}>
+          {/* Syntax-Highlighted Spec Capsule */}
+          <div className={styles.codeCapsule} aria-label="Developer configuration code snippet">
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>1</span>
+              <code>
+                <span className={styles.syntaxKeyword}>const</span> <span className={styles.syntaxVar}>engineer</span>: <span className={styles.syntaxType}>DeveloperSpec</span> = &#123;
+              </code>
+            </div>
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>2</span>
+              <code>
+                &nbsp;&nbsp;<span className={styles.syntaxKey}>name</span>: <span className={styles.syntaxString}>&quot;Abdur Rahman Moayed&quot;</span>,
+              </code>
+            </div>
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>3</span>
+              <code>
+                &nbsp;&nbsp;<span className={styles.syntaxKey}>role</span>: <span className={styles.syntaxString}>&quot;Software &amp; Systems Engineer&quot;</span>,
+              </code>
+            </div>
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>4</span>
+              <code>
+                &nbsp;&nbsp;<span className={styles.syntaxKey}>institution</span>: <span className={styles.syntaxString}>&quot;East West University (EWU CSE)&quot;</span>,
+              </code>
+            </div>
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>5</span>
+              <code>
+                &nbsp;&nbsp;<span className={styles.syntaxKey}>focus</span>: [<span className={styles.syntaxString}>&quot;High-Performance Web&quot;</span>, <span className={styles.syntaxString}>&quot;Chromium MV3&quot;</span>, <span className={styles.syntaxString}>&quot;OS Security&quot;</span>],
+              </code>
+            </div>
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>6</span>
+              <code>
+                &nbsp;&nbsp;<span className={styles.syntaxKey}>status</span>: <span className={styles.syntaxStatus}>&quot;🟢 Available for high-impact roles&quot;</span>
+              </code>
+            </div>
+            <div className={styles.codeLine}>
+              <span className={styles.lineNum}>7</span>
+              <code>&#125;;</code>
+            </div>
+          </div>
+
+          {/* Interactive Benchmark Tiles */}
+          <div className={styles.benchmarkSection}>
+            <div className={styles.sectionHeadingRow}>
+              <span className={styles.sectionHeading}>LIVE SYSTEM BENCHMARKS</span>
+              <span className={styles.headingBadge}>CLICK TO PROBE</span>
+            </div>
+
+            <div className={styles.tileGrid}>
+              <button
+                type="button"
+                className={`${styles.tileBtn} ${activeBenchmark === 'purefeed' ? styles.tileBtnActive : ''}`}
+                onClick={() => runBenchmark('purefeed')}
+                data-cursor="link"
+                title="Simulate PureFeed YouTube Adblock Bypass"
+              >
+                <div className={styles.tileTop}>
+                  <span className={styles.tileIcon}>⚡</span>
+                  <span className={styles.tileMetric}>11.4ms</span>
+                </div>
+                <span className={styles.tileTitle}>PureFeed Bypass</span>
+                <span className={styles.tileDesc}>Chromium MV3 engine</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tileBtn} ${activeBenchmark === 'focusguard' ? styles.tileBtnActive : ''}`}
+                onClick={() => runBenchmark('focusguard')}
+                data-cursor="link"
+                title="Simulate FocusGuard DNS Sinkhole"
+              >
+                <div className={styles.tileTop}>
+                  <span className={styles.tileIcon}>🛡️</span>
+                  <span className={styles.tileMetric}>0.1ms</span>
+                </div>
+                <span className={styles.tileTitle}>FocusGuard Sinkhole</span>
+                <span className={styles.tileDesc}>Windows DNS null-route</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tileBtn} ${activeBenchmark === 'doclens' ? styles.tileBtnActive : ''}`}
+                onClick={() => runBenchmark('doclens')}
+                data-cursor="link"
+                title="Simulate DocLensBD 3D Eyewear Engine"
+              >
+                <div className={styles.tileTop}>
+                  <span className={styles.tileIcon}>👓</span>
+                  <span className={styles.tileMetric}>60 FPS</span>
+                </div>
+                <span className={styles.tileTitle}>DocLensBD 3D</span>
+                <span className={styles.tileDesc}>MediaPipe face mesh</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tileBtn} ${activeBenchmark === 'ping' ? styles.tileBtnActive : ''}`}
+                onClick={() => runBenchmark('ping')}
+                data-cursor="link"
+                title="Probe Dhaka Node Edge Latency"
+              >
+                <div className={styles.tileTop}>
+                  <span className={styles.tileIcon}>📡</span>
+                  <span className={styles.tileMetric}>{ping}ms</span>
+                </div>
+                <span className={styles.tileTitle}>Dhaka Edge Ping</span>
+                <span className={styles.tileDesc}>Real-time RTT probe</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Sleek Live Stream Console */}
+          <div className={styles.streamCard}>
+            <div className={styles.streamHeader}>
+              <div className={styles.streamHeaderLeft}>
+                <span className={styles.streamPulse} />
+                <span className={styles.streamTitle}>TELEMETRY STREAM</span>
               </div>
-            ))}
-          </div>
+              <div className={styles.streamHeaderRight}>
+                {activeBenchmark && (
+                  <button
+                    type="button"
+                    className={styles.viewProjectLink}
+                    onClick={() => {
+                      sound.playTick();
+                      onNavigate('/works');
+                    }}
+                    data-cursor="link"
+                  >
+                    Inspect Architecture &rarr;
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className={styles.clearBtn}
+                  onClick={() => {
+                    sound.playTick();
+                    setLogs([{ id: 'c-' + Date.now(), type: 'info', text: 'Telemetry cleared. Ready for next probe.' }]);
+                    setActiveBenchmark(null);
+                  }}
+                  data-cursor="link"
+                  title="Clear output"
+                >
+                  clear
+                </button>
+              </div>
+            </div>
 
-          {/* Quick Trigger Chips */}
-          <div className={styles.quickBar}>
-            <span className={styles.quickLabel}>QUICK RUN:</span>
-            <button
-              type="button"
-              className={styles.quickChip}
-              onClick={() => handleRunCommand('whoami')}
-              data-cursor="link"
-            >
-              whoami
-            </button>
-            <button
-              type="button"
-              className={styles.quickChip}
-              onClick={() => handleRunCommand('projects')}
-              data-cursor="link"
-            >
-              projects
-            </button>
-            <button
-              type="button"
-              className={styles.quickChip}
-              onClick={() => handleRunCommand('skills')}
-              data-cursor="link"
-            >
-              skills
-            </button>
-            <button
-              type="button"
-              className={styles.quickChip}
-              onClick={() => handleRunCommand('contact')}
-              data-cursor="link"
-            >
-              contact
-            </button>
-          </div>
+            <div className={styles.streamLogs} ref={outputContainerRef}>
+              {logs.map((log) => (
+                <div key={log.id} className={`${styles.logLine} ${styles['log_' + log.type]}`}>
+                  {log.text}
+                </div>
+              ))}
+            </div>
 
-          {/* Input Form */}
-          <form
-            className={styles.inputBar}
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleRunCommand(inputVal);
-            }}
-          >
-            <span className={styles.promptArrow}>$&nbsp;</span>
-            <input
-              type="text"
-              className={styles.cmdInput}
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              placeholder="Type command (e.g. whoami, projects, clear)..."
-              aria-label="Terminal command input"
-            />
-            <button type="submit" className={styles.execBtn} aria-label="Run command" data-cursor="link">
-              ↵ RUN
-            </button>
-          </form>
+            {/* Quick Action Chips */}
+            <div className={styles.quickBar}>
+              <span className={styles.quickLabel}>QUICK:</span>
+              <button
+                type="button"
+                className={styles.quickChip}
+                onClick={() => handleQuickAction('whoami')}
+                data-cursor="link"
+              >
+                whoami
+              </button>
+              <button
+                type="button"
+                className={styles.quickChip}
+                onClick={() => handleQuickAction('projects')}
+                data-cursor="link"
+              >
+                projects (6)
+              </button>
+              <button
+                type="button"
+                className={styles.quickChip}
+                onClick={() => handleQuickAction('skills')}
+                data-cursor="link"
+              >
+                skills
+              </button>
+              <button
+                type="button"
+                className={styles.quickChip}
+                onClick={() => handleQuickAction('contact')}
+                data-cursor="link"
+              >
+                contact
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Tab 2: Telemetry Node */}
+      {/* Tab 2: Telemetry */}
       {activeTab === 'telemetry' && (
         <div className={styles.telemetryBody}>
           <div className={styles.telemetryGrid}>
@@ -316,7 +463,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
               <span className={styles.tcValue} style={{ color: 'var(--color-accent)' }}>
                 {ping} ms
               </span>
-              <span className={styles.tcSub}>Direct HEAD Ping</span>
+              <span className={styles.tcSub}>Direct Edge Ping</span>
             </div>
 
             <div className={styles.telemetryCard}>
@@ -345,7 +492,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
         </div>
       )}
 
-      {/* Tab 3: Verified Matrix */}
+      {/* Tab 3: Verified Academic Credentials */}
       {activeTab === 'matrix' && (
         <div className={styles.matrixBody}>
           <div className={styles.matrixHead}>
