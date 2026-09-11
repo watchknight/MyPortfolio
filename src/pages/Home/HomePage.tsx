@@ -24,7 +24,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
           <h1 className={styles.title}>
             <ScrambleText
-              text="Hi, I'm Abdur Rahman Moayed."
+              text="Hi, This is Moayed."
               data-cursor="inspect"
               data-cursor-label="MOAYED"
             />
