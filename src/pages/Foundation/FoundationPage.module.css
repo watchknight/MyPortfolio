@@ -220,9 +220,10 @@
 }
 
 .skillCategory {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+.skillCategoryContent {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;

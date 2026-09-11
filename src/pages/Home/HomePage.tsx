@@ -1,3 +1,4 @@
+import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
 
@@ -93,7 +94,12 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
         <div className={styles.featuredGrid}>
           {/* Featured Project 1: PureFeed */}
-          <article className={styles.featuredCard}>
+          <SpotlightCard
+            as="article"
+            className={styles.featuredCard}
+            contentClassName={styles.featuredCardContent}
+            tiltIntensity={9}
+          >
             <div className={styles.cardMeta}>
               <span className={styles.categoryTag}>Browser Tool</span>
               <span className={styles.liveBadge}>Tested on YouTube</span>
@@ -126,10 +132,15 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             >
               <span>Learn how it works &rarr;</span>
             </button>
-          </article>
+          </SpotlightCard>
 
           {/* Featured Project 2: DocLensBD */}
-          <article className={styles.featuredCard}>
+          <SpotlightCard
+            as="article"
+            className={styles.featuredCard}
+            contentClassName={styles.featuredCardContent}
+            tiltIntensity={9}
+          >
             <div className={styles.cardMeta}>
               <span className={styles.categoryTag}>Web Application</span>
               <span className={styles.liveBadge}>Live on Render</span>
@@ -174,7 +185,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 <span>Details</span>
               </button>
             </div>
-          </article>
+          </SpotlightCard>
         </div>
       </section>
 
@@ -198,7 +209,11 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           </button>
         </header>
 
-        <div className={styles.storyCard}>
+        <SpotlightCard
+          className={styles.storyCard}
+          contentClassName={styles.storyCardContent}
+          tiltIntensity={5}
+        >
           <div className={styles.storyContent}>
             <p className={styles.storyParagraph}>
               I am currently pursuing my <strong>Bachelor of Science in Computer Science &amp; Engineering</strong> at{' '}
@@ -239,7 +254,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               <span><strong>National Board Distinction</strong> — PSC Class 5 (GPA 5.0)</span>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </section>
 
       {/* 4. Simple Contact Invite */}

@@ -1,23 +1,27 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import styles from './SpotlightCard.module.css';
 
-interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
+  contentClassName?: string;
   tiltIntensity?: number;
+  as?: 'div' | 'article' | 'section';
 }
 
 export function SpotlightCard({
   children,
   className = '',
+  contentClassName = '',
   tiltIntensity = 10,
+  as: Component = 'div',
   ...rest
 }: SpotlightCardProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
-  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
-  const [transformStyle, setTransformStyle] = useState('');
+  const overlayRef = useRef<HTMLDivElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
+  const rafId = useRef<number | null>(null);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -28,43 +32,71 @@ export function SpotlightCard({
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      setSpotlightPos({ x, y });
+      // Update spotlight overlay position directly without React re-render
+      if (overlayRef.current) {
+        overlayRef.current.style.background = `radial-gradient(450px circle at ${x}px ${y}px, var(--color-accent-glow), transparent 65%)`;
+        overlayRef.current.style.opacity = '1';
+      }
 
       if (prefersReducedMotion) return;
 
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -tiltIntensity;
-      const rotateY = ((x - centerX) / centerX) * tiltIntensity;
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
 
-      setTransformStyle(
-        `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(4px)`
-      );
+      rafId.current = requestAnimationFrame(() => {
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -tiltIntensity;
+        const rotateY = ((x - centerX) / centerX) * tiltIntensity;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(6px)`;
+      });
     },
     [prefersReducedMotion, tiltIntensity]
   );
 
+  const handleMouseEnter = useCallback(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transition = 'transform 0.08s ease-out, box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default)';
+  }, []);
+
   const handleMouseLeave = useCallback(() => {
-    setTransformStyle('');
+    const card = cardRef.current;
+    if (!card) return;
+
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+    }
+
+    // Smooth physics-based settling transition back to flat level
+    card.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default)';
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+
+    if (overlayRef.current) {
+      overlayRef.current.style.opacity = '0';
+    }
   }, []);
 
   return (
-    <div
-      ref={cardRef}
+    <Component
+      ref={cardRef as unknown as React.Ref<HTMLDivElement>}
       className={`${styles.cardWrapper} ${className}`}
       onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ transform: transformStyle }}
+      onTouchEnd={handleMouseLeave}
+      onTouchCancel={handleMouseLeave}
       {...rest}
     >
       <div
+        ref={overlayRef}
         className={styles.spotlightOverlay}
-        style={{
-          background: `radial-gradient(420px circle at ${spotlightPos.x}px ${spotlightPos.y}px, var(--color-accent-glow), transparent 65%)`,
-        }}
         aria-hidden="true"
       />
-      <div className={styles.innerContent}>{children}</div>
-    </div>
+      <div className={`${styles.innerContent} ${contentClassName}`}>{children}</div>
+    </Component>
   );
 }
+

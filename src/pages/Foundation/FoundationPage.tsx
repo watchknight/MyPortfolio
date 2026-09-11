@@ -1,3 +1,4 @@
+import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { sound } from '../../utils/audio';
 import { DeveloperASTCard } from '../../components/DeveloperAST/DeveloperASTCard';
 import styles from './FoundationPage.module.css';
@@ -146,9 +147,11 @@ export function FoundationPage() {
         {/* Right Column: Skills */}
         <section className={styles.skillsColumn} aria-label="Technical Skills">
           {skillCategories.map((cat) => (
-            <div
+            <SpotlightCard
               key={cat.title}
               className={styles.skillCategory}
+              contentClassName={styles.skillCategoryContent}
+              tiltIntensity={6}
               onMouseEnter={() => sound.playTick()}
             >
               <h2 className={styles.catTitle}>{cat.title}</h2>
@@ -159,7 +162,7 @@ export function FoundationPage() {
                   </span>
                 ))}
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </section>
       </div>

@@ -185,23 +185,16 @@
 }
 
 .featuredCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
+  height: 100%;
+}
+
+.featuredCardContent {
   padding: 1.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
-  transition: border-color var(--duration-fast) ease,
-              box-shadow var(--duration-fast) ease,
-              transform var(--duration-fast) ease;
-}
-
-.featuredCard:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--card-shadow-hover);
-  transform: translateY(-2px);
+  height: 100%;
 }
 
 .cardMeta {
@@ -284,17 +277,19 @@
 
 /* Background & Education Strip */
 .storyCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+.storyCardContent {
   padding: 2rem;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.75rem;
+  width: 100%;
 }
 
 @media (min-width: 840px) {
-  .storyCard {
+  .storyCardContent {
     grid-template-columns: 1.3fr 1fr;
     align-items: center;
   }
