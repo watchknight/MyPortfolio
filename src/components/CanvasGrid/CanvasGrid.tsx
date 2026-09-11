@@ -12,6 +12,15 @@ interface Node {
   radius: number;
 }
 
+interface EdgeDestination {
+  code: string;
+  name: string;
+  xRatio: number;
+  yRatio: number;
+  progress: number;
+  speed: number;
+}
+
 export function CanvasGrid() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -59,6 +68,14 @@ export function CanvasGrid() {
         radius: Math.random() * 1.5 + 1,
       });
     }
+
+    const destinations: EdgeDestination[] = [
+      { code: 'FRA', name: 'Frankfurt', xRatio: 0.32, yRatio: 0.28, progress: 0.1, speed: 0.0032 },
+      { code: 'TYO', name: 'Tokyo', xRatio: 0.88, yRatio: 0.32, progress: 0.5, speed: 0.0038 },
+      { code: 'LON', name: 'London', xRatio: 0.22, yRatio: 0.34, progress: 0.8, speed: 0.003 },
+      { code: 'SIN', name: 'Singapore', xRatio: 0.74, yRatio: 0.72, progress: 0.3, speed: 0.0045 },
+      { code: 'SFO', name: 'San Francisco', xRatio: 0.1, yRatio: 0.46, progress: 0.65, speed: 0.0026 },
+    ];
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
@@ -210,6 +227,89 @@ export function CanvasGrid() {
           }
         }
       }
+
+      // 3. Geodesic Flight Arcs & Dhaka Coordinate Hub
+      const dhakaX = width * 0.65;
+      const dhakaY = height * 0.48;
+
+      ctx.save();
+      const pulseTime = Date.now() * 0.002;
+      const pulseRadius = 12 + Math.sin(pulseTime) * 3;
+
+      // Pulse beacon at Dhaka
+      ctx.strokeStyle = colors.particle;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(dhakaX, dhakaY, pulseRadius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(dhakaX, dhakaY, 3, 0, Math.PI * 2);
+      ctx.fillStyle = colors.particle;
+      ctx.fill();
+
+      // Dhaka Crosshair Reticle
+      ctx.strokeStyle = colors.line;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(dhakaX - 10, dhakaY);
+      ctx.lineTo(dhakaX + 10, dhakaY);
+      ctx.moveTo(dhakaX, dhakaY - 10);
+      ctx.lineTo(dhakaX, dhakaY + 10);
+      ctx.stroke();
+
+      // Dhaka label if viewport wide enough
+      if (width > 860) {
+        ctx.font = '9px monospace';
+        ctx.fillStyle = colors.particle;
+        ctx.fillText('DHAKA [23.8103°N, 90.4125°E]', dhakaX + 14, dhakaY + 3);
+      }
+
+      // Flight Arcs to Global Edge Nodes
+      for (const dest of destinations) {
+        const targetX = width * dest.xRatio;
+        const targetY = height * dest.yRatio;
+
+        const cpX = (dhakaX + targetX) / 2;
+        const cpY = Math.min(dhakaY, targetY) - Math.abs(dhakaX - targetX) * 0.22;
+
+        // Faint curved geodesic trajectory
+        ctx.beginPath();
+        ctx.strokeStyle = colors.line;
+        ctx.lineWidth = 0.7;
+        ctx.setLineDash([3, 4]);
+        ctx.moveTo(dhakaX, dhakaY);
+        ctx.quadraticCurveTo(cpX, cpY, targetX, targetY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Target edge station
+        ctx.fillStyle = colors.particle;
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (width > 860) {
+          ctx.font = '9px monospace';
+          ctx.fillStyle = colors.particle;
+          ctx.fillText(dest.code, targetX + 6, targetY + 3);
+        }
+
+        // Animated signal packet along arc
+        dest.progress = (dest.progress + dest.speed) % 1;
+        const t = dest.progress;
+        const packetX = Math.pow(1 - t, 2) * dhakaX + 2 * (1 - t) * t * cpX + Math.pow(t, 2) * targetX;
+        const packetY = Math.pow(1 - t, 2) * dhakaY + 2 * (1 - t) * t * cpY + Math.pow(t, 2) * targetY;
+
+        ctx.beginPath();
+        ctx.arc(packetX, packetY, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#38bdf8';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      ctx.restore();
 
       animationId = requestAnimationFrame(render);
     };

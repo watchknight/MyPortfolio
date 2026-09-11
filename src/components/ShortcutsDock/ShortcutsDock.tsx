@@ -61,6 +61,15 @@ export function ShortcutsDock() {
         sound.playChirp(400, 800, 0.03, 0.05);
       },
     },
+    {
+      keyId: 's',
+      displayKey: 'S',
+      label: 'Sys',
+      onTrigger: () => {
+        window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
+        sound.playChirp(500, 900, 0.04, 0.06);
+      },
+    },
   ];
 
   useEffect(() => {
@@ -69,14 +78,14 @@ export function ShortcutsDock() {
       if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
 
       const key = e.key.toLowerCase();
-      if (['k', 'g', 't', 'm', 'd'].includes(key)) {
+      if (['k', 'g', 't', 'm', 'd', 's'].includes(key)) {
         setActiveKeys((prev) => ({ ...prev, [key]: true }));
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      if (['k', 'g', 't', 'm', 'd'].includes(key)) {
+      if (['k', 'g', 't', 'm', 'd', 's'].includes(key)) {
         setActiveKeys((prev) => ({ ...prev, [key]: false }));
       }
     };

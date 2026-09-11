@@ -288,6 +288,9 @@ export function Nav() {
         onToggleView={(view) => {
           window.dispatchEvent(new CustomEvent('set-view-mode', { detail: view }));
         }}
+        onOpenSysCheck={() => {
+          window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
+        }}
         currentTheme={theme}
         isSoundActive={soundActive}
       />

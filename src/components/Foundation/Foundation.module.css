@@ -297,3 +297,33 @@
   color: var(--color-text-secondary);
   line-height: 1.55;
 }
+
+/* Developer AST Schema Inspector */
+.schemaWrapper {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.schemaLabelGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.schemaEyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+
+.schemaTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-subsection);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}

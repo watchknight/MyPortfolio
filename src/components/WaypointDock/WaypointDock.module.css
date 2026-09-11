@@ -1,0 +1,177 @@
+.dock {
+  position: fixed;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+@media (max-width: 1080px) {
+  .dock {
+    display: none;
+  }
+}
+
+.dockTrack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0.35rem;
+  width: 22px;
+  background: rgba(10, 14, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+
+.dockTrack::before {
+  content: '';
+  position: absolute;
+  top: 1.1rem;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background: var(--color-border-hairline);
+  z-index: 1;
+}
+
+.waypointButton {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  outline: none;
+  color: var(--color-text-tertiary);
+  transition: transform var(--duration-fast) var(--ease-default);
+}
+
+.waypointButton:hover {
+  transform: scale(1.15);
+}
+
+.waypointLabel {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: opacity var(--duration-fast) var(--ease-default),
+              transform var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+}
+
+.waypointButton:hover .waypointLabel,
+.waypointButton:focus-visible .waypointLabel {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  color: var(--color-text-primary);
+}
+
+.waypointNode {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border-strong);
+  background: var(--color-bg-base);
+  transition: all var(--duration-fast) var(--ease-default);
+}
+
+.waypointButton:hover .waypointNode {
+  border-color: var(--color-accent-primary);
+  background: var(--color-accent-glow);
+  transform: scale(1.3);
+}
+
+.waypointActive .waypointNode {
+  width: 8px;
+  height: 8px;
+  border-color: var(--color-accent-primary);
+  background: var(--color-accent-primary);
+  box-shadow: 0 0 8px var(--color-accent-primary);
+}
+
+.waypointActive .waypointLabel {
+  color: var(--color-accent-primary);
+  border-color: var(--color-accent-glow);
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.sysCheckTrigger {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem;
+  color: var(--color-accent-primary);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: all var(--duration-fast) var(--ease-default);
+  white-space: nowrap;
+}
+
+.sysCheckTrigger:hover {
+  background: var(--color-accent-primary);
+  color: #000;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 14px var(--color-accent-glow);
+  transform: translateY(-2px);
+}
+
+.sysCheckPulse {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 5px currentColor;
+  animation: pulseBeacon 2s ease-in-out infinite;
+}
+
+@keyframes pulseBeacon {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+}

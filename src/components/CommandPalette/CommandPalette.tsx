@@ -19,6 +19,7 @@ interface CommandPaletteProps {
   onToggleTheme?: () => void;
   onToggleSound?: () => void;
   onToggleView?: (view: 'grid' | 'table') => void;
+  onOpenSysCheck?: () => void;
   currentTheme?: 'dark' | 'light';
   isSoundActive?: boolean;
 }
@@ -30,6 +31,7 @@ export function CommandPalette({
   onToggleTheme,
   onToggleSound,
   onToggleView,
+  onOpenSysCheck,
   currentTheme = 'dark',
   isSoundActive = true,
 }: CommandPaletteProps) {
@@ -182,7 +184,23 @@ export function CommandPalette({
         window.open('https://github.com/watchknight', '_blank', 'noopener,noreferrer');
       },
     },
-  ], [currentTheme, isSoundActive, onSelectProject, onToggleSound, onToggleTheme, onToggleView]);
+    {
+      id: 'run-sys-check',
+      category: 'Direct Actions',
+      title: 'Run Automated Hardware & Runtime Diagnostic Suite',
+      subtitle: 'Live Web Audio sweep, Canvas 60 FPS, Edge latency RTT benchmark',
+      shortcut: 'S',
+      badge: 'Benchmark',
+      action: () => {
+        onClose();
+        if (onOpenSysCheck) {
+          onOpenSysCheck();
+        } else {
+          window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
+        }
+      },
+    },
+  ], [currentTheme, isSoundActive, onClose, onOpenSysCheck, onSelectProject, onToggleSound, onToggleTheme, onToggleView]);
 
   const filteredCommands = useMemo(() => {
     const q = query.trim().toLowerCase();

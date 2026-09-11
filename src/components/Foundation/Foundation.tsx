@@ -1,5 +1,6 @@
 import { SpotlightCard } from '../SpotlightCard/SpotlightCard';
 import { ScrambleText } from '../ScrambleText/ScrambleText';
+import { DeveloperASTCard } from '../DeveloperAST/DeveloperASTCard';
 import { sound } from '../../utils/audio';
 import styles from './Foundation.module.css';
 
@@ -175,6 +176,15 @@ export function Foundation() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Systems Architecture AST Schema Inspector */}
+        <div className={styles.schemaWrapper}>
+          <div className={styles.schemaLabelGroup}>
+            <span className={styles.schemaEyebrow}>SYSTEMS ARCHITECTURE MANIFEST // VERIFIED AST</span>
+            <h3 className={styles.schemaTitle}>TypeScript Domain Schema</h3>
+          </div>
+          <DeveloperASTCard />
         </div>
       </div>
     </section>

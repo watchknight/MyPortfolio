@@ -38,3 +38,37 @@
   display: flex;
   flex-direction: column;
 }
+
+/* Tactile Aerospace Corner Bracket Accents (┌ ┘) */
+.cardWrapper::before,
+.cardWrapper::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  z-index: 5;
+  transition: all var(--duration-fast) var(--ease-default);
+  opacity: 0.35;
+}
+
+.cardWrapper::before {
+  top: 6px;
+  left: 6px;
+  border-top: 1.5px solid var(--color-border-strong);
+  border-left: 1.5px solid var(--color-border-strong);
+}
+
+.cardWrapper::after {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 1.5px solid var(--color-border-strong);
+  border-right: 1.5px solid var(--color-border-strong);
+}
+
+.cardWrapper:hover::before,
+.cardWrapper:hover::after {
+  opacity: 1;
+  border-color: var(--color-accent-primary);
+  filter: drop-shadow(0 0 4px var(--color-accent-glow));
+}
