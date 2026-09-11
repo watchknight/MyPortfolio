@@ -98,14 +98,6 @@ export function SpotlightCard({
             aria-hidden="true"
           />
 
-          {/* Precision Aerospace Decals */}
-          <div className={styles.decalTopLeft} aria-hidden="true">
-            <span className={styles.decalGlyph}>⌖</span>
-          </div>
-          <div className={styles.decalBottomRight} aria-hidden="true">
-            <span className={styles.decalSlits}>///</span>
-          </div>
-
           <div className={`${styles.innerContent} ${contentClassName}`}>{children}</div>
         </div>
       </Component>
