@@ -65,12 +65,26 @@
   color: var(--color-text-primary);
   letter-spacing: -0.03em;
   margin: 0;
+  cursor: default;
+  transition: text-shadow var(--duration-fast) ease;
+}
+
+.title:hover {
+  text-shadow: 0 0 28px rgba(56, 189, 248, 0.22);
 }
 
 .highlight {
   background: linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #34d399 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+  transition: filter 0.3s ease, background-position 0.5s ease;
+}
+
+.highlight:hover {
+  background-position: right center;
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.35));
 }
 
 .lead {

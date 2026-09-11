@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './ContactPage.module.css';
 
@@ -55,7 +56,9 @@ export function ContactPage() {
       {/* Header */}
       <header className={styles.header}>
         <span className={styles.eyebrow}>Direct Communication</span>
-        <h1 className={styles.title}>Get in Touch</h1>
+        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="CONTACT">
+          <ScrambleText text="Get in Touch" />
+        </h1>
         <p className={styles.subtitle}>
           Have a software project, an internship opportunity, or want to connect?
           Feel free to send me a message or email me directly.

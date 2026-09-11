@@ -1,3 +1,4 @@
+import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './ResumePage.module.css';
 
@@ -13,7 +14,9 @@ export function ResumePage() {
       <div className={styles.topBar}>
         <div className={styles.headerText}>
           <span className={styles.eyebrow}>Verified Credentials</span>
-          <h1 className={styles.pageTitle}>Curriculum Vitae</h1>
+          <h1 className={styles.pageTitle} data-cursor="inspect" data-cursor-label="CV">
+            <ScrambleText text="Curriculum Vitae" />
+          </h1>
         </div>
 
         <div className={styles.actionGroup}>

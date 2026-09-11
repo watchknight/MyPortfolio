@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { ScrambleText } from '../ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './SignatureCanvas.module.css';
 
@@ -133,7 +134,9 @@ export function SignatureCanvas() {
             <span className={styles.badgeDot} />
             <span className={styles.badgeText}>INTERACTIVE GUESTBOOK</span>
           </div>
-          <h3 className={styles.title}>Leave Your Digital Mark</h3>
+          <h3 className={styles.title} data-cursor="inspect" data-cursor-label="GUESTBOOK">
+            <ScrambleText text="Leave Your Digital Mark" />
+          </h3>
           <p className={styles.subtitle}>
             Sign or sketch with neon digital ink. Your coordinates render live on the canvas.
           </p>

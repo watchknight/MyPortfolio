@@ -2,6 +2,7 @@ import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { HeroSandbox } from '../../components/HeroSandbox/HeroSandbox';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
+import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
 
@@ -22,8 +23,20 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           </div>
 
           <h1 className={styles.title}>
-            Hi, I&apos;m Abdur Rahman Moayed. <br />
-            I build <span className={styles.highlight}>fast, reliable software</span>.
+            <ScrambleText
+              text="Hi, I'm Abdur Rahman Moayed."
+              data-cursor="inspect"
+              data-cursor-label="MOAYED"
+            />
+            <br />
+            I build{' '}
+            <span className={styles.highlight}>
+              <ScrambleText
+                text="fast, reliable software."
+                data-cursor="inspect"
+                data-cursor-label="CRAFT"
+              />
+            </span>
           </h1>
 
           <p className={styles.lead}>
@@ -86,7 +99,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
             <span className={styles.sectionEyebrow}>Selected Projects</span>
-            <h2 className={styles.sectionTitle}>Featured Work</h2>
+            <h2 className={styles.sectionTitle} data-cursor="inspect" data-cursor-label="PROJECTS">
+              <ScrambleText text="Featured Work" />
+            </h2>
           </div>
           <button
             type="button"
@@ -207,7 +222,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
             <span className={styles.sectionEyebrow}>Academic Record</span>
-            <h2 className={styles.sectionTitle}>Education &amp; Background</h2>
+            <h2 className={styles.sectionTitle} data-cursor="inspect" data-cursor-label="ACADEMICS">
+              <ScrambleText text="Education & Background" />
+            </h2>
           </div>
           <button
             type="button"

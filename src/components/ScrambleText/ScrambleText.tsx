@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import type { HTMLAttributes } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { sound } from '../../utils/audio';
 
-interface ScrambleTextProps {
+interface ScrambleTextProps extends HTMLAttributes<HTMLElement> {
   text: string;
   as?: 'span' | 'h1' | 'h2' | 'h3' | 'p' | 'div';
   className?: string;
@@ -17,7 +18,9 @@ export function ScrambleText({
   as: Component = 'span',
   className = '',
   triggerOnHover = true,
-  scrambleSpeed = 24,
+  scrambleSpeed = 22,
+  style,
+  ...rest
 }: ScrambleTextProps) {
   const [displayText, setDisplayText] = useState(text);
   const [prevText, setPrevText] = useState(text);
@@ -36,6 +39,7 @@ export function ScrambleText({
     sound.playTick();
 
     let iteration = 0;
+    const step = text.length > 20 ? 1.5 : 1;
     const maxIterations = text.length * 3;
 
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -60,7 +64,7 @@ export function ScrambleText({
         animatingRef.current = false;
       }
 
-      iteration += 1;
+      iteration += step;
     }, scrambleSpeed);
   }, [text, prefersReducedMotion, scrambleSpeed]);
 
@@ -80,7 +84,8 @@ export function ScrambleText({
     <Component
       className={className}
       onMouseEnter={handleMouseEnter}
-      style={{ willChange: 'contents' }}
+      style={{ willChange: 'contents', ...style }}
+      {...rest}
     >
       {displayText}
     </Component>

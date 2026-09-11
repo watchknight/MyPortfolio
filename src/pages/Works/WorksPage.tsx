@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
+import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './WorksPage.module.css';
 
@@ -103,7 +104,9 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
       {/* Header */}
       <header className={styles.header}>
         <span className={styles.eyebrow}>Portfolio &amp; Case Studies</span>
-        <h1 className={styles.title}>Selected Works</h1>
+        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="PROJECTS">
+          <ScrambleText text="Selected Works" />
+        </h1>
         <p className={styles.subtitle}>
           A showcase of real web applications, browser extensions, and practical desktop tools I have engineered.
         </p>

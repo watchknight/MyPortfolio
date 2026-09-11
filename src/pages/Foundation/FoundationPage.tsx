@@ -1,6 +1,7 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { sound } from '../../utils/audio';
 import { DeveloperASTCard } from '../../components/DeveloperAST/DeveloperASTCard';
+import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import styles from './FoundationPage.module.css';
 
 interface Milestone {
@@ -96,7 +97,9 @@ export function FoundationPage() {
       {/* Header */}
       <header className={styles.header}>
         <span className={styles.eyebrow}>Education &amp; Credentials</span>
-        <h1 className={styles.title}>Background &amp; Skills</h1>
+        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="ACADEMICS">
+          <ScrambleText text="Background & Skills" />
+        </h1>
         <p className={styles.subtitle}>
           My academic foundation at East West University, national board scholarship distinctions, and technical skills.
         </p>
