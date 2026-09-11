@@ -117,21 +117,21 @@ async function run() {
     // 1. Initial State in Dark Mode
     await takeScreenshot('12_hero_sandbox_redesigned_dark.png');
 
-    // 2. Click PureFeed benchmark tile
-    console.log('Triggering PureFeed benchmark tile...');
+    // 2. Click whoami quick chip
+    console.log('Clicking whoami quick chip...');
     await sendSession('Runtime.evaluate', {
       expression: `(() => {
-        const tiles = Array.from(document.querySelectorAll('button'));
-        const purefeedBtn = tiles.find(b => b.textContent && b.textContent.includes('PureFeed'));
-        if (purefeedBtn) {
-          purefeedBtn.click();
+        const chips = Array.from(document.querySelectorAll('button'));
+        const whoamiBtn = chips.find(b => b.textContent && b.textContent.trim() === 'whoami');
+        if (whoamiBtn) {
+          whoamiBtn.click();
           return true;
         }
         return false;
       })()`
     });
     await new Promise(r => setTimeout(r, 600));
-    await takeScreenshot('13_hero_sandbox_benchmark_active.png');
+    await takeScreenshot('13_terminal_whoami_executed.png');
 
     // 3. Switch to Light Mode
     console.log('Switching to Light Mode...');

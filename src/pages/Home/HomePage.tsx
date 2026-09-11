@@ -29,7 +29,11 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               data-cursor-label="MOAYED"
             />
             <br />
-            I build{' '}
+            <ScrambleText
+              text="I build "
+              data-cursor="inspect"
+              data-cursor-label="CRAFT"
+            />
             <span className={styles.highlight}>
               <ScrambleText
                 text="fast, reliable software."
