@@ -50,7 +50,7 @@ export function SpotlightCard({
         const rotateX = ((y - centerY) / centerY) * -tiltIntensity;
         const rotateY = ((x - centerX) / centerX) * tiltIntensity;
 
-        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(6px)`;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
       });
     },
     [prefersReducedMotion, tiltIntensity]
@@ -59,7 +59,7 @@ export function SpotlightCard({
   const handleMouseEnter = useCallback(() => {
     const card = cardRef.current;
     if (!card) return;
-    card.style.transition = 'transform 0.08s ease-out, box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default)';
+    card.style.transition = 'transform 0.08s ease-out, filter var(--duration-normal) var(--ease-default)';
   }, []);
 
   const handleMouseLeave = useCallback(() => {
@@ -71,7 +71,7 @@ export function SpotlightCard({
     }
 
     // Smooth physics-based settling transition back to flat level
-    card.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), box-shadow var(--duration-normal) var(--ease-default), border-color var(--duration-normal) var(--ease-default)';
+    card.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), filter var(--duration-normal) var(--ease-default)';
     card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
 
     if (overlayRef.current) {
@@ -80,23 +80,35 @@ export function SpotlightCard({
   }, []);
 
   return (
-    <Component
-      ref={cardRef as unknown as React.Ref<HTMLDivElement>}
-      className={`${styles.cardWrapper} ${className}`}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onTouchEnd={handleMouseLeave}
-      onTouchCancel={handleMouseLeave}
-      {...rest}
-    >
-      <div
-        ref={overlayRef}
-        className={styles.spotlightOverlay}
-        aria-hidden="true"
-      />
-      <div className={`${styles.innerContent} ${contentClassName}`}>{children}</div>
-    </Component>
+    <div className={`${styles.cardShell} ${className}`}>
+      <Component
+        ref={cardRef as unknown as React.Ref<HTMLDivElement>}
+        className={styles.cardBevel}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onTouchEnd={handleMouseLeave}
+        onTouchCancel={handleMouseLeave}
+        {...rest}
+      >
+        <div className={styles.chamferCanvas}>
+          <div
+            ref={overlayRef}
+            className={styles.spotlightOverlay}
+            aria-hidden="true"
+          />
+
+          {/* Precision Aerospace Decals */}
+          <div className={styles.decalTopLeft} aria-hidden="true">
+            <span className={styles.decalGlyph}>⌖</span>
+          </div>
+          <div className={styles.decalBottomRight} aria-hidden="true">
+            <span className={styles.decalSlits}>///</span>
+          </div>
+
+          <div className={`${styles.innerContent} ${contentClassName}`}>{children}</div>
+        </div>
+      </Component>
+    </div>
   );
 }
-

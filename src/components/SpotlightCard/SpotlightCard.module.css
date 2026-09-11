@@ -1,55 +1,167 @@
-.cardWrapper {
+/* Non-Boxy Cybernetic Aerospace Chamfer Chassis */
+.cardShell {
   position: relative;
-  border-radius: var(--radius-lg, 16px);
-  background: linear-gradient(165deg, rgba(22, 27, 34, 0.85) 0%, rgba(13, 17, 23, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.5),
-              inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  transition: box-shadow var(--duration-normal) var(--ease-default),
-              border-color var(--duration-normal) var(--ease-default),
-              transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.45));
+  transition: filter var(--duration-normal) var(--ease-default);
+}
+
+:global([data-theme="light"]) .cardShell {
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.08));
+}
+
+.cardShell:hover {
+  filter: drop-shadow(0 22px 50px rgba(0, 0, 0, 0.65))
+          drop-shadow(0 0 25px rgba(56, 189, 248, 0.2));
+}
+
+:global([data-theme="light"]) .cardShell:hover {
+  filter: drop-shadow(0 20px 42px rgba(2, 132, 199, 0.16))
+          drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
+}
+
+.cardBevel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* 8-point faceted chamfer polygon: 28px top-left, 16px top-right, 36px bottom-right, 16px bottom-left */
+  clip-path: polygon(
+    0 28px,
+    28px 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% calc(100% - 36px),
+    calc(100% - 36px) 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+  background: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.55) 0%,
+    rgba(255, 255, 255, 0.12) 30%,
+    rgba(129, 140, 248, 0.35) 70%,
+    rgba(56, 189, 248, 0.75) 100%
+  );
+  padding: 1.5px;
   transform-style: preserve-3d;
   will-change: transform;
-  overflow: hidden;
+  transition: background var(--duration-normal) var(--ease-default);
 }
 
-:global([data-theme="light"]) .cardWrapper {
+:global([data-theme="light"]) .cardBevel {
+  background: linear-gradient(
+    135deg,
+    rgba(2, 132, 199, 0.5) 0%,
+    rgba(0, 0, 0, 0.12) 40%,
+    rgba(2, 132, 199, 0.35) 100%
+  );
+}
+
+.cardShell:hover .cardBevel {
+  background: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.9) 0%,
+    rgba(255, 255, 255, 0.3) 40%,
+    rgba(129, 140, 248, 0.6) 70%,
+    rgba(56, 189, 248, 1) 100%
+  );
+}
+
+:global([data-theme="light"]) .cardShell:hover .cardBevel {
+  background: linear-gradient(
+    135deg,
+    rgba(2, 132, 199, 0.8) 0%,
+    rgba(0, 0, 0, 0.18) 40%,
+    rgba(2, 132, 199, 0.6) 100%
+  );
+}
+
+.chamferCanvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(
+    0 27px,
+    27px 0,
+    calc(100% - 15px) 0,
+    100% 15px,
+    100% calc(100% - 35px),
+    calc(100% - 35px) 100%,
+    15px 100%,
+    0 calc(100% - 15px)
+  );
+  background: linear-gradient(165deg, rgba(20, 25, 33, 0.95) 0%, rgba(11, 14, 19, 0.98) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+}
+
+:global([data-theme="light"]) .chamferCanvas {
   background: linear-gradient(165deg, #ffffff 0%, #f8fafc 100%);
-  border-color: rgba(0, 0, 0, 0.09);
-  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.07),
-              0 1px 3px rgba(0, 0, 0, 0.04),
-              inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
-}
-
-.cardWrapper:hover {
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 28px 60px -12px rgba(0, 0, 0, 0.65),
-              0 0 30px rgba(56, 189, 248, 0.12),
-              inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-}
-
-:global([data-theme="light"]) .cardWrapper:hover {
-  border-color: rgba(2, 132, 199, 0.35);
-  box-shadow: 0 22px 48px -10px rgba(2, 132, 199, 0.12),
-              0 4px 12px rgba(0, 0, 0, 0.05),
-              inset 0 1px 0 0 rgba(255, 255, 255, 1);
 }
 
 .spotlightOverlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  border-radius: inherit;
   opacity: 0;
   transition: opacity var(--duration-fast) ease;
   z-index: 2;
   background: radial-gradient(450px circle at 50% 50%, var(--color-accent-glow), transparent 65%);
 }
 
-.cardWrapper:hover .spotlightOverlay {
+.cardShell:hover .spotlightOverlay {
   opacity: 1;
+}
+
+/* Precision Aerospace Decals */
+.decalTopLeft {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  z-index: 4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.decalGlyph {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent);
+  opacity: 0.65;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.cardShell:hover .decalGlyph {
+  opacity: 1;
+  text-shadow: 0 0 8px var(--color-accent);
+}
+
+.decalBottomRight {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  z-index: 4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.decalSlits {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--color-accent);
+  opacity: 0.45;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.cardShell:hover .decalSlits {
+  opacity: 1;
+  text-shadow: 0 0 8px var(--color-accent);
 }
 
 .innerContent {
@@ -58,38 +170,4 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-/* Precision Aerospace Corner Brackets (Top-Left & Bottom-Right) */
-.cardWrapper::before,
-.cardWrapper::after {
-  content: '';
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  pointer-events: none;
-  z-index: 5;
-  transition: all var(--duration-fast) var(--ease-default);
-  opacity: 0.35;
-}
-
-.cardWrapper::before {
-  top: 8px;
-  left: 8px;
-  border-top: 2px solid var(--color-border-strong);
-  border-left: 2px solid var(--color-border-strong);
-}
-
-.cardWrapper::after {
-  bottom: 8px;
-  right: 8px;
-  border-bottom: 2px solid var(--color-border-strong);
-  border-right: 2px solid var(--color-border-strong);
-}
-
-.cardWrapper:hover::before,
-.cardWrapper:hover::after {
-  opacity: 1;
-  border-color: var(--color-accent);
-  filter: drop-shadow(0 0 6px var(--color-accent-glow));
 }
