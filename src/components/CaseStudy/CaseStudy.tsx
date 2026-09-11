@@ -219,17 +219,36 @@ export function CaseStudies() {
         ) : (
           <div className={styles.bentoGrid}>
             <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.div
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <SpotlightCard className={styles.projectCard}>
-                    <div className={styles.cardInner}>
+              {filteredProjects.map((project, index) => {
+                const bentoClass =
+                  filteredProjects.length <= 1
+                    ? styles.bentoColFeatured
+                    : filteredProjects.length === 2
+                    ? index === 0
+                      ? styles.bentoColFeatured
+                      : styles.bentoColMedium
+                    : filteredProjects.length === 3
+                    ? styles.bentoColSmall
+                    : filteredProjects.length === 4
+                    ? styles.bentoColMedium
+                    : index === 0
+                    ? styles.bentoColFeatured
+                    : index === 1
+                    ? styles.bentoColMedium
+                    : styles.bentoColSmall;
+
+                return (
+                  <motion.div
+                    key={project.id}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25 }}
+                    className={bentoClass}
+                  >
+                    <SpotlightCard className={styles.projectCard}>
+                      <div className={styles.cardInner}>
                       {/* Top Bar */}
                       <div className={styles.cardTop}>
                         <span className={styles.domainBadge}>
@@ -267,6 +286,16 @@ export function CaseStudies() {
 
                       {/* Problem summary */}
                       <p className={styles.problemExcerpt}>{project.problem}</p>
+
+                      {/* Featured Code Peek */}
+                      {index === 0 && project.codeHighlight && (
+                        <div className={styles.featuredCodePeek} aria-label="Core code snippet preview">
+                          <code>// {project.codeHighlight.filename}</code>
+                          <pre style={{ margin: '0.25rem 0 0', fontFamily: 'inherit', fontSize: 'inherit', color: 'inherit', whiteSpace: 'pre-wrap' }}>
+                            {project.codeHighlight.code}
+                          </pre>
+                        </div>
+                      )}
 
                       {/* Stack Pills */}
                       <div className={styles.stackList}>
@@ -314,7 +343,8 @@ export function CaseStudies() {
                     </div>
                   </SpotlightCard>
                 </motion.div>
-              ))}
+              );
+            })}
             </AnimatePresence>
           </div>
         )}

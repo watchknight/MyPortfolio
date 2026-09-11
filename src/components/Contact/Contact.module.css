@@ -6,7 +6,7 @@
 }
 
 .terminalCard {
-  max-width: 52rem;
+  width: 100%;
   padding: 2.5rem;
   border-radius: var(--radius-lg);
   background-color: var(--color-bg-card);
@@ -43,6 +43,52 @@
   box-shadow: 0 0 8px var(--color-success);
 }
 
+.terminalMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.terminalPill {
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent-muted);
+  border: 1px solid var(--color-accent-glow);
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.terminalBody {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .terminalBody {
+    grid-template-columns: 1.15fr 1fr;
+    gap: 3rem;
+  }
+}
+
+.dispatchCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.channelsCol {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .titleGroup {
   display: flex;
   flex-direction: column;
@@ -61,13 +107,19 @@
   font-size: var(--text-body);
   color: var(--color-text-secondary);
   line-height: 1.65;
-  max-width: 44rem;
 }
 
 .channelGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  height: 100%;
+}
+
+@media (min-width: 500px) {
+  .channelGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .channelItem {
@@ -187,6 +239,17 @@
 @media (max-width: 640px) {
   .terminalCard {
     padding: 1.5rem;
+  }
+
+  .terminalHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .terminalMeta {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .actionRow {

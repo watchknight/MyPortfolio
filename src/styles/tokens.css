@@ -36,16 +36,16 @@
   /* ── Spacing ── */
   --space-2xs:             0.25rem;
   --space-xs:              0.5rem;
-  --space-sm:              1rem;
-  --space-md:              1.5rem;
-  --space-lg:              clamp(2rem, 4vw, 3rem);
-  --space-xl:              clamp(2.5rem, 5vw, 4rem);
-  --space-2xl:             clamp(4rem, 7vw, 6rem);
-  --space-section:         clamp(5rem, 9vw, 8rem);
+  --space-sm:              0.875rem;
+  --space-md:              1.25rem;
+  --space-lg:              clamp(1.5rem, 3vw, 2.25rem);
+  --space-xl:              clamp(2rem, 3.5vw, 2.75rem);
+  --space-2xl:             clamp(2.5rem, 4.5vw, 3.5rem);
+  --space-section:         clamp(3.5rem, 5.5vw, 5rem);
 
   /* ── Layout ── */
-  --content-max:           76rem;
-  --content-padding:       clamp(1.25rem, 5vw, 4rem);
+  --content-max:           78rem;
+  --content-padding:       clamp(1.25rem, 4vw, 3.5rem);
   --nav-height:            3.75rem;
 
   /* ── Motion & Easing ── */

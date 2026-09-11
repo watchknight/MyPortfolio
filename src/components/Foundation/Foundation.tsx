@@ -29,6 +29,17 @@ const competencies = [
   },
 ];
 
+const coursework = [
+  'Data Structures & Algorithms',
+  'Operating Systems & Kernels',
+  'Computer Networks & Protocols',
+  'Database Management Systems',
+  'Discrete Mathematics',
+  'Theory of Computation',
+  'Software Architecture & Design',
+  'Microprocessors & Assembly',
+];
+
 export function Foundation() {
   return (
     <section className={styles.section} id="foundation">
@@ -71,6 +82,21 @@ export function Foundation() {
                   <span>
                     <strong>Unbroken Distinction:</strong> Maintained consistent GPA 5.0 across Class 5, Class 8, and Class 10 national board examinations.
                   </span>
+                </div>
+              </div>
+
+              <div className={styles.courseworkSection}>
+                <span className={styles.courseworkLabel}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                  Rigorous CS Coursework &amp; Theory
+                </span>
+                <div className={styles.courseworkTags}>
+                  {coursework.map((c) => (
+                    <span key={c} className={styles.courseworkTag}>{c}</span>
+                  ))}
                 </div>
               </div>
             </div>

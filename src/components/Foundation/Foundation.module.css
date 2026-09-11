@@ -38,6 +38,7 @@
 @media (min-width: 840px) {
   .columns {
     grid-template-columns: 1fr 1fr;
+    align-items: stretch;
   }
 }
 
@@ -164,3 +165,48 @@
   color: var(--color-text-secondary);
   line-height: 1.55;
 }
+
+.courseworkSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border-hairline);
+  margin-top: auto;
+}
+
+.courseworkLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.courseworkTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.courseworkTag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-hairline);
+  transition: all var(--duration-fast) ease;
+}
+
+.courseworkTag:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent-glow);
+  background-color: var(--color-accent-muted);
+}
+
