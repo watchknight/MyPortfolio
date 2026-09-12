@@ -128,7 +128,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           }}
           role="button"
           tabIndex={0}
-          aria-label="Scroll to featured work"
+          aria-label="Scroll to explore featured work"
           data-cursor="link"
         >
           <span className={styles.scrollText}>Scroll to explore</span>

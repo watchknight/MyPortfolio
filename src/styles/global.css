@@ -3,6 +3,7 @@
  * Base typography, layout primitives, and craft defaults.
  */
 
+@import './fonts.css';
 @import './tokens.css';
 @import './reset.css';
 

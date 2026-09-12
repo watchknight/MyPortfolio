@@ -294,6 +294,12 @@
   .navLinks {
     display: none;
   }
+  .dhakaClock {
+    display: none;
+  }
+  .cmdKPill {
+    display: none;
+  }
   .menuToggle {
     display: inline-flex;
   }
@@ -312,6 +318,7 @@
     z-index: 99;
     transform: translateY(-100%);
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
     transition: all var(--duration-normal) var(--ease-out-expo);
     border-bottom: 1px solid var(--color-border-subtle);
@@ -320,6 +327,7 @@
   .mobileMenuOpen {
     transform: translateY(0);
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
   }
 

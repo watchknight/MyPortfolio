@@ -129,6 +129,7 @@
   width: 100%;
   margin: 0;
   display: block;
+  min-height: clamp(80px, 16vw, 132px);
 }
 
 .title {
@@ -412,7 +413,7 @@
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   background: var(--color-bg-subtle);
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-pill);

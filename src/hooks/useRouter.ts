@@ -10,8 +10,9 @@ function normalizePath(path: string): RoutePath {
   return '/';
 }
 
-export function useRouter() {
+export function useRouter(initialPath?: string) {
   const [currentPath, setCurrentPath] = useState<RoutePath>(() => {
+    if (initialPath) return normalizePath(initialPath);
     if (typeof window !== 'undefined') {
       return normalizePath(window.location.pathname);
     }

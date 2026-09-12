@@ -225,7 +225,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                   className={styles.cmdKPill}
                   onClick={() => setCommandOpen(true)}
                   title="Open Command Deck (Ctrl+K or ⌘K)"
-                  aria-label="Open Command Deck"
+                  aria-label="Command palette (Ctrl+K or ⌘K)"
                   data-cursor="link"
                 >
                   <span>Command</span>
@@ -316,6 +316,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       <div
         className={`${styles.mobileMenu} ${mobileOpen ? styles.mobileMenuOpen : ''}`}
         aria-hidden={!mobileOpen}
+        inert={!mobileOpen ? true : undefined}
       >
         {navItems.map((item) => (
           <a
