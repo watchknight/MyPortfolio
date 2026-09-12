@@ -70,7 +70,9 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
               aria-label="Toggle PureFeed Countermeasure"
               data-cursor="link"
             >
-              <span className={styles.switchKnob} />
+              <span className={styles.switchTrack}>
+                <span className={styles.switchKnob} />
+              </span>
             </button>
           </div>
         </div>

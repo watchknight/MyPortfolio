@@ -44,6 +44,7 @@
   align-items: center;
   gap: 0.35rem;
   letter-spacing: -0.01em;
+  min-height: 44px;
 }
 
 .breadcrumbSlash {
@@ -249,8 +250,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-sm);
   background: transparent;
   border: 1px solid var(--color-border-hairline);
@@ -266,8 +269,8 @@
 }
 
 .iconBtn svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 
 .menuToggle {
@@ -275,8 +278,10 @@
   background: transparent;
   border: 1px solid var(--color-border-hairline);
   color: var(--color-text-primary);
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-sm);
   align-items: center;
   justify-content: center;
@@ -300,6 +305,11 @@
   .cmdKPill {
     display: none;
   }
+  .actionGroup {
+    border-left: none;
+    padding-left: 0;
+    gap: 0.35rem;
+  }
   .menuToggle {
     display: inline-flex;
   }
@@ -314,7 +324,7 @@
     bottom: 0;
     background: var(--color-bg-base);
     padding: 2rem 1.5rem;
-    gap: 1.5rem;
+    gap: 1.25rem;
     z-index: 99;
     transform: translateY(-100%);
     opacity: 0;
@@ -336,12 +346,22 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--color-text-primary);
-    padding-bottom: 0.75rem;
+    padding: 0.6rem 0;
     border-bottom: 1px solid var(--color-border-hairline);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
   }
 
   .mobileLinkActive {
     color: var(--color-accent);
     border-bottom-color: var(--color-accent);
+  }
+}
+
+@media (max-width: 540px) {
+  .breadcrumbSlash,
+  .breadcrumbSub {
+    display: none;
   }
 }

@@ -7,9 +7,9 @@
   will-change: transform;
 }
 
-@media (pointer: coarse) {
+@media (pointer: coarse), (max-width: 860px) {
   .cursorContainer {
-    display: none;
+    display: none !important;
   }
 }
 

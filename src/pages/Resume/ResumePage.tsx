@@ -70,11 +70,11 @@ export function ResumePage() {
           <div className={styles.contactLine}>
             <span>Dhaka, Bangladesh</span>
             <span className={styles.contactSeparator}>&bull;</span>
-            <a href="mailto:armabdur.rahman04@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+            <a href="mailto:armabdur.rahman04@gmail.com" className={styles.contactLink}>
               armabdur.rahman04@gmail.com
             </a>
             <span className={styles.contactSeparator}>&bull;</span>
-            <a href="https://github.com/watchknight" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+            <a href="https://github.com/watchknight" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
               github.com/watchknight
             </a>
           </div>
@@ -173,7 +173,7 @@ export function ResumePage() {
               </div>
               <ul className={styles.bulletList}>
                 <li>Built a responsive online eyewear shop featuring real-time 3D webcam-based virtual frame try-on at 60 FPS.</li>
-                <li>Deployed and live on Render (<a href="https://doclensbd.onrender.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>doclensbd.onrender.com</a>).</li>
+                <li>Deployed and live on Render (<a href="https://doclensbd.onrender.com/" target="_blank" rel="noopener noreferrer" className={styles.inlineTouchLink}>doclensbd.onrender.com</a>).</li>
               </ul>
             </div>
 
@@ -194,7 +194,7 @@ export function ResumePage() {
               </div>
               <ul className={styles.bulletList}>
                 <li>Developed an ingredient matchmaking recipe app with serving calculators and fast SQLite queries.</li>
-                <li>Deployed and live on Render (<a href="https://rannabanna.onrender.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>rannabanna.onrender.com</a>).</li>
+                <li>Deployed and live on Render (<a href="https://rannabanna.onrender.com/" target="_blank" rel="noopener noreferrer" className={styles.inlineTouchLink}>rannabanna.onrender.com</a>).</li>
               </ul>
             </div>
           </div>

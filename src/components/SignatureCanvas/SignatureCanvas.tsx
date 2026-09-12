@@ -151,14 +151,18 @@ export function SignatureCanvas() {
                 key={c.val}
                 type="button"
                 className={`${styles.colorBtn} ${color === c.val ? styles.colorActive : ''}`}
-                style={{ backgroundColor: c.val }}
                 onClick={() => {
                   setColor(c.val);
                   sound.playClick(800, 0.01, 0.03);
                 }}
                 aria-label={`Select ${c.label} color`}
                 data-cursor="link"
-              />
+              >
+                <span
+                  className={styles.colorDot}
+                  style={{ backgroundColor: c.val, color: c.val }}
+                />
+              </button>
             ))}
           </div>
 

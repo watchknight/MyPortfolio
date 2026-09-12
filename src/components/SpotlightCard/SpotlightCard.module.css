@@ -2,6 +2,9 @@
 .cardShell {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: 100%;
   filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.45));
   transition: filter var(--duration-normal) var(--ease-default);
@@ -24,6 +27,9 @@
 .cardBevel {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: 100%;
   /* 8-point faceted chamfer polygon: 28px top-left, 16px top-right, 36px bottom-right, 16px bottom-left */
   clip-path: polygon(
@@ -80,6 +86,9 @@
 .chamferCanvas {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: 100%;
   clip-path: polygon(
     0 27px,
@@ -120,6 +129,10 @@
 .innerContent {
   position: relative;
   z-index: 3;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: 100%;
   display: flex;
   flex-direction: column;

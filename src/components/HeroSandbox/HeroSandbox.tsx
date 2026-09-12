@@ -300,6 +300,10 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
               onChange={(e) => setInputVal(e.target.value)}
               placeholder="Type command (e.g. whoami, projects, clear)..."
               aria-label="Terminal command input"
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
             />
             <button type="submit" className={styles.execBtn} aria-label="Run command" data-cursor="link">
               ↵ RUN

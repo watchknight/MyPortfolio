@@ -214,6 +214,8 @@ export function ContactPage() {
               placeholder="e.g. Alex Rahman"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              autoComplete="name"
+              autoCapitalize="words"
             />
           </div>
 
@@ -222,11 +224,14 @@ export function ContactPage() {
             <input
               id="contact-email"
               type="email"
+              inputMode="email"
               required
               className={styles.formInput}
               placeholder="e.g. alex@example.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              autoComplete="email"
+              autoCapitalize="none"
             />
           </div>
 
@@ -239,6 +244,7 @@ export function ContactPage() {
               placeholder="e.g. Internship Opportunity / Project Collaboration"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+              autoCapitalize="sentences"
             />
           </div>
 
@@ -251,6 +257,7 @@ export function ContactPage() {
               placeholder="Write your message here..."
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              autoCapitalize="sentences"
             />
           </div>
 

@@ -51,6 +51,8 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.65rem 1.2rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   background: var(--color-accent-primary);
   color: var(--color-accent-contrast);
@@ -72,6 +74,8 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.65rem 1.2rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   background: var(--color-bg-card);
   color: var(--color-text-primary);
@@ -154,10 +158,25 @@
 .contactLine {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: var(--color-text-secondary);
+}
+
+.contactLink {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.35rem;
+  transition: color var(--duration-fast) ease;
+}
+
+.contactLink:hover {
+  color: var(--color-accent-primary);
 }
 
 .contactSeparator {
@@ -172,7 +191,7 @@
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -183,7 +202,7 @@
 }
 
 .summaryText {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.65;
   color: var(--color-text-secondary);
   margin: 0;
@@ -212,17 +231,17 @@
 .entryRole {
   font-weight: 600;
   color: var(--color-text-primary);
-  font-size: 1rem;
+  font-size: 1.05rem;
 }
 
 .entryDate {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--color-text-tertiary);
 }
 
 .entryOrg {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--color-accent-primary);
   font-weight: 500;
 }
@@ -232,18 +251,18 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.9rem;
-  line-height: 1.55;
+  gap: 0.45rem;
+  font-size: 1rem;
+  line-height: 1.6;
   color: var(--color-text-secondary);
 }
 
 .skillsTable {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  gap: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.55;
 }
 
 .skillRow {
@@ -268,6 +287,23 @@
 
 .skillListText {
   color: var(--color-text-secondary);
+}
+
+.inlineTouchLink {
+  color: var(--color-accent) !important;
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-xs);
+  vertical-align: middle;
+  font-weight: 500;
+  transition: background var(--duration-fast) ease;
+}
+
+.inlineTouchLink:hover {
+  background: var(--color-accent-subtle);
 }
 
 @media print {

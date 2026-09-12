@@ -1,6 +1,9 @@
 .particleContainer {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   display: block;
   user-select: none;
   cursor: none;
@@ -10,8 +13,7 @@
 
 .particleCanvas {
   display: block;
-  max-width: 100%;
-  width: 100%;
+  max-width: 100% !important;
   pointer-events: auto;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
@@ -26,6 +28,7 @@
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
   border-width: 0;
 }

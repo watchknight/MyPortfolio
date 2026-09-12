@@ -12,25 +12,41 @@
 /* Hero Section - Full Viewport Landing Experience */
 .heroSection {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 3.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.25rem;
   align-items: center;
   min-height: calc(100vh - var(--nav-height) - 1.25rem);
   min-height: calc(100dvh - var(--nav-height) - 1.25rem);
   box-sizing: border-box;
   padding-bottom: 2.75rem;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 900px) {
+  .heroSection {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 3.5rem;
+  }
 }
 
 .heroLeft {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .heroRight {
   display: flex;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Tactical Scroll Explorer Prompt */
@@ -57,6 +73,12 @@
   user-select: none;
   transition: all var(--duration-fast) ease;
   z-index: 5;
+}
+
+@media (max-width: 860px) {
+  .scrollIndicator {
+    display: none;
+  }
 }
 
 :global([data-theme="light"]) .scrollIndicator {
@@ -127,6 +149,9 @@
 
 .titleWrapper {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   margin: 0;
   display: block;
   min-height: clamp(80px, 16vw, 132px);
@@ -187,6 +212,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.4rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   background: var(--color-accent-primary);
   color: var(--color-accent-contrast);
@@ -208,6 +235,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.4rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   background: var(--color-bg-card);
   color: var(--color-text-primary);
@@ -287,9 +316,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.3rem 0.65rem;
+  padding: 0.5rem 0.85rem;
+  min-height: 44px;
+  box-sizing: border-box;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   border-radius: var(--radius-pill);
   background: transparent;
@@ -317,8 +348,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0.5rem 0;
+  min-height: 44px;
+  box-sizing: border-box;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--color-accent-primary);
   background: transparent;
@@ -333,18 +367,21 @@
 
 .featuredGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
   .featuredGrid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 .featuredCard {
   height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .featuredCardContent {
@@ -354,6 +391,9 @@
   justify-content: space-between;
   gap: 1.15rem;
   height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Precision Architectural Header Bar */
@@ -479,7 +519,7 @@
 }
 
 .cardDescription {
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--color-text-secondary);
   margin: 0;
@@ -543,7 +583,9 @@
   font-weight: 600;
   color: var(--color-accent-contrast, #ffffff);
   background: var(--color-accent);
-  padding: 0.45rem 0.9rem;
+  padding: 0.6rem 1.1rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-accent);
   cursor: pointer;
@@ -576,7 +618,9 @@
   color: var(--color-text-secondary);
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border-subtle);
-  padding: 0.45rem 0.75rem;
+  padding: 0.6rem 0.95rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   cursor: pointer;
   text-decoration: none;
@@ -623,7 +667,7 @@
 }
 
 .storyParagraph {
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1.65;
   color: var(--color-text-secondary);
   margin: 0;
@@ -643,7 +687,7 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--color-text-primary);
 }
 
@@ -674,7 +718,7 @@
 }
 
 .contactSubtext {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--color-text-secondary);
   max-width: 520px;
   margin: 0;
