@@ -66,10 +66,10 @@
   height: 68px;
   margin-top: -34px;
   margin-left: -34px;
-  background: rgba(56, 189, 248, 0.28);
+  background: rgba(63, 191, 160, 0.25);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border-color: #38BDF8;
+  border-color: #3FBFA0;
 }
 
 .hoverInspect .dot {

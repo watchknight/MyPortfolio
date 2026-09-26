@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
+import { useFocusTrap } from '../../utils/focusTrap';
+import { profileData } from '../../data/profile';
 import styles from './CommandPalette.module.css';
 
 export interface CommandItem {
@@ -40,6 +42,7 @@ export function CommandPalette({
 }: CommandPaletteProps) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const paletteRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -195,10 +198,10 @@ export function CommandPalette({
       id: 'action-copy-email',
       category: 'Direct Actions',
       title: 'Copy Primary Email Address',
-      subtitle: 'armabdur.rahman04@gmail.com (Instant clipboard copy)',
+      subtitle: `${profileData.contact.email} (Instant clipboard copy)`,
       shortcut: 'C',
       action: () => {
-        navigator.clipboard.writeText('armabdur.rahman04@gmail.com');
+        navigator.clipboard.writeText(profileData.contact.email);
         sound.playChirp(700, 1100, 0.05, 0.06);
       },
     },
@@ -206,10 +209,10 @@ export function CommandPalette({
       id: 'action-github',
       category: 'Direct Actions',
       title: 'Open GitHub Engineering Workspace',
-      subtitle: 'github.com/watchknight (Full repository codebases)',
+      subtitle: `${profileData.contact.github} (Full repository codebases)`,
       shortcut: 'H',
       action: () => {
-        window.open('https://github.com/watchknight', '_blank', 'noopener,noreferrer');
+        window.open(profileData.contact.githubUrl, '_blank', 'noopener,noreferrer');
       },
     },
     {
@@ -249,11 +252,11 @@ export function CommandPalette({
   }, [onClose]);
 
   useScrollLock(isOpen);
+  useFocusTrap(paletteRef, isOpen, { initialFocusRef: inputRef });
 
   useEffect(() => {
     if (isOpen) {
       sound.playDrawer();
-      setTimeout(() => inputRef.current?.focus(), 40);
     }
   }, [isOpen]);
 
@@ -300,6 +303,8 @@ export function CommandPalette({
     >
       <div
         className={styles.palette}
+        ref={paletteRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
         data-lenis-prevent="true"

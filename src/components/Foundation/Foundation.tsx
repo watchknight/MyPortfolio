@@ -104,7 +104,7 @@ export function Foundation() {
     <section className={styles.section} id="foundation">
       <div className="container">
         <header className={styles.sectionHeader}>
-          <span className={styles.sectionEyebrow}>Academic Record &amp; Systems Rigor</span>
+          <span className={styles.sectionEyebrow}>[ academic record &amp; systems rigor ]</span>
           <h2 className={styles.sectionTitle}>
             <ScrambleText text="Engineering Foundation" />
           </h2>
@@ -181,7 +181,7 @@ export function Foundation() {
         {/* Systems Architecture AST Schema Inspector */}
         <div className={styles.schemaWrapper}>
           <div className={styles.schemaLabelGroup}>
-            <span className={styles.schemaEyebrow}>SYSTEMS ARCHITECTURE MANIFEST // VERIFIED AST</span>
+            <span className={styles.schemaEyebrow}>[ systems architecture manifest // verified ast ]</span>
             <h3 className={styles.schemaTitle}>TypeScript Domain Schema</h3>
           </div>
           <DeveloperASTCard />

@@ -60,7 +60,7 @@
   gap: 0.45rem;
   padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
-  background: rgba(14, 18, 23, 0.65);
+  background: rgba(16, 17, 20, 0.65);
   border: 1px solid var(--color-border-hairline);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -88,8 +88,8 @@
 
 .scrollIndicator:hover {
   color: var(--color-accent);
-  border-color: rgba(56, 189, 248, 0.45);
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.18);
+  border-color: rgba(63, 191, 160, 0.40);
+  box-shadow: 0 0 16px rgba(63, 191, 160, 0.18);
   transform: translateX(-50%) translateY(-2px);
 }
 
@@ -174,11 +174,11 @@
 }
 
 .title:hover {
-  text-shadow: 0 0 28px rgba(56, 189, 248, 0.22);
+  text-shadow: 0 0 28px rgba(63, 191, 160, 0.20);
 }
 
 .highlight {
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 60%, #34d399 100%);
+  background: linear-gradient(135deg, #3FBFA0 0%, #C48850 60%, #8CBF6E 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -188,7 +188,7 @@
 
 .highlight:hover {
   background-position: right center;
-  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.35));
+  filter: drop-shadow(0 0 14px rgba(63, 191, 160, 0.30));
 }
 
 .lead {
@@ -282,7 +282,6 @@
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-accent-primary);
 }
@@ -461,7 +460,7 @@
 }
 
 :global([data-theme="light"]) .beaconBadge {
-  background: #f1f5f9;
+  background: #E5E5E1;
   border-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -511,8 +510,8 @@
   font-size: 10px;
   font-weight: 700;
   color: var(--color-success);
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(63, 191, 160, 0.08);
+  border: 1px solid rgba(63, 191, 160, 0.20);
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-xs);
   letter-spacing: 0.03em;
@@ -628,9 +627,9 @@
 }
 
 :global([data-theme="light"]) .secondaryActionBtn {
-  background: #f1f5f9;
+  background: #E5E5E1;
   border-color: rgba(0, 0, 0, 0.1);
-  color: #334155;
+  color: #3D3D39;
 }
 
 .secondaryActionBtn:hover {
@@ -698,7 +697,7 @@
 
 /* Contact Strip */
 .contactStrip {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(129, 140, 248, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(63, 191, 160, 0.05) 0%, rgba(196, 136, 80, 0.05) 100%);
   border: 1px solid var(--color-border-hairline);
   border-radius: var(--radius-md);
   padding: 2.5rem 2rem;

@@ -209,7 +209,7 @@
 .codeBox {
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border-hairline);
-  background-color: #0A0D10;
+  background-color: #0C0D10;
   overflow: hidden;
 }
 
@@ -238,7 +238,7 @@
 }
 
 .copyBtn:hover {
-  color: #FFFFFF;
+  color: #EDEDEA;
   background-color: var(--color-accent);
   border-color: var(--color-accent);
 }
@@ -248,7 +248,7 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: #E2E8F0;
+  color: #B0B0AB;
   overflow-x: auto;
   margin: 0;
 }
@@ -274,7 +274,7 @@
   gap: 0.45rem;
   padding: 0.65rem 1.15rem;
   border-radius: var(--radius-pill);
-  background-color: rgba(16, 185, 129, 0.12);
+  background-color: rgba(63, 191, 160, 0.10);
   border: 1px solid var(--color-accent-emerald);
   color: var(--color-accent-emerald);
   font-family: var(--font-body);

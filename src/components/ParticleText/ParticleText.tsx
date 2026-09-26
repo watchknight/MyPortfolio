@@ -113,30 +113,30 @@ export function ParticleText({
       const imgData = octx.getImageData(0, 0, width, height).data;
 
       const darkLine1Colors = [
-        'rgba(255, 255, 255, 0.98)',
-        'rgba(241, 245, 249, 0.92)',
-        'rgba(56, 189, 248, 0.9)',
-        'rgba(192, 132, 252, 0.85)',
+        'rgba(229, 229, 225, 0.98)',
+        'rgba(237, 237, 234, 0.92)',
+        'rgba(63, 191, 160, 0.85)',
+        'rgba(196, 136, 80, 0.80)',
       ];
 
       const darkLine2Colors = [
-        'rgba(56, 189, 248, 1)',
-        'rgba(129, 140, 248, 1)',
-        'rgba(52, 211, 153, 0.95)',
-        'rgba(192, 132, 252, 0.95)',
-        'rgba(224, 242, 254, 1)',
+        'rgba(63, 191, 160, 1)',
+        'rgba(196, 136, 80, 1)',
+        'rgba(140, 191, 110, 0.95)',
+        'rgba(126, 201, 181, 0.95)',
+        'rgba(229, 229, 225, 1)',
       ];
 
       const lightLine1Colors = [
-        'rgba(15, 23, 42, 0.95)',
-        'rgba(30, 41, 59, 0.9)',
-        'rgba(71, 85, 105, 0.85)',
+        'rgba(26, 26, 24, 0.95)',
+        'rgba(45, 45, 41, 0.9)',
+        'rgba(92, 92, 87, 0.85)',
       ];
 
       const lightLine2Colors = [
-        'rgba(2, 132, 199, 1)',
-        'rgba(79, 70, 229, 0.98)',
-        'rgba(13, 148, 136, 0.95)',
+        'rgba(42, 140, 116, 1)',
+        'rgba(139, 90, 46, 0.98)',
+        'rgba(74, 122, 53, 0.95)',
       ];
 
       const line1Palette = isDark ? darkLine1Colors : lightLine1Colors;
@@ -251,15 +251,15 @@ export function ParticleText({
 
       if (isMouseActive && mouseX >= -10 && mouseX <= width + 10 && mouseY >= -10 && mouseY <= height + 10) {
         ctx.save();
-        ctx.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.45)' : 'rgba(2, 132, 199, 0.45)';
+        ctx.strokeStyle = isDark ? 'rgba(63, 191, 160, 0.40)' : 'rgba(42, 140, 116, 0.45)';
         ctx.lineWidth = 1.25;
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, width < 600 ? 22 : 28, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctx.fillStyle = isDark ? '#3FBFA0' : '#2A8C74';
         ctx.shadowBlur = 8;
-        ctx.shadowColor = isDark ? 'rgba(56, 189, 248, 0.8)' : 'rgba(2, 132, 199, 0.6)';
+        ctx.shadowColor = isDark ? 'rgba(63, 191, 160, 0.70)' : 'rgba(42, 140, 116, 0.6)';
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
         ctx.fill();
@@ -386,7 +386,16 @@ export function ParticleText({
       data-cursor-label={dataCursorLabel}
       aria-label={accessibleTitle}
     >
-      <h1 className={styles.srOnly}>{accessibleTitle}</h1>
+      <h1 className={styles.fallbackTitle}>
+        {lines.map((l, idx) => (
+          <span
+            key={idx}
+            className={`${styles.titleLine} ${l.highlight ? styles.highlight : ''}`}
+          >
+            {l.text}{idx < lines.length - 1 ? ' ' : ''}
+          </span>
+        ))}
+      </h1>
       <canvas
         ref={canvasRef}
         className={styles.particleCanvas}

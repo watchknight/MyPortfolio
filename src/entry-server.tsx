@@ -4,6 +4,7 @@ import { WorksPage } from './pages/Works/WorksPage';
 import { FoundationPage } from './pages/Foundation/FoundationPage';
 import { ResumePage } from './pages/Resume/ResumePage';
 import { ContactPage } from './pages/Contact/ContactPage';
+import { NotFoundPage } from './pages/NotFound/NotFoundPage';
 
 export function render(url: string) {
   const html = renderToString(
@@ -14,6 +15,7 @@ export function render(url: string) {
         FoundationPage,
         ResumePage,
         ContactPage,
+        NotFoundPage,
       }}
     />
   );

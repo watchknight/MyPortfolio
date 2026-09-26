@@ -1,0 +1,52 @@
+.container {
+  display: inline-grid;
+  grid-template-areas: 'clause';
+  vertical-align: baseline;
+  position: relative;
+  text-align: left;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.visualStack {
+  display: contents;
+}
+
+.clauseTrack {
+  grid-area: clause;
+  display: inline;
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(4px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.clauseActive {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Dignified reduced-motion state: disable transitions and offsets */
+@media (prefers-reduced-motion: reduce) {
+  .clauseTrack {
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -19,6 +19,48 @@
   image-rendering: crisp-edges;
 }
 
+.fallbackTitle {
+  display: none;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3.15rem);
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+  margin: 0;
+  user-select: text;
+}
+
+.titleLine {
+  display: inline;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #3FBFA0 0%, #C48850 60%, #8CBF6E 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+:global([data-theme="light"]) .highlight {
+  background: linear-gradient(135deg, #2A8C74 0%, #8B5A2E 60%, #4A7A35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 860px) {
+  .fallbackTitle {
+    display: block;
+  }
+  .particleCanvas {
+    display: none !important;
+  }
+  .particleContainer {
+    cursor: default;
+  }
+}
+
 /* Accessible screen-reader heading */
 .srOnly {
   position: absolute;

@@ -1,6 +1,7 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
+import { profileData } from '../../data/profile';
 import styles from './ResumePage.module.css';
 
 export function ResumePage() {
@@ -14,7 +15,7 @@ export function ResumePage() {
       {/* Top Action Bar */}
       <div className={styles.topBar}>
         <div className={styles.headerText}>
-          <span className={styles.eyebrow}>Verified Credentials</span>
+          <span className={styles.eyebrow}>[ verified credentials ]</span>
           <h1 className={styles.pageTitle} data-cursor="inspect" data-cursor-label="CV">
             <ScrambleText text="Curriculum Vitae" />
           </h1>
@@ -64,18 +65,18 @@ export function ResumePage() {
             <span className={styles.credentialDot} />
             <span>VERIFIED CREDENTIAL // EWU CSE UNDERGRADUATE</span>
           </div>
-          <h2 className={styles.candidateName}>Abdur Rahman Moayed</h2>
-          <p className={styles.candidateTitle}>Software Engineer &bull; Computer Science Undergraduate</p>
+          <h2 className={styles.candidateName}>{profileData.name}</h2>
+          <p className={styles.candidateTitle}>{profileData.role} &bull; {profileData.institution}</p>
 
           <div className={styles.contactLine}>
-            <span>Dhaka, Bangladesh</span>
+            <span>{profileData.location}</span>
             <span className={styles.contactSeparator}>&bull;</span>
-            <a href="mailto:armabdur.rahman04@gmail.com" className={styles.contactLink}>
-              armabdur.rahman04@gmail.com
+            <a href={`mailto:${profileData.contact.email}`} className={styles.contactLink}>
+              {profileData.contact.email}
             </a>
             <span className={styles.contactSeparator}>&bull;</span>
-            <a href="https://github.com/watchknight" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
-              github.com/watchknight
+            <a href={profileData.contact.githubUrl} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
+              {profileData.contact.github}
             </a>
           </div>
         </header>

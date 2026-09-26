@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ProjectData } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
+import { useFocusTrap } from '../../utils/focusTrap';
 import styles from './CaseStudyModal.module.css';
 
 interface CaseStudyModalProps {
@@ -16,6 +17,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
   const [prevId, setPrevId] = useState<string | null>(null);
 
   useScrollLock(Boolean(project));
+  useFocusTrap(modalRef, Boolean(project));
 
   if (project && project.id !== prevId) {
     setPrevId(project.id);

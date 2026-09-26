@@ -1,0 +1,251 @@
+/* ═══════════════════════════════════════════════════════
+ * RadarSweep — Concentric Ring Section Entrance
+ * 
+ * Signature transition for the Education section.
+ * Plays ONCE on scroll-into-view (IntersectionObserver).
+ *
+ * Compositor-only: all motion via transform + opacity.
+ * No width/height/top/left animations — zero layout thrash.
+ *
+ * Reduced motion: CSS fallback renders muted static rings.
+ * The JS component also skips the observer entirely.
+ * ═══════════════════════════════════════════════════════ */
+
+.radarContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+  margin-bottom: -1.5rem;
+  height: 160px;
+}
+
+/* The SVG viewport holding all ring geometry */
+.radarSvg {
+  position: absolute;
+  width: 560px;
+  height: 320px;
+  max-width: 100%;
+  overflow: visible;
+}
+
+/* ── Individual Ring ── */
+.ring {
+  fill: none;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  /* Hidden until animation class applied */
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* Stagger delays — 5 rings, 70ms apart */
+.ring:nth-child(1) { --ring-delay: 0ms; }
+.ring:nth-child(2) { --ring-delay: 70ms; }
+.ring:nth-child(3) { --ring-delay: 140ms; }
+.ring:nth-child(4) { --ring-delay: 210ms; }
+.ring:nth-child(5) { --ring-delay: 280ms; }
+
+/* ── Phase 1: Expansion ── */
+.animate .ring {
+  animation: ringExpand 1100ms var(--ring-delay) var(--ease-out-expo) forwards;
+}
+
+@keyframes ringExpand {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Phase 2: Settle to muted resting state ── */
+.settle .ring {
+  animation: ringSettle 1600ms var(--ease-default) forwards;
+}
+
+@keyframes ringSettle {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: var(--ring-rest, 0.12);
+    transform: scale(1);
+  }
+}
+
+/* ── Sweep arm (rotating radar line) ── */
+.sweepLine {
+  transform-origin: center center;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+.animate .sweepLine {
+  animation: sweepRotate 1600ms 60ms var(--ease-out-expo) forwards;
+}
+
+@keyframes sweepRotate {
+  0% {
+    opacity: 0.85;
+    transform: rotate(-90deg);
+  }
+  65% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(270deg);
+  }
+}
+
+/* ── Sweep glow cone (radial gradient trail) ── */
+.sweepCone {
+  transform-origin: center center;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+.animate .sweepCone {
+  animation: coneSweep 1600ms 60ms var(--ease-out-expo) forwards;
+}
+
+@keyframes coneSweep {
+  0% {
+    opacity: 0.35;
+    transform: rotate(-90deg);
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(270deg);
+  }
+}
+
+/* ── Center origin dot ── */
+.centerDot {
+  transform-origin: center center;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+.animate .centerDot {
+  animation: dotPing 500ms 40ms var(--ease-out-expo) forwards;
+}
+
+@keyframes dotPing {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.settle .centerDot {
+  animation: dotFade 1200ms var(--ease-default) forwards;
+}
+
+@keyframes dotFade {
+  0% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* ── Crosshair tick marks ── */
+.crosshairTick {
+  transform-origin: center center;
+  will-change: opacity;
+  opacity: 0;
+}
+
+.animate .crosshairTick {
+  animation: tickReveal 600ms 200ms var(--ease-out-expo) forwards;
+}
+
+@keyframes tickReveal {
+  0% { opacity: 0; }
+  100% { opacity: 0.4; }
+}
+
+.settle .crosshairTick {
+  animation: tickSettle 1200ms var(--ease-default) forwards;
+}
+
+@keyframes tickSettle {
+  0% { opacity: 0.4; }
+  100% { opacity: 0.12; }
+}
+
+/* ═════════════════════════════════════════════════
+ * REDUCED MOTION — dignified static fallback
+ * Note: reset.css also kills animation-duration globally,
+ * so this is a belt-and-suspenders visual override.
+ * ═════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    opacity: var(--ring-rest, 0.12) !important;
+    transform: scale(1) !important;
+    animation: none !important;
+  }
+
+  .sweepLine,
+  .sweepCone {
+    opacity: 0 !important;
+    animation: none !important;
+  }
+
+  .centerDot {
+    opacity: 0.3 !important;
+    transform: scale(1) !important;
+    animation: none !important;
+  }
+
+  .crosshairTick {
+    opacity: 0.12 !important;
+    animation: none !important;
+  }
+}
+
+/* ── Responsive scaling ── */
+@media (max-width: 640px) {
+  .radarContainer {
+    height: 110px;
+    margin-bottom: -1rem;
+  }
+
+  .radarSvg {
+    width: 340px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 420px) {
+  .radarContainer {
+    height: 80px;
+    margin-bottom: -0.75rem;
+  }
+
+  .radarSvg {
+    width: 260px;
+    height: 160px;
+  }
+}

@@ -33,8 +33,8 @@
   pointer-events: none;
   background: radial-gradient(
     480px circle at var(--mouse-x, 200px) var(--mouse-y, 100px),
-    rgba(56, 189, 248, 0.08) 0%,
-    rgba(56, 189, 248, 0.02) 40%,
+    rgba(63, 191, 160, 0.08) 0%,
+    rgba(63, 191, 160, 0.02) 40%,
     transparent 70%
   );
   opacity: var(--spotlight-opacity, 0);
@@ -60,11 +60,11 @@
   color: var(--color-accent);
   padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
-  background: rgba(14, 18, 23, 0.7);
+  background: rgba(16, 17, 20, 0.70);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(63, 191, 160, 0.25);
+  box-shadow: 0 0 16px rgba(63, 191, 160, 0.08);
   position: relative;
   z-index: 1;
   user-select: none;
@@ -72,16 +72,16 @@
 }
 
 .eyebrow:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.18);
+  border-color: rgba(63, 191, 160, 0.45);
+  box-shadow: 0 0 20px rgba(63, 191, 160, 0.18);
 }
 
 .eyebrowDot {
   width: 6.5px;
   height: 6.5px;
   border-radius: 50%;
-  background: #10B981;
-  box-shadow: 0 0 10px #10B981;
+  background: var(--color-success);
+  box-shadow: 0 0 10px var(--color-success);
   animation: pulseBeacon 2.2s infinite ease-in-out;
 }
 
@@ -135,7 +135,7 @@
   color: var(--color-accent);
   opacity: 0.9;
   margin-right: 0.22em;
-  text-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  text-shadow: 0 0 16px rgba(63, 191, 160, 0.35);
   user-select: none;
 }
 
@@ -146,11 +146,11 @@
 .heroTitleHighlight {
   background: linear-gradient(
     115deg,
-    #FFFFFF 0%,
-    #38BDF8 25%,
-    #818CF8 52%,
-    #34D399 78%,
-    #38BDF8 100%
+    #EDEDEA 0%,
+    #3FBFA0 25%,
+    #C48850 52%,
+    #8CBF6E 78%,
+    #3FBFA0 100%
   );
   background-size: 260% auto;
   -webkit-background-clip: text;
@@ -158,7 +158,7 @@
   animation: heroShimmer 8s linear infinite;
   display: inline;
   font-weight: 700;
-  filter: drop-shadow(0 2px 14px rgba(56, 189, 248, 0.22));
+  filter: drop-shadow(0 2px 14px rgba(63, 191, 160, 0.20));
 }
 
 @keyframes heroShimmer {
@@ -203,10 +203,10 @@
 }
 
 .roleTabActive {
-  background: rgba(56, 189, 248, 0.12);
-  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(63, 191, 160, 0.12);
+  border-color: rgba(63, 191, 160, 0.35);
   color: #FFFFFF;
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.18);
+  box-shadow: 0 0 14px rgba(63, 191, 160, 0.18);
 }
 
 .roleTabIndicator {
@@ -226,7 +226,7 @@
 .heroSubtitle {
   font-size: clamp(0.95rem, 0.4vw + 0.8rem, 1.0625rem);
   line-height: 1.72;
-  color: #94A3B8;
+  color: var(--color-text-tertiary);
   max-width: 44rem;
   letter-spacing: -0.012em;
   position: relative;

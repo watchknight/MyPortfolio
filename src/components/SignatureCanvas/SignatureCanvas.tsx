@@ -12,16 +12,16 @@ export function SignatureCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
-  const [color, setColor] = useState('#38bdf8'); // Cyan default
+  const [color, setColor] = useState('#3FBFA0'); // Cyan default
   const [lineWidth, setLineWidth] = useState(3);
   const [strokeCount, setStrokeCount] = useState(0);
   const lastPointRef = useRef<Point | null>(null);
 
   const colors = [
-    { label: 'Cyan', val: '#38bdf8' },
-    { label: 'Emerald', val: '#10b981' },
-    { label: 'Violet', val: '#c084fc' },
-    { label: 'Amber', val: '#f59e0b' },
+    { label: 'Verdigris', val: '#3FBFA0' },
+    { label: 'Celadon', val: '#7EC9B5' },
+    { label: 'Copper', val: '#C48850' },
+    { label: 'Sage', val: '#8CBF6E' },
   ];
 
   // Initialize canvas size
@@ -132,11 +132,11 @@ export function SignatureCanvas() {
         <div className={styles.titleArea}>
           <div className={styles.badgeRow}>
             <span className={styles.badgeDot} />
-            <span className={styles.badgeText}>INTERACTIVE GUESTBOOK</span>
+            <span className={styles.badgeText}>[ interactive guestbook ]</span>
           </div>
-          <h3 className={styles.title} data-cursor="inspect" data-cursor-label="GUESTBOOK">
+          <h2 className={styles.title} data-cursor="inspect" data-cursor-label="GUESTBOOK">
             <ScrambleText text="Leave Your Digital Mark" />
-          </h3>
+          </h2>
           <p className={styles.subtitle}>
             Sign or sketch with neon digital ink. Your coordinates render live on the canvas.
           </p>

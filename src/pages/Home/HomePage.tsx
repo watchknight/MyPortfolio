@@ -6,6 +6,8 @@ import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanva
 import { ParticleText } from '../../components/ParticleText/ParticleText';
 import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
+import { RadarSweep } from '../../components/RadarSweep/RadarSweep';
+import { RotatingClause } from '../../components/RotatingClause/RotatingClause';
 import { projects } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
@@ -67,8 +69,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
           <p className={styles.lead}>
             I&apos;m a Computer Science student at East West University in Dhaka, Bangladesh.
-            I specialize in building clean web applications, browser tools, and practical software
-            that solves real everyday problems.
+            I build software that <RotatingClause />
           </p>
 
           <div className={styles.heroActions}>
@@ -152,7 +153,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       <section id="featured-work" className={styles.section} aria-label="Featured Projects">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
-            <span className={styles.sectionEyebrow}>Selected Projects</span>
+            <span className={styles.sectionEyebrow}>[ selected projects ]</span>
             <h2 className={styles.sectionTitle} data-cursor="inspect" data-cursor-label="PROJECTS">
               <ScrambleText text="Featured Work" />
             </h2>
@@ -323,7 +324,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       <section className={styles.section} aria-label="Education & Background">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
-            <span className={styles.sectionEyebrow}>Academic Record</span>
+            <span className={styles.sectionEyebrow}>[ academic record ]</span>
             <h2 className={styles.sectionTitle} data-cursor="inspect" data-cursor-label="ACADEMICS">
               <ScrambleText text="Education & Background" />
             </h2>
@@ -340,6 +341,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             <span>&rarr;</span>
           </button>
         </header>
+
+        {/* Signature entrance: concentric ring radar sweep */}
+        <RadarSweep />
 
         <SpotlightCard
           className={styles.storyCard}

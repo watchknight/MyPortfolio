@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type RoutePath = '/' | '/works' | '/foundation' | '/resume' | '/contact';
+export type RoutePath = '/' | '/works' | '/foundation' | '/resume' | '/contact' | '/404';
+
+const KNOWN_ROUTES: RoutePath[] = ['/', '/works', '/foundation', '/resume', '/contact'];
 
 function normalizePath(path: string): RoutePath {
   const clean = path.split('?')[0].split('#')[0].replace(/\/+$/, '') || '/';
-  if (['/works', '/foundation', '/resume', '/contact'].includes(clean)) {
+  if (KNOWN_ROUTES.includes(clean as RoutePath)) {
     return clean as RoutePath;
   }
-  return '/';
+  return '/404';
 }
 
 export function useRouter(initialPath?: string) {
@@ -31,10 +33,13 @@ export function useRouter(initialPath?: string) {
 
   const navigate = useCallback((to: string) => {
     const normalized = normalizePath(to);
-    if (window.location.pathname !== normalized) {
-      window.history.pushState(null, '', normalized);
+    const targetUrl = normalized === '/404' ? to : normalized;
+    if (window.location.pathname !== targetUrl) {
+      window.history.pushState(null, '', targetUrl);
       setCurrentPath(normalized);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setCurrentPath(normalized);
     }
   }, []);
 

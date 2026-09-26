@@ -96,7 +96,7 @@ export function FoundationPage() {
     <div className={styles.pageContainer}>
       {/* Header */}
       <header className={styles.header}>
-        <span className={styles.eyebrow}>Education &amp; Credentials</span>
+        <span className={styles.eyebrow}>[ education &amp; credentials ]</span>
         <h1 className={styles.title} data-cursor="inspect" data-cursor-label="ACADEMICS">
           <ScrambleText text="Background & Skills" />
         </h1>
@@ -179,7 +179,7 @@ export function FoundationPage() {
       {/* Developer AST Schema */}
       <section className={styles.schemaSection} aria-label="Developer Schema">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          <span className={styles.eyebrow}>Developer Profile Manifest</span>
+          <span className={styles.eyebrow}>[ developer profile manifest ]</span>
           <h2 className={styles.title} style={{ fontSize: '1.4rem' }}>TypeScript Schema</h2>
         </div>
         <DeveloperASTCard />

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { sound } from '../../utils/audio';
+import { projects } from '../../data/projects';
+import { profileData } from '../../data/profile';
 import styles from './HeroSandbox.module.css';
 
 interface TerminalLog {
@@ -21,7 +23,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
     { id: '2', type: 'output', text: 'Type a command or click a quick action below:' },
   ]);
 
-  // Clock
+  // Live Clock (Dhaka Node Timezone)
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -72,105 +74,234 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
 
     sound.playClick(750, 0.02, 0.05);
 
+    const now = Date.now().toString();
     const newLogs: TerminalLog[] = [
       ...logs,
-      { id: Date.now() + '-cmd', type: 'cmd', text: `$ ${clean}` },
+      { id: `${now}-cmd`, type: 'cmd', text: `$ ${clean}` },
     ];
 
     if (clean === 'whoami') {
       newLogs.push({
-        id: Date.now() + '-out',
+        id: `${now}-out`,
         type: 'success',
-        text: 'Abdur Rahman Moayed — Software Engineer & Systems Builder (EWU B.Sc. CSE)',
+        text: `NAME:      ${profileData.name} (@${profileData.handle})`,
       });
       newLogs.push({
-        id: Date.now() + '-sub',
+        id: `${now}-role`,
         type: 'output',
-        text: 'Specializing in browser internals, OS-level security countermeasures, and high-performance web systems.',
+        text: `ROLE:      ${profileData.role}`,
       });
-    } else if (clean === 'projects' || clean === 'ls projects') {
       newLogs.push({
-        id: Date.now() + '-out',
+        id: `${now}-study`,
+        type: 'output',
+        text: `STUDY:     ${profileData.degree} @ ${profileData.institution}`,
+      });
+      newLogs.push({
+        id: `${now}-loc`,
+        type: 'output',
+        text: `LOCATION:  ${profileData.location} [${profileData.timezone}]`,
+      });
+      newLogs.push({
+        id: `${now}-status`,
+        type: 'info',
+        text: `STATUS:    ${profileData.status}`,
+      });
+      newLogs.push({
+        id: `${now}-bio`,
+        type: 'output',
+        text: `SUMMARY:   ${profileData.summary}`,
+      });
+      newLogs.push({
+        id: `${now}-links`,
+        type: 'info',
+        text: `PROFILE:   ${profileData.contact.github} • ${profileData.contact.linkedin}`,
+      });
+    } else if (clean === 'projects' || clean === 'ls' || clean === 'ls projects' || clean === 'dir') {
+      newLogs.push({
+        id: `${now}-out`,
         type: 'success',
-        text: '6 Production & Research Systems Found:',
+        text: `ACTIVE SYSTEMS & ARCHITECTURAL LEDGER (${projects.length}):`,
       });
       newLogs.push({
-        id: Date.now() + '-p1',
+        id: `${now}-div1`,
         type: 'info',
-        text: '1. PureFeed — Chromium MV3 Main-World Anti-Adblock Engine (<16ms)',
+        text: '------------------------------------------------------------------------',
       });
+
+      projects.forEach((p, idx) => {
+        const num = String(idx + 1).padStart(2, '0');
+        const metric = p.metric.value.padEnd(12, ' ');
+        const stack = p.environment.slice(0, 3).join(', ');
+
+        newLogs.push({
+          id: `${now}-p${idx}-head`,
+          type: 'output',
+          text: `[${num}] ${p.title.padEnd(15, ' ')} ${metric} [${p.status}]`,
+        });
+        newLogs.push({
+          id: `${now}-p${idx}-stack`,
+          type: 'info',
+          text: `     Stack: ${stack}`,
+        });
+        newLogs.push({
+          id: `${now}-p${idx}-desc`,
+          type: 'info',
+          text: `     Desc:  ${p.shortDescription}`,
+        });
+        const targetUrl = p.liveUrl || p.repository || p.githubUrl;
+        if (targetUrl) {
+          newLogs.push({
+            id: `${now}-p${idx}-link`,
+            type: 'info',
+            text: `     Link:  ${targetUrl.replace(/^https?:\/\//, '')}`,
+          });
+        }
+      });
+
       newLogs.push({
-        id: Date.now() + '-p2',
+        id: `${now}-div2`,
         type: 'info',
-        text: '2. FocusGuard — OS-Level Windows Registry & DNS Sinkhole (580+ hosts)',
+        text: '------------------------------------------------------------------------',
       });
       newLogs.push({
-        id: Date.now() + '-p3',
-        type: 'info',
-        text: '3. DocLensBD — MediaPipe 468-Point 3D Virtual Eyewear Try-On (60 FPS)',
-      });
-      newLogs.push({
-        id: Date.now() + '-p4',
-        type: 'info',
-        text: '4. Rannabanna — Heuristic Recipe Scaling & SQLite Matchmaker (0.8ms)',
-      });
-      newLogs.push({
-        id: Date.now() + '-act',
+        id: `${now}-tip`,
         type: 'warn',
-        text: 'Tip: Run "works" to inspect full code architectures and live demos.',
+        text: "Tip: Run 'works' or click 'Table [T]' to inspect full interactive metrics.",
       });
-    } else if (clean === 'skills' || clean === 'stack') {
+    } else if (clean === 'skills' || clean === 'stack' || clean === 'tech') {
       newLogs.push({
-        id: Date.now() + '-out',
+        id: `${now}-out`,
         type: 'success',
-        text: 'Core Architecture Stack:',
+        text: 'CORE ARCHITECTURE & TECHNICAL STACK:',
       });
       newLogs.push({
-        id: Date.now() + '-s1',
-        type: 'output',
-        text: 'Languages: TypeScript, JavaScript (ESNext), C++, HTML5/CSS3',
+        id: `${now}-div1`,
+        type: 'info',
+        text: '------------------------------------------------------------------------',
       });
       newLogs.push({
-        id: Date.now() + '-s2',
+        id: `${now}-s1`,
         type: 'output',
-        text: 'Systems: Chromium MV3, Windows Registry APIs, OS DNS Sockets, Web Audio DSP',
+        text: `Languages:  ${profileData.skills.languages.join(', ')}`,
       });
       newLogs.push({
-        id: Date.now() + '-s3',
+        id: `${now}-s2`,
         type: 'output',
-        text: 'Frameworks: React 19, Next.js, Node.js, Express, MediaPipe 3D, SQLite',
+        text: `Systems:    ${profileData.skills.systems.join(', ')}`,
       });
+      newLogs.push({
+        id: `${now}-s3`,
+        type: 'output',
+        text: `Frontend:   ${profileData.skills.frontend.join(', ')}`,
+      });
+      newLogs.push({
+        id: `${now}-s4`,
+        type: 'output',
+        text: `Backend:    ${profileData.skills.backend.join(', ')}`,
+      });
+      newLogs.push({
+        id: `${now}-s5`,
+        type: 'output',
+        text: `Tooling/OS: ${profileData.skills.tools.join(', ')}`,
+      });
+      newLogs.push({
+        id: `${now}-div2`,
+        type: 'info',
+        text: '------------------------------------------------------------------------',
+      });
+      newLogs.push({
+        id: `${now}-cw`,
+        type: 'info',
+        text: `Coursework: ${profileData.coursework.slice(0, 5).join(' • ')}`,
+      });
+    } else if (clean === 'contact' || clean === 'hire' || clean === 'email') {
+      newLogs.push({
+        id: `${now}-out`,
+        type: 'success',
+        text: 'DIRECT COMMUNICATIONS & RECRUITER DISPATCH:',
+      });
+      newLogs.push({
+        id: `${now}-div1`,
+        type: 'info',
+        text: '------------------------------------------------------------------------',
+      });
+      newLogs.push({
+        id: `${now}-c1`,
+        type: 'output',
+        text: `Email:       ${profileData.contact.email}`,
+      });
+      newLogs.push({
+        id: `${now}-c2`,
+        type: 'output',
+        text: `GitHub:      https://${profileData.contact.github}`,
+      });
+      newLogs.push({
+        id: `${now}-c3`,
+        type: 'output',
+        text: `LinkedIn:    https://linkedin.com/${profileData.contact.linkedin}`,
+      });
+      newLogs.push({
+        id: `${now}-c4`,
+        type: 'output',
+        text: `Location:    ${profileData.contact.location} (${profileData.contact.timezone})`,
+      });
+      newLogs.push({
+        id: `${now}-c5`,
+        type: 'info',
+        text: `Turnaround:  Response guaranteed ${profileData.contact.responseWindow}`,
+      });
+      newLogs.push({
+        id: `${now}-div2`,
+        type: 'info',
+        text: '------------------------------------------------------------------------',
+      });
+      newLogs.push({
+        id: `${now}-tip`,
+        type: 'warn',
+        text: "Tip: Type 'cd /contact' to launch direct message transmission interface.",
+      });
+
+      if (clean === 'hire' || clean === 'cd /contact') {
+        setTimeout(() => onNavigate('/contact'), 500);
+      }
     } else if (clean === 'works' || clean === 'cd /works') {
-      newLogs.push({ id: Date.now() + '-out', type: 'success', text: 'Navigating to Selected Works...' });
-      setTimeout(() => onNavigate('/works'), 500);
-    } else if (clean === 'contact' || clean === 'hire') {
-      newLogs.push({ id: Date.now() + '-out', type: 'success', text: 'Opening Direct Communications Channel...' });
-      setTimeout(() => onNavigate('/contact'), 500);
+      newLogs.push({
+        id: `${now}-out`,
+        type: 'success',
+        text: 'Navigating to Selected Architectural Works...',
+      });
+      setTimeout(() => onNavigate('/works'), 350);
     } else if (clean === 'clear' || clean === 'cls') {
-      setLogs([{ id: Date.now().toString(), type: 'info', text: 'Console cleared. Ready for input.' }]);
+      setLogs([
+        {
+          id: `${now}-clr`,
+          type: 'info',
+          text: `${profileData.handle}@node-dhaka ~ console cleared. Ready for input.`,
+        },
+      ]);
       setInputVal('');
       return;
     } else if (clean === 'help') {
       newLogs.push({
-        id: Date.now() + '-help',
+        id: `${now}-help`,
         type: 'info',
-        text: 'Available commands: whoami, projects, skills, works, contact, clear',
+        text: 'Available Commands: whoami, projects, skills, contact, works, clear, help',
       });
     } else {
       newLogs.push({
-        id: Date.now() + '-err',
+        id: `${now}-err`,
         type: 'warn',
-        text: `Command not recognized: "${clean}". Try: whoami, projects, skills, works, contact, clear.`,
+        text: `Command not recognized: "${clean}". Try: whoami, projects, skills, contact, clear.`,
       });
     }
 
     setLogs(newLogs);
     setInputVal('');
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (outputContainerRef.current) {
         outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight;
       }
-    }, 40);
+    });
   };
 
   return (
@@ -181,7 +312,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
           <span className={`${styles.dot} ${styles.dotRed}`} />
           <span className={`${styles.dot} ${styles.dotYellow}`} />
           <span className={`${styles.dot} ${styles.dotGreen}`} />
-          <span className={styles.windowTitle}>moayed@node-dhaka ~ /workspace</span>
+          <span className={styles.windowTitle}>{profileData.handle}@node-dhaka ~ /workspace</span>
         </div>
 
         {/* Tab Controls */}
@@ -319,7 +450,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
             <div className={styles.telemetryCard}>
               <span className={styles.tcLabel}>DHAKA NODE ORIGIN</span>
               <span className={styles.tcValue}>{dhakaTime || '19:00:00'}</span>
-              <span className={styles.tcSub}>Asia/Dhaka (GMT+6)</span>
+              <span className={styles.tcSub}>{profileData.timezone}</span>
             </div>
 
             <div className={styles.telemetryCard}>
@@ -361,41 +492,29 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
         <div className={styles.matrixBody}>
           <div className={styles.matrixHead}>
             <div className={styles.matrixTitleGroup}>
-              <h4 className={styles.matrixTitle}>Abdur Rahman Moayed</h4>
-              <span className={styles.matrixSub}>B.Sc. in Computer Science &amp; Engineering</span>
+              <h4 className={styles.matrixTitle}>{profileData.name}</h4>
+              <span className={styles.matrixSub}>{profileData.degree}</span>
             </div>
-            <span className={styles.matrixBadge}>EAST WEST UNIVERSITY</span>
+            <span className={styles.matrixBadge}>{profileData.institution.toUpperCase()}</span>
           </div>
 
           <div className={styles.matrixList}>
             <div className={styles.matrixItem}>
               <span className={styles.miBullet}>01</span>
               <div>
-                <span className={styles.miTitle}>East West University (EWU)</span>
-                <span className={styles.miDesc}>Computer Science &amp; Engineering (2025—Present)</span>
+                <span className={styles.miTitle}>{profileData.institution}</span>
+                <span className={styles.miDesc}>{profileData.degree}</span>
               </div>
             </div>
-            <div className={styles.matrixItem}>
-              <span className={styles.miBullet}>02</span>
-              <div>
-                <span className={styles.miTitle}>Board General Merit Scholarship</span>
-                <span className={styles.miDesc}>SSC Class 10 (2021) — Perfect GPA 5.0</span>
+            {profileData.distinctions.map((d, i) => (
+              <div key={d.title + d.year} className={styles.matrixItem}>
+                <span className={styles.miBullet}>{String(i + 2).padStart(2, '0')}</span>
+                <div>
+                  <span className={styles.miTitle}>{d.title}</span>
+                  <span className={styles.miDesc}>{d.level} ({d.year})</span>
+                </div>
               </div>
-            </div>
-            <div className={styles.matrixItem}>
-              <span className={styles.miBullet}>03</span>
-              <div>
-                <span className={styles.miTitle}>Board General Merit Scholarship</span>
-                <span className={styles.miDesc}>JSC Class 8 (2018) — Perfect GPA 5.0</span>
-              </div>
-            </div>
-            <div className={styles.matrixItem}>
-              <span className={styles.miBullet}>04</span>
-              <div>
-                <span className={styles.miTitle}>National Distinction Recognition</span>
-                <span className={styles.miDesc}>PSC Class 5 (2015) — Perfect GPA 5.0</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}

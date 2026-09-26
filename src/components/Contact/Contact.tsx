@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { ScrambleText } from '../ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
+import { profileData } from '../../data/profile';
 import styles from './Contact.module.css';
 
 export function Contact() {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
-    navigator.clipboard.writeText('armabdur.rahman04@gmail.com');
+    navigator.clipboard.writeText(profileData.contact.email);
     setCopied(true);
     sound.playChirp(700, 1100, 0.05, 0.06);
     setTimeout(() => setCopied(false), 2400);
@@ -43,7 +44,7 @@ export function Contact() {
 
               <div className={styles.actionRow}>
                 <a
-                  href="mailto:armabdur.rahman04@gmail.com"
+                  href={`mailto:${profileData.contact.email}`}
                   className={styles.sendBtn}
                   onClick={() => sound.playClick(850, 0.03, 0.08)}
                   data-cursor="link"
@@ -75,8 +76,8 @@ export function Contact() {
               <div className={styles.channelGrid}>
                 <div className={styles.channelItem}>
                   <span className={styles.channelLabel}>Primary Email</span>
-                  <a href="mailto:armabdur.rahman04@gmail.com" className={styles.channelLink} data-cursor="link">
-                    <span>armabdur.rahman04@gmail.com</span>
+                  <a href={`mailto:${profileData.contact.email}`} className={styles.channelLink} data-cursor="link">
+                    <span>{profileData.contact.email}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />
                       <polyline points="7 7 17 7 17 17" />
@@ -86,8 +87,8 @@ export function Contact() {
 
                 <div className={styles.channelItem}>
                   <span className={styles.channelLabel}>GitHub Workspace</span>
-                  <a href="https://github.com/watchknight" target="_blank" rel="noopener noreferrer" className={styles.channelLink} data-cursor="link">
-                    <span>github.com/watchknight</span>
+                  <a href={profileData.contact.githubUrl} target="_blank" rel="noopener noreferrer" className={styles.channelLink} data-cursor="link">
+                    <span>{profileData.contact.github}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />
                       <polyline points="7 7 17 7 17 17" />
@@ -97,18 +98,17 @@ export function Contact() {
 
                 <div className={styles.channelItem}>
                   <span className={styles.channelLabel}>LinkedIn Registry</span>
-                  <a href="https://linkedin.com/in/abdur-rahman-moayed-9225b5389" target="_blank" rel="noopener noreferrer" className={styles.channelLink} data-cursor="link">
-                    <span>in/abdur-rahman-moayed</span>
+                  <a href={profileData.contact.linkedinUrl} target="_blank" rel="noopener noreferrer" className={styles.channelLink} data-cursor="link">
+                    <span>{profileData.contact.linkedin}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />
-                      <polyline points="7 7 17 7 17 17" />
                     </svg>
                   </a>
                 </div>
 
                 <div className={styles.channelItem}>
                   <span className={styles.channelLabel}>Curriculum Vitae</span>
-                  <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className={styles.channelLink} data-cursor="link">
+                  <a href={profileData.contact.resumeUrl} target="_blank" rel="noopener noreferrer" className={styles.channelLink} data-cursor="link">
                     <span>resume.pdf (Download)</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />

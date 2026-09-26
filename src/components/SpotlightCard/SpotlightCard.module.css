@@ -16,11 +16,11 @@
 
 .cardShell:hover {
   filter: drop-shadow(0 22px 50px rgba(0, 0, 0, 0.65))
-          drop-shadow(0 0 25px rgba(56, 189, 248, 0.2));
+          drop-shadow(0 0 25px rgba(63, 191, 160, 0.18));
 }
 
 :global([data-theme="light"]) .cardShell:hover {
-  filter: drop-shadow(0 20px 42px rgba(2, 132, 199, 0.16))
+  filter: drop-shadow(0 20px 42px rgba(42, 140, 116, 0.16))
           drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
 }
 
@@ -44,10 +44,10 @@
   );
   background: linear-gradient(
     135deg,
-    rgba(56, 189, 248, 0.55) 0%,
-    rgba(255, 255, 255, 0.12) 30%,
-    rgba(129, 140, 248, 0.35) 70%,
-    rgba(56, 189, 248, 0.75) 100%
+    rgba(63, 191, 160, 0.50) 0%,
+    rgba(229, 229, 225, 0.12) 30%,
+    rgba(196, 136, 80, 0.20) 70%,
+    rgba(63, 191, 160, 0.65) 100%
   );
   padding: 1.5px;
   transform-style: preserve-3d;
@@ -58,28 +58,28 @@
 :global([data-theme="light"]) .cardBevel {
   background: linear-gradient(
     135deg,
-    rgba(2, 132, 199, 0.5) 0%,
+    rgba(42, 140, 116, 0.5) 0%,
     rgba(0, 0, 0, 0.12) 40%,
-    rgba(2, 132, 199, 0.35) 100%
+    rgba(42, 140, 116, 0.35) 100%
   );
 }
 
 .cardShell:hover .cardBevel {
   background: linear-gradient(
     135deg,
-    rgba(56, 189, 248, 0.9) 0%,
-    rgba(255, 255, 255, 0.3) 40%,
-    rgba(129, 140, 248, 0.6) 70%,
-    rgba(56, 189, 248, 1) 100%
+    rgba(63, 191, 160, 0.80) 0%,
+    rgba(229, 229, 225, 0.25) 40%,
+    rgba(196, 136, 80, 0.35) 70%,
+    rgba(63, 191, 160, 0.90) 100%
   );
 }
 
 :global([data-theme="light"]) .cardShell:hover .cardBevel {
   background: linear-gradient(
     135deg,
-    rgba(2, 132, 199, 0.8) 0%,
+    rgba(42, 140, 116, 0.8) 0%,
     rgba(0, 0, 0, 0.18) 40%,
-    rgba(2, 132, 199, 0.6) 100%
+    rgba(42, 140, 116, 0.6) 100%
   );
 }
 
@@ -100,7 +100,7 @@
     15px 100%,
     0 calc(100% - 15px)
   );
-  background: linear-gradient(165deg, rgba(20, 25, 33, 0.95) 0%, rgba(11, 14, 19, 0.98) 100%);
+  background: linear-gradient(165deg, rgba(30, 31, 36, 0.95) 0%, rgba(16, 17, 20, 0.98) 100%);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   display: flex;
@@ -108,7 +108,7 @@
 }
 
 :global([data-theme="light"]) .chamferCanvas {
-  background: linear-gradient(165deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(165deg, #ffffff 0%, #F7F7F5 100%);
 }
 
 .spotlightOverlay {

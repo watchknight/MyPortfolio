@@ -170,12 +170,17 @@
 }
 
 .statusRunning {
-  color: #38bdf8;
+  color: var(--color-accent);
   animation: pulse 1s infinite;
 }
 
 .statusPassed {
-  color: #34d399;
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.statusFailed {
+  color: var(--color-error);
   font-weight: 600;
 }
 
@@ -205,7 +210,7 @@
 }
 
 .certCard {
-  background: rgba(56, 189, 248, 0.05);
+  background: rgba(63, 191, 160, 0.05);
   border: 1px solid var(--color-accent-glow);
   border-radius: var(--radius-md);
   padding: 1.1rem;

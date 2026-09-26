@@ -102,17 +102,22 @@ export function CanvasGrid() {
     const getThemeColors = () => {
       const style = getComputedStyle(document.documentElement);
       return {
-        grid: style.getPropertyValue('--canvas-grid-color').trim() || 'rgba(148, 163, 184, 0.08)',
-        particle: style.getPropertyValue('--canvas-particle-color').trim() || 'rgba(56, 189, 248, 0.5)',
-        line: style.getPropertyValue('--canvas-line-color').trim() || 'rgba(56, 189, 248, 0.15)',
+        grid: style.getPropertyValue('--canvas-grid-color').trim() || 'rgba(133, 133, 128, 0.07)',
+        particle: style.getPropertyValue('--canvas-particle-color').trim() || 'rgba(63, 191, 160, 0.50)',
+        line: style.getPropertyValue('--canvas-line-color').trim() || 'rgba(63, 191, 160, 0.16)',
+        accent: style.getPropertyValue('--color-accent-primary').trim() || 'rgba(63, 191, 160, 0.9)',
       };
     };
+
+    // Smooth atmospheric intensity modulation
+    let currentIntensity = 1.0;
 
     // Render loop
     const render = () => {
       if (prefersReducedMotion) {
         // Render simple static grid once
         ctx.clearRect(0, 0, width, height);
+        ctx.globalAlpha = 0.45;
         const colors = getThemeColors();
         ctx.fillStyle = colors.grid;
 
@@ -129,6 +134,59 @@ export function CanvasGrid() {
       }
 
       ctx.clearRect(0, 0, width, height);
+
+      // Section-aware and route-aware atmospheric intensity grading
+      let targetIntensity = 1.0;
+      if (typeof document !== 'undefined') {
+        if (document.body.style.overflow === 'hidden' || document.querySelector('[role="dialog"]')) {
+          targetIntensity = 0.32; // Modals: dim background mesh to let dense specs breathe
+        } else {
+          const path = window.location.pathname;
+          if (path === '/resume') {
+            targetIntensity = 0.30; // Clean, high-legibility document feel
+          } else if (path === '/foundation') {
+            targetIntensity = 0.48; // Sober academic & credentials focus
+          } else if (path === '/contact') {
+            targetIntensity = 0.68; // Direct human communication
+          } else if (path === '/works') {
+            targetIntensity = 0.82; // Engineering project gallery
+          } else {
+            // Homepage section modulation based on viewport position
+            const vh = window.innerHeight || 800;
+            const eduSection = document.querySelector('section[aria-label*="Education"]');
+            const guestbookSection = document.querySelector('section[aria-label*="Guestbook"], section[aria-label*="Digital Guestbook"]');
+
+            if (eduSection) {
+              const rect = eduSection.getBoundingClientRect();
+              if (rect.top <= vh * 0.65 && rect.bottom >= vh * 0.25) {
+                targetIntensity = 0.48; // Dim by 52% when reading academic records
+              } else if (guestbookSection) {
+                const gRect = guestbookSection.getBoundingClientRect();
+                if (gRect.top <= vh * 0.75 && gRect.bottom >= vh * 0.2) {
+                  targetIntensity = 0.88; // Step forward for interactive canvas
+                } else if (window.scrollY > 400) {
+                  targetIntensity = 0.82; // Tactical project simulators
+                } else {
+                  targetIntensity = 1.0; // Hero command deck full brightness
+                }
+              } else if (window.scrollY > 400) {
+                targetIntensity = 0.82;
+              } else {
+                targetIntensity = 1.0;
+              }
+            } else if (window.scrollY > 400) {
+              targetIntensity = 0.82;
+            } else {
+              targetIntensity = 1.0;
+            }
+          }
+        }
+      }
+
+      // Smooth optical aperture easing (lerp)
+      currentIntensity += (targetIntensity - currentIntensity) * 0.05;
+      ctx.globalAlpha = Math.max(0.15, Math.min(1.0, currentIntensity));
+
       const colors = getThemeColors();
 
       // Smooth mouse follow
@@ -303,8 +361,8 @@ export function CanvasGrid() {
 
         ctx.beginPath();
         ctx.arc(packetX, packetY, 2.2, 0, Math.PI * 2);
-        ctx.fillStyle = '#38bdf8';
-        ctx.shadowColor = '#38bdf8';
+        ctx.fillStyle = colors.accent;
+        ctx.shadowColor = colors.accent;
         ctx.shadowBlur = 6;
         ctx.fill();
         ctx.shadowBlur = 0;

@@ -15,10 +15,10 @@
 }
 
 :global([data-theme="light"]) .sandboxContainer {
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-color: rgba(0, 0, 0, 0.12);
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.08),
-              0 0 20px rgba(2, 132, 199, 0.06);
+              0 0 20px rgba(42, 140, 116, 0.06);
 }
 
 .windowHeader {
@@ -36,7 +36,7 @@
 }
 
 :global([data-theme="light"]) .windowHeader {
-  background: #f8fafc;
+  background: var(--color-bg-card);
   border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -53,9 +53,9 @@
   display: inline-block;
 }
 
-.dotRed { background: #ef4444; }
-.dotYellow { background: #f59e0b; }
-.dotGreen { background: #10b981; }
+.dotRed { background: var(--color-dot-red); }
+.dotYellow { background: var(--color-dot-yellow); }
+.dotGreen { background: var(--color-dot-green); }
 
 .windowTitle {
   font-family: var(--font-mono);
@@ -102,7 +102,7 @@
 }
 
 :global([data-theme="light"]) .tabBtnActive {
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-color: rgba(0, 0, 0, 0.14);
   color: var(--color-accent);
 }
@@ -116,7 +116,7 @@
 }
 
 :global([data-theme="light"]) .terminalBody {
-  background: #f8fafc;
+  background: var(--color-bg-card);
 }
 
 .terminalOutput {
@@ -138,6 +138,7 @@
 
 .logRow {
   word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .log_cmd {
@@ -174,10 +175,16 @@
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.quickBar::-webkit-scrollbar {
+  display: none;
 }
 
 :global([data-theme="light"]) .quickBar {
-  background: #f1f5f9;
+  background: var(--color-bg-card);
   border-top-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -208,7 +215,7 @@
 }
 
 :global([data-theme="light"]) .quickChip {
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-color: rgba(0, 0, 0, 0.12);
 }
 
@@ -232,7 +239,7 @@
 }
 
 :global([data-theme="light"]) .inputBar {
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-top-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -252,6 +259,12 @@
   color: var(--color-text-primary);
   outline: none;
   min-height: 44px;
+}
+
+.cmdInput:focus-visible {
+  outline: var(--focus-ring) !important;
+  outline-offset: 2px !important;
+  border-radius: var(--radius-xs);
 }
 
 .cmdInput::placeholder {
@@ -294,7 +307,7 @@
 }
 
 :global([data-theme="light"]) .telemetryBody {
-  background: #f8fafc;
+  background: var(--color-bg-card);
 }
 
 .telemetryGrid {
@@ -314,7 +327,7 @@
 }
 
 :global([data-theme="light"]) .telemetryCard {
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -384,7 +397,7 @@
 }
 
 :global([data-theme="light"]) .matrixBody {
-  background: #f8fafc;
+  background: var(--color-bg-card);
 }
 
 .matrixHead {
@@ -438,7 +451,7 @@
 }
 
 :global([data-theme="light"]) .matrixItem {
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-color: rgba(0, 0, 0, 0.08);
 }
 

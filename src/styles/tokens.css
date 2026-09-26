@@ -1,7 +1,4 @@
-/*
- * Design Tokens — The Systems Engineering Command Deck
- * Synthesizing Brian Lovin's product craft with Awwwards spatial choreography.
- */
+/* Design Tokens — Brushed Titanium */
 
 :root {
   /* ── Typography: Families ── */
@@ -68,100 +65,158 @@
   --transition-fast:       150ms cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* ── Dark Theme (Default: Obsidian Command Deck) ── */
+/* ── Dark Theme (Brushed Titanium) ── */
 :root,
 [data-theme="dark"] {
-  --color-bg-base:         #0B0E11;
-  --color-bg-elevated:     #12171D;
-  --color-bg-card:         #161D24;
-  --color-bg-card-hover:   #1C242D;
-  --color-bg-subtle:       #202933;
-  --color-bg-surface:      #161D24;
-  --color-surface:         #161D24;
-  --color-surface-hover:   #1C242D;
-  --color-bg:              #0B0E11;
-  --color-bg-glass:        rgba(11, 14, 17, 0.85);
+  --color-bg-base:         #101114;
+  --color-bg-elevated:     #18191E;
+  --color-bg-card:         #1E1F24;
+  --color-bg-card-hover:   #26272D;
+  --color-bg-subtle:       #2C2D33;
+  --color-bg-surface:      #1E1F24;
+  --color-surface:         #1E1F24;
+  --color-surface-hover:   #26272D;
+  --color-bg:              #101114;
+  --color-bg-glass:        rgba(16, 17, 20, 0.88);
 
-  --color-text-primary:    #F1F5F9;
-  --color-text-secondary:  #CBD5E1;
-  --color-text-tertiary:   #94A3B8;
-  --color-text-muted:      #7E8C9F;
-  --color-text-bright:     #F8FAFC;
-  --color-text-dim:        #94A3B8;
+  --color-text-primary:    #E5E5E1;
+  --color-text-secondary:  #B0B0AB;
+  --color-text-tertiary:   #95958D;
+  --color-text-muted:      #8C8C84;
+  --color-text-bright:     #EDEDEA;
+  --color-text-dim:        #95958D;
 
-  --color-border:          rgba(255, 255, 255, 0.14);
-  --color-border-hairline: rgba(255, 255, 255, 0.10);
-  --color-border-subtle:   rgba(255, 255, 255, 0.16);
-  --color-border-strong:   rgba(255, 255, 255, 0.28);
-  --color-border-focus:    #38BDF8;
+  --color-border:          rgba(229, 229, 225, 0.13);
+  --color-border-hairline: rgba(229, 229, 225, 0.09);
+  --color-border-subtle:   rgba(229, 229, 225, 0.15);
+  --color-border-strong:   rgba(229, 229, 225, 0.26);
+  --color-border-focus:    #3FBFA0;
 
-  --color-accent:          #38BDF8;
-  --color-accent-primary:  #38BDF8;
-  --color-accent-contrast: #04070D;
-  --color-accent-cyan:     #00F2FE;
-  --color-accent-emerald:  #10B981;
-  --color-accent-amber:    #F59E0B;
-  --color-accent-glow:     rgba(56, 189, 248, 0.20);
-  --color-accent-muted:    rgba(56, 189, 248, 0.14);
-  --color-success:         #10B981;
-  --color-warning:         #F59E0B;
+  --color-accent:          #3FBFA0;
+  --color-accent-primary:  #3FBFA0;
+  --color-accent-contrast: #0A0C0E;
+  --color-accent-secondary: #7EC9B5;
+  --color-accent-cyan:     #7EC9B5; /* Alias — legacy compat, migrate to accent-secondary */
+  --color-accent-emerald:  #3FBFA0;
+  --color-accent-amber:    #D4A24B;
+  --color-accent-glow:     rgba(63, 191, 160, 0.18);
+  --color-accent-muted:    rgba(63, 191, 160, 0.13);
+  --color-accent-subtle:   rgba(63, 191, 160, 0.08);
+  --color-accent-border:   rgba(63, 191, 160, 0.25);
+  
+  --color-success:         #3FBFA0;
+  --color-warning:         #D4A24B;
 
-  --card-shadow:           0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --card-shadow-hover:     0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 242, 254, 0.4), 0 0 20px rgba(0, 242, 254, 0.15);
+  /* Semantic: Error */
+  --color-error:           #D45B5B;
+  --color-error-muted:     rgba(212, 91, 91, 0.12);
 
-  --canvas-grid-color:     rgba(148, 163, 184, 0.08);
-  --canvas-particle-color: rgba(56, 189, 248, 0.55);
-  --canvas-line-color:     rgba(56, 189, 248, 0.2);
+  /* Secondary Accent: Copper */
+  --color-accent-copper:   #C48850;
+  --color-accent-copper-muted: rgba(196, 136, 80, 0.20);
 
-  --focus-ring:            2px solid #00F2FE;
+  /* Code Syntax */
+  --color-syntax-keyword:  #C48850;
+  --color-syntax-type:     #7EC9B5;
+  --color-syntax-string:   #8CBF6E;
+  --color-syntax-property: #E5E5E1;
+
+  /* Traffic Lights */
+  --color-dot-red:         #D45B5B;
+  --color-dot-yellow:      #D4A24B;
+  --color-dot-green:       #3FBFA0;
+
+  /* SignalSweep */
+  --color-chassis:         rgba(16, 17, 20, 0.92);
+  --color-tungsten:        rgba(133, 133, 128, 0.6);
+  --color-signal:          #3FBFA0;
+  --color-cold-steel:      rgba(63, 191, 160, 0.45);
+
+  --card-shadow:           0 10px 30px -10px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(229, 229, 225, 0.07);
+  --card-shadow-hover:     0 20px 40px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(63, 191, 160, 0.35), 0 0 20px rgba(63, 191, 160, 0.10);
+
+  --canvas-grid-color:     rgba(133, 133, 128, 0.07);
+  --canvas-particle-color: rgba(63, 191, 160, 0.50);
+  --canvas-line-color:     rgba(63, 191, 160, 0.16);
+
+  --focus-ring:            2px solid #7EC9B5;
   --focus-offset:          3px;
 }
 
-/* ── Light Theme (Studio White / Brian Lovin Style) ── */
+/* ── Light Theme (Brushed Titanium — Studio) ── */
 [data-theme="light"] {
-  --color-bg-base:         #F8F9FA;
+  --color-bg-base:         #F7F7F5;
   --color-bg-elevated:     #FFFFFF;
   --color-bg-card:         #FFFFFF;
-  --color-bg-card-hover:   #F1F5F9;
-  --color-bg-subtle:       #E2E8F0;
-  --color-bg-surface:      #F8F9FA;
+  --color-bg-card-hover:   #EFEFE9;
+  --color-bg-subtle:       #E0DFD8;
+  --color-bg-surface:      #F7F7F5;
   --color-surface:         #FFFFFF;
-  --color-surface-hover:   #F1F5F9;
+  --color-surface-hover:   #EFEFE9;
   --color-bg:              #FFFFFF;
-  --color-bg-glass:        rgba(248, 249, 250, 0.90);
+  --color-bg-glass:        rgba(247, 247, 245, 0.92);
 
-  --color-text-primary:    #0F172A;
-  --color-text-secondary:  #334155;
-  --color-text-tertiary:   #475569;
-  --color-text-muted:      #64748B;
-  --color-text-bright:     #0F172A;
-  --color-text-dim:        #475569;
+  --color-text-primary:    #1A1A18;
+  --color-text-secondary:  #3D3D39;
+  --color-text-tertiary:   #5C5C57;
+  --color-text-muted:      #626260;
+  --color-text-bright:     #1A1A18;
+  --color-text-dim:        #5C5C57;
 
-  --color-border:          rgba(0, 0, 0, 0.14);
-  --color-border-hairline: rgba(0, 0, 0, 0.10);
-  --color-border-subtle:   rgba(0, 0, 0, 0.16);
-  --color-border-strong:   rgba(0, 0, 0, 0.28);
-  --color-border-focus:    #0284C7;
+  --color-border:          rgba(26, 26, 24, 0.13);
+  --color-border-hairline: rgba(26, 26, 24, 0.09);
+  --color-border-subtle:   rgba(26, 26, 24, 0.15);
+  --color-border-strong:   rgba(26, 26, 24, 0.26);
+  --color-border-focus:    #2A8C74;
 
-  --color-accent:          #0284C7;
-  --color-accent-primary:  #0284C7;
+  --color-accent:          #237A65;
+  --color-accent-primary:  #237A65;
   --color-accent-contrast: #FFFFFF;
-  --color-accent-cyan:     #0284C7;
-  --color-accent-emerald:  #059669;
-  --color-accent-amber:    #D97706;
-  --color-accent-glow:     rgba(2, 132, 199, 0.18);
-  --color-accent-muted:    rgba(2, 132, 199, 0.12);
-  --color-success:         #059669;
-  --color-warning:         #D97706;
+  --color-accent-secondary: #2A8C74;
+  --color-accent-cyan:     #2A8C74; /* Alias — legacy compat, migrate to accent-secondary */
+  --color-accent-emerald:  #1F7A62;
+  --color-accent-amber:    #A07830;
+  --color-accent-glow:     rgba(35, 122, 101, 0.16);
+  --color-accent-muted:    rgba(35, 122, 101, 0.11);
+  --color-accent-subtle:   rgba(35, 122, 101, 0.06);
+  --color-accent-border:   rgba(35, 122, 101, 0.22);
+  
+  --color-success:         #1F7A62;
+  --color-warning:         #A07830;
 
-  --card-shadow:           0 4px 20px -4px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --card-shadow-hover:     0 12px 30px -8px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(2, 132, 199, 0.45);
+  /* Semantic: Error */
+  --color-error:           #B84040;
+  --color-error-muted:     rgba(184, 64, 64, 0.10);
 
-  --canvas-grid-color:     rgba(15, 23, 42, 0.05);
-  --canvas-particle-color: rgba(2, 132, 199, 0.5);
-  --canvas-line-color:     rgba(2, 132, 199, 0.14);
+  /* Secondary Accent: Copper */
+  --color-accent-copper:   #8B5A2E;
+  --color-accent-copper-muted: rgba(139, 90, 46, 0.15);
 
-  --focus-ring:            2px solid #0284C7;
+  /* Code Syntax */
+  --color-syntax-keyword:  #8B5A2E;
+  --color-syntax-type:     #2A8C74;
+  --color-syntax-string:   #4A7A35;
+  --color-syntax-property: #1A1A18;
+
+  /* Traffic Lights */
+  --color-dot-red:         #B84040;
+  --color-dot-yellow:      #A07830;
+  --color-dot-green:       #2A8C74;
+
+  /* SignalSweep */
+  --color-chassis:         rgba(247, 247, 245, 0.92);
+  --color-tungsten:        rgba(92, 92, 87, 0.5);
+  --color-signal:          #2A8C74;
+  --color-cold-steel:      rgba(42, 140, 116, 0.35);
+
+  --card-shadow:           0 4px 20px -4px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(26, 26, 24, 0.07);
+  --card-shadow-hover:     0 12px 30px -8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(42, 140, 116, 0.40);
+
+  --canvas-grid-color:     rgba(26, 26, 24, 0.04);
+  --canvas-particle-color: rgba(42, 140, 116, 0.45);
+  --canvas-line-color:     rgba(42, 140, 116, 0.12);
+
+  --focus-ring:            2px solid #2A8C74;
   --focus-offset:          3px;
 }
 

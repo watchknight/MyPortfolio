@@ -28,7 +28,7 @@
 }
 
 :global([data-theme="light"]) .guestbookHead {
-  background: #f8fafc;
+  background: #F7F7F5;
   border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -184,6 +184,16 @@
   transition: all var(--duration-fast) ease;
 }
 
+.actionBtn:focus-visible,
+.actionBtn:focus {
+  outline: var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+
+.actionBtn:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
 .actionBtn:hover:not(:disabled) {
   background: var(--color-bg-card-hover);
   color: var(--color-text-primary);
@@ -201,6 +211,16 @@
   color: var(--color-accent-contrast);
 }
 
+.actionSave:focus-visible,
+.actionSave:focus {
+  outline: var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+
+.actionSave:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
 .actionSave:hover:not(:disabled) {
   opacity: 0.9;
   box-shadow: 0 0 12px var(--color-accent-glow);
@@ -210,7 +230,7 @@
   position: relative;
   width: 100%;
   height: 200px;
-  background: #020408;
+  background: #0A0B0D;
   cursor: crosshair;
   touch-action: none;
 }

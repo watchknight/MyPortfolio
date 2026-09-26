@@ -1,0 +1,123 @@
+.mapContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  overflow: hidden;
+  background-color: var(--color-bg-base);
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  user-select: none;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Floating Precision Telemetry Overlay */
+.telemetryHUD {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  background: rgba(16, 17, 20, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  z-index: 10;
+}
+
+:global([data-theme="light"]) .telemetryHUD {
+  background: rgba(247, 247, 245, 0.85);
+}
+
+.hudHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.hudDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  animation: hudPulse 2s infinite ease-in-out;
+}
+
+@keyframes hudPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.hudMetrics {
+  display: flex;
+  gap: 1.25rem;
+  color: var(--color-text-secondary);
+}
+
+.hubLegend {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-text-tertiary);
+  background: rgba(16, 17, 20, 0.75);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--radius-xs);
+  pointer-events: none;
+  z-index: 10;
+}
+
+:global([data-theme="light"]) .hubLegend {
+  background: rgba(247, 247, 245, 0.85);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legendChipPrimary {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent);
+}
+
+.legendChipEdge {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-copper);
+}
+
+.legendChipGrid {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  opacity: 0.5;
+}

@@ -26,7 +26,8 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
   const [dhakaTime, setDhakaTime] = useState('');
-  const [latency, setLatency] = useState(14);
+  const [latency, setLatency] = useState<number | null>(null);
+  const [pingStatus, setPingStatus] = useState<'measuring' | 'online' | 'offline'>('measuring');
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme') as 'dark' | 'light' | null;
@@ -54,21 +55,34 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     const measurePing = () => {
       const start = performance.now();
       fetch('/favicon.svg', { method: 'HEAD', cache: 'no-store' })
-        .then(() => {
-          const rtt = Math.round(performance.now() - start);
-          setLatency(Math.max(6, Math.min(rtt, 95)));
+        .then((res) => {
+          if (!isMounted) return;
+          if (res.ok) {
+            const rtt = Math.round(performance.now() - start);
+            setLatency(Math.max(4, Math.min(rtt, 99)));
+            setPingStatus('online');
+          } else {
+            setLatency(null);
+            setPingStatus('offline');
+          }
         })
         .catch(() => {
-          setLatency(Math.floor(11 + Math.random() * 6));
+          if (!isMounted) return;
+          setLatency(null);
+          setPingStatus('offline');
         });
     };
 
     measurePing();
     const pingInterval = setInterval(measurePing, 12000);
-    return () => clearInterval(pingInterval);
+    return () => {
+      isMounted = false;
+      clearInterval(pingInterval);
+    };
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -211,9 +225,40 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
             {/* Quick Action Switches (Clock & Ping, Command Palette, Sound & Theme) */}
             <div className={styles.actionGroup}>
               {dhakaTime && (
-                <div className={styles.dhakaClock} title={`Origin Node: Dhaka (UTC+6) • Client Ping: ${latency}ms`}>
-                  <span className={styles.dhakaPulse} />
-                  <span className={styles.pingMetric}>{latency}ms</span>
+                <div
+                  className={styles.dhakaClock}
+                  title={
+                    pingStatus === 'online'
+                      ? `Origin Node: Dhaka (UTC+6) • Edge Ping: ${latency}ms`
+                      : pingStatus === 'offline'
+                      ? 'Origin Node: Dhaka (UTC+6) • Status: Offline / Packet Loss'
+                      : 'Origin Node: Dhaka (UTC+6) • Synchronizing Ping...'
+                  }
+                >
+                  <span
+                    className={
+                      pingStatus === 'online'
+                        ? styles.dhakaPulse
+                        : pingStatus === 'offline'
+                        ? styles.dhakaPulseOffline
+                        : styles.dhakaPulseSync
+                    }
+                  />
+                  <span
+                    className={
+                      pingStatus === 'online'
+                        ? styles.pingMetric
+                        : pingStatus === 'offline'
+                        ? styles.pingMetricOffline
+                        : styles.pingMetricSync
+                    }
+                  >
+                    {pingStatus === 'online'
+                      ? `${latency}ms`
+                      : pingStatus === 'offline'
+                      ? 'OFFLINE'
+                      : 'SYNC...'}
+                  </span>
                   <span className={styles.timeDivider}>•</span>
                   <span>{dhakaTime}</span>
                 </div>
@@ -243,13 +288,13 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                   data-cursor="link"
                 >
                   {soundActive ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                       <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                       <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
                     </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                       <line x1="23" y1="9" x2="17" y2="15" />
                       <line x1="17" y1="9" x2="23" y2="15" />
@@ -268,7 +313,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                   data-cursor="link"
                 >
                   {theme === 'dark' ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <circle cx="12" cy="12" r="5" />
                       <line x1="12" y1="1" x2="12" y2="3" />
                       <line x1="12" y1="21" x2="12" y2="23" />
@@ -280,7 +325,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                       <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
                     </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                     </svg>
                   )}
@@ -296,12 +341,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
               >
                 {mobileOpen ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                     <line x1="6" y1="6" x2="18" y2="18" />
                     <line x1="6" y1="18" x2="18" y2="6" />
                   </svg>
                 ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                     <line x1="4" y1="7" x2="20" y2="7" />
                     <line x1="4" y1="17" x2="20" y2="17" />
                   </svg>

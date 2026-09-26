@@ -12,11 +12,11 @@ import { Nav } from './components/Nav/Nav';
 import { HomePage } from './pages/Home/HomePage';
 import { registerLenis, useScrollLock } from './utils/scrollLock';
 
-// Lazy-loaded routes & modals for client code-splitting
 const LazyWorksPage = lazy(() => import('./pages/Works/WorksPage').then((m) => ({ default: m.WorksPage })));
 const LazyFoundationPage = lazy(() => import('./pages/Foundation/FoundationPage').then((m) => ({ default: m.FoundationPage })));
 const LazyResumePage = lazy(() => import('./pages/Resume/ResumePage').then((m) => ({ default: m.ResumePage })));
 const LazyContactPage = lazy(() => import('./pages/Contact/ContactPage').then((m) => ({ default: m.ContactPage })));
+const LazyNotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
 const LazySysDiagnosticModal = lazy(() => import('./components/SysDiagnosticModal/SysDiagnosticModal').then((m) => ({ default: m.SysDiagnosticModal })));
 const LazyCaseStudyModal = lazy(() => import('./components/CaseStudyModal/CaseStudyModal').then((m) => ({ default: m.CaseStudyModal })));
 
@@ -25,6 +25,7 @@ export interface AppRoutesOverride {
   FoundationPage?: React.ComponentType;
   ResumePage?: React.ComponentType;
   ContactPage?: React.ComponentType;
+  NotFoundPage?: React.ComponentType<{ onNavigate?: (path: string) => void }>;
 }
 
 interface AppProps {
@@ -97,9 +98,13 @@ export default function App({ initialPath, routes }: AppProps) {
   const Foundation = routes?.FoundationPage || LazyFoundationPage;
   const Resume = routes?.ResumePage || LazyResumePage;
   const Contact = routes?.ContactPage || LazyContactPage;
+  const NotFound = routes?.NotFoundPage || LazyNotFoundPage;
 
   return (
     <>
+      <a href="#main-content" className="skipLink">
+        Skip to main content
+      </a>
       <CanvasGrid />
       <CustomCursor />
       <ShortcutsDock />
@@ -110,7 +115,11 @@ export default function App({ initialPath, routes }: AppProps) {
       <Nav currentPath={currentPath} onNavigate={navigate} />
 
       <SignalSweep>
-        <main style={{ position: 'relative', zIndex: 1, minHeight: '100vh' }}>
+        <main
+          id="main-content"
+          tabIndex={-1}
+          style={{ position: 'relative', zIndex: 1, minHeight: '100vh', outline: 'none' }}
+        >
           <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
             {currentPath === '/' && (
               <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
@@ -121,6 +130,7 @@ export default function App({ initialPath, routes }: AppProps) {
             {currentPath === '/foundation' && <Foundation />}
             {currentPath === '/resume' && <Resume />}
             {currentPath === '/contact' && <Contact />}
+            {currentPath === '/404' && <NotFound onNavigate={navigate} />}
           </Suspense>
         </main>
       </SignalSweep>

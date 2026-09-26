@@ -9,6 +9,7 @@ export interface SpotlightCardProps extends React.HTMLAttributes<HTMLElement> {
   tiltIntensity?: number;
   as?: 'div' | 'article' | 'section' | 'form' | React.ElementType;
   onSubmit?: React.FormEventHandler<HTMLElement>;
+  noValidate?: boolean;
 }
 
 export function SpotlightCard({

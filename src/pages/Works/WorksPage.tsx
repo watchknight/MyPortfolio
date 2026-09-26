@@ -46,7 +46,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
     <div className={styles.pageContainer}>
       {/* Header */}
       <header className={styles.header}>
-        <span className={styles.eyebrow}>Portfolio &amp; Case Studies</span>
+        <span className={styles.eyebrow}>[ portfolio &amp; case studies ]</span>
         <h1 className={styles.title} data-cursor="inspect" data-cursor-label="PROJECTS">
           <ScrambleText text="Selected Works" />
         </h1>

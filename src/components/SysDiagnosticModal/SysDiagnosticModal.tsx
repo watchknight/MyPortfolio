@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
+import { useFocusTrap } from '../../utils/focusTrap';
 import styles from './SysDiagnosticModal.module.css';
 
 interface SysDiagnosticModalProps {
@@ -145,18 +146,24 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
       prev.map((s) => (s.id === 'network' ? { ...s, status: 'running' } : s))
     );
     const t0 = performance.now();
-    let rtt = 12;
+    let rtt = 0;
+    let networkOk = false;
     try {
-      await fetch('/favicon.svg', { method: 'HEAD', cache: 'no-store' });
-      rtt = Math.max(4, Math.round(performance.now() - t0));
+      const res = await fetch('/favicon.svg', { method: 'HEAD', cache: 'no-store' });
+      if (res.ok) {
+        rtt = Math.max(4, Math.round(performance.now() - t0));
+        networkOk = true;
+      }
     } catch {
-      rtt = 14;
+      networkOk = false;
     }
     await new Promise((r) => setTimeout(r, 300));
     setSteps((prev) =>
       prev.map((s) =>
         s.id === 'network'
-          ? { ...s, status: 'passed', resultMetric: `${rtt}ms RTT // Asia/Dhaka Node` }
+          ? networkOk
+            ? { ...s, status: 'passed', resultMetric: `${rtt}ms RTT // Asia/Dhaka Node` }
+            : { ...s, status: 'failed', resultMetric: 'PACKET LOSS // OFFLINE' }
           : s
       )
     );
@@ -245,6 +252,7 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
   };
 
   useScrollLock(isOpen);
+  useFocusTrap(modalRef, isOpen);
 
   if (!isOpen) return null;
 
@@ -262,6 +270,7 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
       <div
         className={styles.modal}
         ref={modalRef}
+        tabIndex={-1}
         data-lenis-prevent="true"
         onWheel={(e) => e.stopPropagation()}
       >
@@ -306,6 +315,9 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
                   {s.status === 'running' && <span className={styles.statusRunning}>MEASURING...</span>}
                   {s.status === 'passed' && (
                     <span className={styles.statusPassed}>✓ {s.resultMetric || 'PASS'}</span>
+                  )}
+                  {s.status === 'failed' && (
+                    <span className={styles.statusFailed}>✗ {s.resultMetric || 'FAIL'}</span>
                   )}
                 </div>
               </div>
