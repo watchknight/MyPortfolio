@@ -26,7 +26,6 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
   interactive = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isReady, setIsReady] = useState(false);
   const [fps, setFps] = useState(60);
   const [totalParticles, setTotalParticles] = useState(0);
 
@@ -199,12 +198,10 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
           ctx.fillText(hub.code, hx + 6, hy + 3);
         });
 
-        setIsReady(true);
         return; // Halt RAF completely
       }
 
       // 4. High-Performance 60fps Kinetic Loop
-      let lastTime = performance.now();
       let frameCount = 0;
       let fpsTimer = 0;
 
@@ -345,7 +342,6 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
         ctx.fillStyle = tokens.dotActive;
         ctx.fillText(`DHAKA [${primaryHub.lat.toFixed(2)}°N, ${primaryHub.lon.toFixed(2)}°E]`, dhakaX + 12, dhakaY + 3);
 
-        setIsReady(true);
         animId = requestAnimationFrame(render);
       };
 

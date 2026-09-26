@@ -214,7 +214,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
         type: 'info',
         text: `Coursework: ${profileData.coursework.slice(0, 5).join(' • ')}`,
       });
-    } else if (clean === 'contact' || clean === 'hire' || clean === 'email') {
+    } else if (clean === 'contact' || clean === 'hire' || clean === 'email' || clean === 'cd /contact' || clean === 'cd contact') {
       newLogs.push({
         id: `${now}-out`,
         type: 'success',
