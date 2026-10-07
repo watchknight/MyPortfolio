@@ -1,7 +1,6 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { sound } from '../../utils/audio';
 import { DeveloperASTCard } from '../../components/DeveloperAST/DeveloperASTCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import styles from './FoundationPage.module.css';
 
 interface Milestone {
@@ -96,9 +95,9 @@ export function FoundationPage() {
     <div className={styles.pageContainer}>
       {/* Header */}
       <header className={styles.header}>
-        <span className={styles.eyebrow}>[ education &amp; credentials ]</span>
-        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="ACADEMICS">
-          <ScrambleText text="Background & Skills" />
+        <span className={styles.eyebrow}>Education &amp; credentials</span>
+        <h1 className={styles.title}>
+          Background &amp; Skills
         </h1>
         <p className={styles.subtitle}>
           My academic foundation at East West University, national board scholarship distinctions, and technical skills.
@@ -179,7 +178,7 @@ export function FoundationPage() {
       {/* Developer AST Schema */}
       <section className={styles.schemaSection} aria-label="Developer Schema">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          <span className={styles.eyebrow}>[ developer profile manifest ]</span>
+          <span className={styles.eyebrow}>Developer profile manifest</span>
           <h2 className={styles.title} style={{ fontSize: '1.4rem' }}>TypeScript Schema</h2>
         </div>
         <DeveloperASTCard />

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
+import { RollText } from '../../components/RollText/RollText';
 import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './ContactPage.module.css';
@@ -87,16 +87,44 @@ export function ContactPage() {
     }
   };
 
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(profileData.contact.email);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(profileData.contact.email).catch(() => {});
+      }
+    } catch {
+      // ignore
+    }
     setCopied(true);
     sound.playClick(900, 0.03, 0.08);
-    setTimeout(() => setCopied(false), 2200);
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = setTimeout(() => {
+      setCopied(false);
+      copyTimeoutRef.current = null;
+    }, 1600);
   };
 
   const handleCopyDraft = () => {
-    const draft = `To: ${profileData.contact.email}\nSubject: ${formData.subject || 'Project Inquiry'}\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-    navigator.clipboard.writeText(draft);
+    try {
+      const draft = `To: ${profileData.contact.email}\nSubject: ${formData.subject || 'Project Inquiry'}\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(draft).catch(() => {});
+      }
+    } catch {
+      // ignore
+    }
     setDraftCopied(true);
     sound.playClick(900, 0.03, 0.08);
     setTimeout(() => setDraftCopied(false), 3000);
@@ -149,9 +177,9 @@ export function ContactPage() {
     <div className={styles.pageContainer}>
       {/* Header */}
       <header className={styles.header}>
-        <span className={styles.eyebrow}>[ direct communication ]</span>
-        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="CONTACT">
-          <ScrambleText text="Get in Touch" />
+        <span className={styles.eyebrow}>Direct communication</span>
+        <h1 className={styles.title}>
+          Get in Touch
         </h1>
         <p className={styles.subtitle}>
           Have a software project, an internship opportunity, or want to connect?
@@ -179,10 +207,10 @@ export function ContactPage() {
             <span className={styles.infoValue}>{profileData.contact.email}</span>
             <button
               type="button"
-              className={styles.copyBtn}
+              className={`${styles.copyBtn} ${copied ? 'btn-copied' : ''}`}
               onClick={handleCopyEmail}
             >
-              {copied ? '✓ Copied to clipboard' : 'Copy Email Address'}
+              <RollText>{copied ? 'Copied' : 'Copy email'}</RollText>
             </button>
           </SpotlightCard>
 
@@ -272,7 +300,7 @@ export function ContactPage() {
             <div className={styles.errorBanner} role="alert">
               <div className={styles.errorHeader}>
                 <span className={styles.errorDot} />
-                <span>Transmission Blocked // Form Validation Error</span>
+                <span>Form Validation Error</span>
               </div>
               <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
                 {submitError}
@@ -284,7 +312,7 @@ export function ContactPage() {
             <div className={styles.dispatchBanner} role="status">
               <div className={styles.dispatchHeader}>
                 <span className={styles.availDot} />
-                <span>Dispatched to Default Mail Client</span>
+                <span>Ready in Email Client</span>
               </div>
               <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
                 If your browser didn&apos;t automatically launch your email app, you can copy the full draft:
@@ -323,6 +351,7 @@ export function ContactPage() {
               autoComplete="name"
               autoCapitalize="words"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -351,6 +380,7 @@ export function ContactPage() {
               autoComplete="email"
               autoCapitalize="none"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -365,6 +395,7 @@ export function ContactPage() {
               onChange={(e) => handleChange('subject', e.target.value)}
               autoCapitalize="sentences"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -390,6 +421,7 @@ export function ContactPage() {
               onBlur={() => handleBlur('message')}
               autoCapitalize="sentences"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -401,11 +433,11 @@ export function ContactPage() {
             {isSubmitting ? (
               <>
                 <span className={styles.btnSpinner} aria-hidden="true" />
-                <span>PREPARING TRANSMISSION...</span>
+                <span>Sending message...</span>
               </>
             ) : (
               <>
-                <span>Draft &amp; Send Message</span>
+                <RollText>Draft &amp; Send Message</RollText>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />

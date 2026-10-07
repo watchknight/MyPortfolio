@@ -4,8 +4,8 @@
   "description": "Software engineer specializing in browser internals, systems-level security, and high-performance web architecture.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#101114",
-  "theme_color": "#101114",
+  "background_color": "#0E1A36",
+  "theme_color": "#0E1A36",
   "icons": [
     {
       "src": "/favicon.svg",

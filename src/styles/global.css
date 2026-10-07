@@ -3,8 +3,8 @@
  * Base typography, layout primitives, and craft defaults.
  */
 
-@import './fonts.css';
 @import './tokens.css';
+@import './fonts.css';
 @import './reset.css';
 
 /* ── Base ── */
@@ -38,12 +38,12 @@ html.lenis body {
 }
 
 body {
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: var(--weight-regular);
-  line-height: var(--leading-body);
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-base);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--bg);
   font-variant-numeric: tabular-nums;
   overflow-x: hidden;
   max-width: 100vw;
@@ -53,35 +53,44 @@ body {
 
 /* ── Headings ── */
 
+.display {
+  font-family: var(--font-sans);
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
 h1 {
-  font-family: var(--font-display);
-  font-size: var(--text-hero);
-  font-weight: var(--weight-semibold);
-  line-height: var(--leading-hero);
-  letter-spacing: -0.03em;
+  font-family: var(--font-sans);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
 }
 
 h2 {
-  font-family: var(--font-display);
-  font-size: var(--text-section);
-  font-weight: var(--weight-semibold);
-  line-height: var(--leading-section);
-  letter-spacing: -0.02em;
+  font-family: var(--font-sans);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
 }
 
 h3 {
-  font-family: var(--font-display);
-  font-size: var(--text-subsection);
-  font-weight: var(--weight-medium);
-  line-height: var(--leading-subsection);
-  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
 }
 
 /* ── Body Text ── */
 
 p {
   max-width: var(--measure-body);
-  font-size: var(--text-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
 }
 
 /* ── Links ── */
@@ -98,15 +107,14 @@ a {
   top: -120px;
   left: 1.5rem;
   z-index: 999999;
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
   font-weight: 700;
   padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-  border: 2px solid var(--color-accent-contrast);
+  border-radius: var(--r-pill);
+  border: 2px solid var(--on-accent);
   text-decoration: none;
   transition: top var(--duration-fast) var(--ease-default);
 }
@@ -114,16 +122,15 @@ a {
 .skipLink:focus,
 .skipLink:focus-visible {
   top: 1.25rem;
-  outline: 3px solid var(--color-accent) !important;
-  outline-offset: 3px !important;
+  outline: 2px solid var(--focus) !important;
+  outline-offset: 2px !important;
 }
 
 /* ── Focus: Visible Keyboard Focus ── */
 
 :focus-visible {
-  outline: var(--focus-ring) !important;
-  outline-offset: var(--focus-offset) !important;
-  border-radius: var(--radius-xs);
+  outline: 2px solid var(--focus) !important;
+  outline-offset: 2px !important;
 }
 
 :focus:not(:focus-visible) {
@@ -139,7 +146,7 @@ a {
   padding-inline: var(--content-padding);
 }
 
-/* ── Code Blocks & Monospace ── */
+/* ── Code Blocks & Monospace (Terminal, Telemetry, and Metrics only) ── */
 
 code, pre, kbd {
   font-family: var(--font-mono);
@@ -148,11 +155,11 @@ code, pre, kbd {
 /* ── Selection ── */
 
 ::selection {
-  background-color: var(--color-accent-glow);
-  color: var(--color-text-primary);
+  background-color: var(--accent);
+  color: var(--on-accent);
 }
 
-/* ── Utility: Odometer / Rolling Number Mask (Brian Lovin Craft) ── */
+/* ── Utility: Odometer / Rolling Number Mask ── */
 
 .odometer-digit {
   position: relative;
@@ -166,18 +173,177 @@ code, pre, kbd {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
 }
 
-/* ── Utility: Glass Backdrop ── */
+/* ── Utility: Surface Panel ── */
 
 .glass-panel {
-  background: var(--color-bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border-hairline);
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 
 /* ── Utility: 3D Perspective Card ── */
 
 .perspective-container {
   perspective: 1200px;
+}
+
+/* ── Custom Cursor (Phase 4) ── */
+
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor [data-cursor],
+html.has-cursor [data-magnetic] {
+  cursor: none;
+}
+
+html.has-cursor [data-cursor="hide"] {
+  cursor: crosshair;
+}
+
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select,
+html.has-cursor [contenteditable],
+html.has-cursor [data-cursor="hide"]:is(input, textarea, select, [contenteditable]),
+html.has-cursor iframe,
+html.has-cursor iframe[data-cursor="hide"] {
+  cursor: auto;
+}
+
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursor-ring {
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1.5px solid color-mix(in srgb, var(--text) 45%, transparent);
+  transition: opacity 0.2s, background-color 0.25s, border-color 0.25s;
+}
+
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: opacity 0.2s, background-color 0.25s;
+}
+
+.cursor-ring.is-on,
+.cursor-dot.is-on {
+  opacity: 1;
+}
+
+.cursor-ring.is-hidden,
+.cursor-dot.is-hidden {
+  opacity: 0;
+}
+
+.cursor-ring.is-hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
+}
+
+.cursor-ring.is-inspect {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border-color: var(--accent);
+}
+
+.cursor-label {
+  position: absolute;
+  left: 12px;
+  top: -13px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: 600 12px/1.5 var(--font-sans);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cursor-ring.is-inspect .cursor-label:not(:empty) {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-ring,
+  .cursor-dot {
+    display: none;
+  }
+}
+
+/* ── Motion System: Initial State Gating & View Transitions ── */
+html.js-motion [data-hero-title],
+html.js-motion [data-hero-in],
+html.js-motion [data-tile] { opacity: 0; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* ── Micro-Interactions: Button Label Roll ── */
+.btn-roll {
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  height: 1.25em;
+  vertical-align: middle;
+}
+
+.btn-roll-track {
+  display: inline-flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+  will-change: transform;
+}
+
+.btn-roll-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.25em;
+  line-height: 1.25em;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button:hover .btn-roll-track,
+  a:hover .btn-roll-track {
+    transform: translateY(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-roll-track {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* ── Micro-Interactions: Copied State Pop ── */
+.btn-copied {
+  color: var(--ok) !important;
+  border-color: var(--ok) !important;
+  animation: scalePop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scalePop {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-copied {
+    animation: none !important;
+  }
 }
 

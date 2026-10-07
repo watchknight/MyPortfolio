@@ -121,7 +121,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotGreen}`} />
             <span className={styles.simUrl}>C:\Windows\System32\drivers\etc\hosts</span>
           </div>
-          <span className={styles.simTag}>OS KERNEL SINKHOLE</span>
+          <span className={styles.simTag}>OS Sinkhole</span>
         </div>
 
         <div className={styles.simBody}>
@@ -177,7 +177,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotGreen}`} />
             <span className={styles.simUrl}>doclensbd.onrender.com/virtual-tryon</span>
           </div>
-          <span className={styles.simTag}>MEDIAPIPE 3D // 60 FPS</span>
+          <span className={styles.simTag}>MediaPipe 3D</span>
         </div>
 
         <div className={styles.simBody}>
@@ -261,7 +261,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotGreen}`} />
             <span className={styles.simUrl}>rannabanna.onrender.com/matcher</span>
           </div>
-          <span className={styles.simTag}>SQLITE HEURISTIC ENGINE</span>
+          <span className={styles.simTag}>SQLite Heuristics</span>
         </div>
 
         <div className={styles.simBody}>
@@ -323,7 +323,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotGreen}`} />
             <span className={styles.simUrl}>poshra.onrender.com/checkout</span>
           </div>
-          <span className={styles.simTag}>NEXT.JS 16 // SSLCOMMERZ</span>
+          <span className={styles.simTag}>Next.js &bull; SSLCommerz</span>
         </div>
 
         <div className={styles.simBody}>
@@ -365,9 +365,9 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>audio.ts // Web Audio DSP Synthesizer</span>
+            <span className={styles.simUrl}>audio.ts &bull; Web Audio DSP</span>
           </div>
-          <span className={styles.simTag}>0 AUDIO ASSETS // REALTIME</span>
+          <span className={styles.simTag}>Realtime DSP</span>
         </div>
 
         <div className={styles.simBody}>

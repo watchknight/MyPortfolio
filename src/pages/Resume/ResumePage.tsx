@@ -1,5 +1,5 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
+import { RollText } from '../../components/RollText/RollText';
 import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './ResumePage.module.css';
@@ -15,9 +15,9 @@ export function ResumePage() {
       {/* Top Action Bar */}
       <div className={styles.topBar}>
         <div className={styles.headerText}>
-          <span className={styles.eyebrow}>[ verified credentials ]</span>
-          <h1 className={styles.pageTitle} data-cursor="inspect" data-cursor-label="CV">
-            <ScrambleText text="Curriculum Vitae" />
+          <span className={styles.eyebrow}>Verified credentials</span>
+          <h1 className={styles.pageTitle}>
+            Curriculum Vitae
           </h1>
         </div>
 
@@ -34,7 +34,7 @@ export function ResumePage() {
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            <span>Download PDF</span>
+            <RollText>Download PDF</RollText>
           </a>
 
           <button
@@ -47,7 +47,7 @@ export function ResumePage() {
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
               <rect x="6" y="14" width="12" height="8" />
             </svg>
-            <span>Print Résumé</span>
+            <RollText>Print Résumé</RollText>
           </button>
         </div>
       </div>
@@ -63,7 +63,7 @@ export function ResumePage() {
         <header className={styles.resumeHeader}>
           <div className={styles.credentialPill}>
             <span className={styles.credentialDot} />
-            <span>VERIFIED CREDENTIAL // EWU CSE UNDERGRADUATE</span>
+            <span>EWU CSE Undergraduate</span>
           </div>
           <h2 className={styles.candidateName}>{profileData.name}</h2>
           <p className={styles.candidateTitle}>{profileData.role} &bull; {profileData.institution}</p>

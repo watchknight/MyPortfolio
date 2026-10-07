@@ -1,16 +1,11 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
-import Lenis from 'lenis';
-import 'lenis/dist/lenis.css';
+import React, { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useRouter } from './hooks/useRouter';
-import { useReducedMotion } from './hooks/useReducedMotion';
 import { projects, type ProjectData } from './data/projects';
-import { SignalSweep } from './components/SignalSweep/SignalSweep';
-import { CanvasGrid } from './components/CanvasGrid/CanvasGrid';
-import { CustomCursor } from './components/CustomCursor/CustomCursor';
-import { ShortcutsDock } from './components/ShortcutsDock/ShortcutsDock';
+import { initCursor } from './motion/cursor';
+import { initMotion, ScrollTrigger, gsap } from './motion/index';
 import { Nav } from './components/Nav/Nav';
 import { HomePage } from './pages/Home/HomePage';
-import { registerLenis, useScrollLock } from './utils/scrollLock';
+import { useScrollLock } from './utils/scrollLock';
 
 const LazyWorksPage = lazy(() => import('./pages/Works/WorksPage').then((m) => ({ default: m.WorksPage })));
 const LazyFoundationPage = lazy(() => import('./pages/Foundation/FoundationPage').then((m) => ({ default: m.FoundationPage })));
@@ -34,12 +29,72 @@ interface AppProps {
 }
 
 export default function App({ initialPath, routes }: AppProps) {
-  const prefersReducedMotion = useReducedMotion();
   const { currentPath, navigate } = useRouter(initialPath);
+  const [displayPath, setDisplayPath] = useState(currentPath);
   const [sysCheckOpen, setSysCheckOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
 
+  const mainRef = useRef<HTMLElement>(null);
+  const isFirstMount = useRef(true);
+
   useScrollLock(Boolean(selectedProject) || sysCheckOpen);
+
+  useEffect(() => {
+    return initCursor();
+  }, []);
+
+  // Top-level motion system entry point (StrictMode safe)
+  useEffect(() => {
+    return initMotion();
+  }, [displayPath]);
+
+  const prevPathRef = useRef(currentPath);
+
+  // Micro-interaction 8: Route change (fade <main> out 0.2s / in 0.3s)
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    if (prevPathRef.current === currentPath) return;
+    prevPathRef.current = currentPath;
+
+    const mainEl = mainRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (!mainEl || reduce) {
+      setDisplayPath(currentPath);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      ScrollTrigger.refresh();
+      return;
+    }
+
+    // Fade <main> out 0.2s, swap route, then fade <main> in 0.3s
+    gsap.killTweensOf(mainEl);
+    gsap.to(mainEl, {
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.in',
+      overwrite: true,
+      onComplete: () => {
+        setDisplayPath(currentPath);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        gsap.fromTo(
+          mainEl,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power2.out',
+            overwrite: true,
+            onComplete: () => {
+              ScrollTrigger.refresh();
+            },
+          }
+        );
+      },
+    });
+  }, [currentPath]);
 
   useEffect(() => {
     const handleOpenSys = () => setSysCheckOpen(true);
@@ -58,37 +113,6 @@ export default function App({ initialPath, routes }: AppProps) {
     };
   }, []);
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      registerLenis(null);
-      return;
-    }
-
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
-
-    registerLenis(lenis);
-    (window as any).__lenis = lenis;
-
-    let rafId: number;
-
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      registerLenis(null);
-      lenis.destroy();
-    };
-  }, [prefersReducedMotion]);
-
   const handleSelectProjectById = (projectId: string) => {
     const p = projects.find((proj) => proj.id === projectId);
     if (p) setSelectedProject(p);
@@ -105,35 +129,31 @@ export default function App({ initialPath, routes }: AppProps) {
       <a href="#main-content" className="skipLink">
         Skip to main content
       </a>
-      <CanvasGrid />
-      <CustomCursor />
-      <ShortcutsDock />
       <Suspense fallback={null}>
         {sysCheckOpen && <LazySysDiagnosticModal isOpen={sysCheckOpen} onClose={() => setSysCheckOpen(false)} />}
         {selectedProject && <LazyCaseStudyModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
       </Suspense>
       <Nav currentPath={currentPath} onNavigate={navigate} />
 
-      <SignalSweep>
-        <main
-          id="main-content"
-          tabIndex={-1}
-          style={{ position: 'relative', zIndex: 1, minHeight: '100vh', outline: 'none' }}
-        >
-          <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
-            {currentPath === '/' && (
-              <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
-            )}
-            {currentPath === '/works' && (
-              <Works onSelectProject={handleSelectProjectById} />
-            )}
-            {currentPath === '/foundation' && <Foundation />}
-            {currentPath === '/resume' && <Resume />}
-            {currentPath === '/contact' && <Contact />}
-            {currentPath === '/404' && <NotFound onNavigate={navigate} />}
-          </Suspense>
-        </main>
-      </SignalSweep>
+      <main
+        ref={mainRef}
+        id="main-content"
+        tabIndex={-1}
+        style={{ position: 'relative', zIndex: 1, minHeight: '100vh', outline: 'none' }}
+      >
+        <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
+          {displayPath === '/' && (
+            <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
+          )}
+          {displayPath === '/works' && (
+            <Works onSelectProject={handleSelectProjectById} />
+          )}
+          {displayPath === '/foundation' && <Foundation />}
+          {displayPath === '/resume' && <Resume />}
+          {displayPath === '/contact' && <Contact />}
+          {displayPath === '/404' && <NotFound onNavigate={navigate} />}
+        </Suspense>
+      </main>
     </>
   );
 }

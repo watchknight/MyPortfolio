@@ -158,13 +158,14 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
       const getTokens = () => {
         const s = getComputedStyle(document.documentElement);
         return {
-          bgBase: s.getPropertyValue('--color-bg-base').trim() || '#101114',
-          dotNeutral: s.getPropertyValue('--canvas-grid-color').trim() || 'rgba(133, 133, 128, 0.28)',
-          dotActive: s.getPropertyValue('--color-accent').trim() || '#3FBFA0',
-          dotGlow: s.getPropertyValue('--color-accent-glow').trim() || 'rgba(63, 191, 160, 0.25)',
-          copper: s.getPropertyValue('--color-accent-copper').trim() || '#C48850',
-          hairline: s.getPropertyValue('--color-border-hairline').trim() || 'rgba(229, 229, 225, 0.12)',
-          textMuted: s.getPropertyValue('--color-text-tertiary').trim() || '#95958D',
+          bgBase: s.getPropertyValue('--bg').trim(),
+          dotNeutral: s.getPropertyValue('--control').trim(),
+          dotActive: s.getPropertyValue('--accent').trim(),
+          dotGlow: s.getPropertyValue('--accent').trim(),
+          copper: s.getPropertyValue('--control').trim(),
+          hairline: s.getPropertyValue('--line').trim(),
+          textMuted: s.getPropertyValue('--muted').trim(),
+          textPrimary: s.getPropertyValue('--text').trim(),
         };
       };
 
@@ -195,6 +196,7 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
           ctx.fill();
 
           ctx.font = '9px monospace';
+          ctx.fillStyle = tokens.textMuted;
           ctx.fillText(hub.code, hx + 6, hy + 3);
         });
 
@@ -305,12 +307,9 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
           const pktY = (1 - t) * (1 - t) * dhakaY + 2 * (1 - t) * t * cpY + t * t * destY;
 
           ctx.fillStyle = tokens.dotActive;
-          ctx.shadowColor = tokens.dotActive;
-          ctx.shadowBlur = 6;
           ctx.beginPath();
           ctx.arc(pktX, pktY, 2.2, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 0;
 
           // Edge destination point
           ctx.fillStyle = tokens.copper;
@@ -339,7 +338,7 @@ export const DotMatrixMap: React.FC<DotMatrixMapProps> = ({
         ctx.fill();
 
         ctx.font = '9px monospace';
-        ctx.fillStyle = tokens.dotActive;
+        ctx.fillStyle = tokens.textPrimary;
         ctx.fillText(`DHAKA [${primaryHub.lat.toFixed(2)}°N, ${primaryHub.lon.toFixed(2)}°E]`, dhakaX + 12, dhakaY + 3);
 
         animId = requestAnimationFrame(render);

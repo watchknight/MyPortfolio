@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from 'react';
-import { ScrambleText } from '../ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './SignatureCanvas.module.css';
 
@@ -12,16 +11,15 @@ export function SignatureCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
-  const [color, setColor] = useState('#3FBFA0'); // Cyan default
+  const [activeToken, setActiveToken] = useState('--accent');
   const [lineWidth, setLineWidth] = useState(3);
   const [strokeCount, setStrokeCount] = useState(0);
   const lastPointRef = useRef<Point | null>(null);
 
   const colors = [
-    { label: 'Verdigris', val: '#3FBFA0' },
-    { label: 'Celadon', val: '#7EC9B5' },
-    { label: 'Copper', val: '#C48850' },
-    { label: 'Sage', val: '#8CBF6E' },
+    { label: 'Text', token: '--text' },
+    { label: 'Accent', token: '--accent' },
+    { label: 'Control', token: '--control' },
   ];
 
   // Initialize canvas size
@@ -84,10 +82,10 @@ export function SignatureCanvas() {
     const coords = getCanvasCoords(e);
     if (!coords || !lastPointRef.current) return;
 
-    ctx.strokeStyle = color;
+    const strokeColor = getComputedStyle(document.documentElement).getPropertyValue(activeToken).trim() || 'currentColor';
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = lineWidth;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = color;
+    ctx.shadowBlur = 0;
 
     ctx.beginPath();
     ctx.moveTo(lastPointRef.current.x, lastPointRef.current.y);
@@ -127,18 +125,15 @@ export function SignatureCanvas() {
   };
 
   return (
-    <div className={styles.guestbookWrapper} data-lenis-prevent="true">
+    <div className={styles.guestbookWrapper}>
       <div className={styles.guestbookHead}>
         <div className={styles.titleArea}>
-          <div className={styles.badgeRow}>
-            <span className={styles.badgeDot} />
-            <span className={styles.badgeText}>[ interactive guestbook ]</span>
-          </div>
-          <h2 className={styles.title} data-cursor="inspect" data-cursor-label="GUESTBOOK">
-            <ScrambleText text="Leave Your Digital Mark" />
+          <span className={styles.badgeText}>Interactive guestbook</span>
+          <h2 className={styles.title}>
+            Leave Your Digital Mark
           </h2>
           <p className={styles.subtitle}>
-            Sign or sketch with neon digital ink. Your coordinates render live on the canvas.
+            Sign or sketch with digital ink. Your coordinates render live on the canvas.
           </p>
         </div>
 
@@ -148,19 +143,20 @@ export function SignatureCanvas() {
           <div className={styles.colorGroup}>
             {colors.map((c) => (
               <button
-                key={c.val}
+                key={c.token}
                 type="button"
-                className={`${styles.colorBtn} ${color === c.val ? styles.colorActive : ''}`}
+                className={`${styles.colorBtn} ${activeToken === c.token ? styles.colorActive : ''}`}
                 onClick={() => {
-                  setColor(c.val);
+                  setActiveToken(c.token);
                   sound.playClick(800, 0.01, 0.03);
                 }}
                 aria-label={`Select ${c.label} color`}
                 data-cursor="link"
+                data-magnetic="0.3"
               >
                 <span
                   className={styles.colorDot}
-                  style={{ backgroundColor: c.val, color: c.val }}
+                  style={{ backgroundColor: `var(${c.token})`, color: `var(${c.token})` }}
                 />
               </button>
             ))}
@@ -174,6 +170,7 @@ export function SignatureCanvas() {
               onClick={() => setLineWidth(2)}
               title="Fine stroke"
               data-cursor="link"
+              data-magnetic="0.3"
             >
               •
             </button>
@@ -183,6 +180,7 @@ export function SignatureCanvas() {
               onClick={() => setLineWidth(4)}
               title="Medium stroke"
               data-cursor="link"
+              data-magnetic="0.3"
             >
               ●
             </button>
@@ -192,6 +190,7 @@ export function SignatureCanvas() {
               onClick={() => setLineWidth(7)}
               title="Bold stroke"
               data-cursor="link"
+              data-magnetic="0.3"
             >
               ⬤
             </button>
@@ -205,6 +204,7 @@ export function SignatureCanvas() {
               onClick={clearCanvas}
               disabled={!hasDrawn}
               data-cursor="link"
+              data-magnetic="0.3"
             >
               Clear
             </button>
@@ -214,6 +214,7 @@ export function SignatureCanvas() {
               onClick={downloadSignature}
               disabled={!hasDrawn}
               data-cursor="link"
+              data-magnetic="0.3"
             >
               Save Badge ↓
             </button>
@@ -226,6 +227,7 @@ export function SignatureCanvas() {
         <canvas
           ref={canvasRef}
           className={styles.canvas}
+          data-cursor="hide"
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -243,8 +245,8 @@ export function SignatureCanvas() {
         )}
 
         <div className={styles.canvasFooterInfo}>
-          <span>VIRTUAL HARDWARE RASTERIZER // 60 FPS</span>
-          <span>{hasDrawn ? `${strokeCount} VECTORS RECORDED` : 'WAITING FOR INPUT'}</span>
+          <span>Interactive Canvas • 60 FPS</span>
+          <span>{hasDrawn ? `${strokeCount} vectors recorded` : 'Waiting for input'}</span>
         </div>
       </div>
     </div>

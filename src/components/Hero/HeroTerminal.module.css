@@ -46,7 +46,6 @@
 
 .dotPulse {
   background-color: var(--color-success);
-  box-shadow: 0 0 8px var(--color-success);
   animation: pulseDot 2s infinite ease-in-out;
 }
 
@@ -72,8 +71,8 @@
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-pill);
   background-color: var(--color-accent-muted);
-  border: 1px solid var(--color-accent-glow);
-  color: var(--color-accent);
+  border: 1px solid var(--accent);
+  color: var(--text);
 }
 
 .matrixGrid {
@@ -153,7 +152,7 @@
 
 .consoleLog {
   padding: 1rem;
-  background-color: #0C0D10;
+  background-color: var(--surface);
   min-height: 140px;
   max-height: 170px;
   overflow-y: auto;
@@ -184,7 +183,8 @@
 }
 
 .logAccent {
-  color: var(--color-accent);
+  color: var(--text);
+  font-weight: 600;
 }
 
 .logPrompt {
@@ -192,6 +192,7 @@
 }
 
 .logWarning {
-  color: var(--color-accent-amber);
+  color: var(--text);
+  font-weight: 600;
 }
 

@@ -1,226 +1,207 @@
-/* Design Tokens — Brushed Titanium */
+/* ── Design Tokens — Signal over Noise ── */
+/* Source of Truth from /DESIGN.md */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0E1A36;
+  --surface: #14244A;
+  --raised: #1B2F5E;
+  --line: #263A6A;
+  --control: #5F78B2;
+  --text: #F1EDE4;
+  --muted: #A9B4CC;
+  --subtle: #94A2C2;
+  --accent: #FFB224;
+  --accent-hover: #FFC247;
+  --on-accent: #0E1A36;
+  --invert-bg: #F1EDE4;
+  --invert-text: #0E1A36;
+  --focus: #FFB224;
+  --ok: #5BD6A0;
+  --error: #FF5C5C;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #EEF1F7;
+  --surface: #F8F9FC;
+  --raised: #FFFFFF;
+  --line: #D3DAE9;
+  --control: #7684A6;
+  --text: #0E1A36;
+  --muted: #46557A;
+  --subtle: #5A688F;
+  --accent: #FFB224;
+  --accent-hover: #FFC247;
+  --on-accent: #0E1A36;
+  --invert-bg: #0E1A36;
+  --invert-text: #F1EDE4;
+  --focus: #0E1A36;
+  --ok: #0B7A4B;
+  --error: #C5221F;
+}
 
 :root {
   /* ── Typography: Families ── */
-  --font-display:          'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body:             'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono:             'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: "Bricolage Grotesque Variable", "Bricolage Fallback", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Fallback", ui-monospace, monospace;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
 
-  /* ── Typography: Scale (responsive) ── */
-  --text-hero:             clamp(2.25rem, 5.5vw + 0.5rem, 4.5rem);
-  --text-section:          clamp(1.5rem, 2.5vw + 0.5rem, 2.25rem);
-  --text-subsection:       clamp(1.125rem, 1.8vw + 0.25rem, 1.375rem);
-  --text-body:             clamp(1rem, 0.5vw + 0.85rem, 1.0625rem);
-  --text-meta:             clamp(0.8125rem, 0.3vw + 0.7rem, 0.875rem);
-  --text-micro:            0.75rem;
+  /* ── Type Scale (Responsive clamp variables per spec) ── */
+  --fs-display: clamp(3rem, 1.2rem + 7.2vw, 8rem);
+  --fs-h1: clamp(2.25rem, 1.2rem + 4vw, 5rem);
+  --fs-h2: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  --fs-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --fs-small: 0.875rem;
 
-  /* ── Typography: Line Heights ── */
-  --leading-hero:          1.05;
-  --leading-section:       1.2;
-  --leading-subsection:    1.35;
-  --leading-body:          1.65;
-  --leading-meta:          1.45;
+  /* Backward-compatible scale aliases */
+  --text-hero: var(--fs-h1);
+  --text-section: var(--fs-h2);
+  --text-subsection: var(--fs-h3);
+  --text-body: var(--fs-body);
+  --text-meta: var(--fs-small);
+  --text-micro: 0.75rem;
 
-  /* ── Typography: Weights ── */
-  --weight-bold:           700;
-  --weight-semibold:       600;
-  --weight-medium:         500;
-  --weight-regular:        400;
+  /* ── Typography: Metrics ── */
+  --leading-hero: 0.95;
+  --leading-section: 0.95;
+  --leading-subsection: 1.2;
+  --leading-body: 1.6;
+  --leading-meta: 1.45;
+  --measure-body: 62ch;
 
-  /* ── Typography: Measure ── */
-  --measure-body:          65ch;
+  /* ── Spacing Scale (4px base: 4 8 12 16 24 32 48 64 96 128) ── */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-96: 96px;
+  --space-128: 128px;
 
-  /* ── Spacing ── */
-  --space-2xs:             0.25rem;
-  --space-xs:              0.5rem;
-  --space-sm:              0.875rem;
-  --space-md:              1.25rem;
-  --space-lg:              clamp(1.5rem, 3vw, 2.25rem);
-  --space-xl:              clamp(2rem, 3.5vw, 2.75rem);
-  --space-2xl:             clamp(2.5rem, 4.5vw, 3.5rem);
-  --space-section:         clamp(3.5rem, 5.5vw, 5rem);
+  /* Semantic spacing aliases */
+  --space-2xs: var(--space-4);
+  --space-xs: var(--space-8);
+  --space-sm: var(--space-12);
+  --space-md: var(--space-16);
+  --space-lg: var(--space-24);
+  --space-xl: var(--space-32);
+  --space-2xl: var(--space-48);
+  --space-section: var(--space-64);
 
-  /* ── Layout ── */
-  --content-max:           78rem;
-  --content-padding:       clamp(1.25rem, 4vw, 3.5rem);
-  --nav-height:            3.75rem;
+  /* ── Layout Primitives ── */
+  --content-max: 1280px;
+  --content-padding: clamp(16px, 4vw, 48px);
+  --nav-height: 3.75rem;
+
+  /* ── Radii System (4-tier system per DESIGN.md) ── */
+  --r-xl: 28px;
+  --r-lg: 20px;
+  --r-md: 12px;
+  --r-pill: 999px;
+
+  /* Radii aliases */
+  --radius-xs: 4px;
+  --radius-sm: var(--r-md);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-pill: var(--r-pill);
+  --radius-full: var(--r-pill);
 
   /* ── Motion & Easing ── */
-  --duration-instant:      80ms;
-  --duration-fast:         150ms;
-  --duration-normal:       260ms;
-  --duration-slow:         450ms;
-  --ease-out-expo:         cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:           cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-default:          cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration-instant: 80ms;
+  --duration-fast: 150ms;
+  --duration-normal: 260ms;
+  --duration-slow: 450ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-normal: 260ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
 
-  /* ── Border Radii ── */
-  --radius-xs:             4px;
-  --radius-sm:             8px;
-  --radius-md:             12px;
-  --radius-lg:             16px;
-  --radius-pill:           9999px;
-  --radius-full:           9999px;
-  --transition-normal:     260ms cubic-bezier(0.25, 0.1, 0.25, 1);
-  --transition-fast:       150ms cubic-bezier(0.25, 0.1, 0.25, 1);
-}
+  /* ── Focus ── */
+  --focus-ring: 2px solid var(--focus);
+  --focus-offset: 2px;
 
-/* ── Dark Theme (Brushed Titanium) ── */
-:root,
-[data-theme="dark"] {
-  --color-bg-base:         #101114;
-  --color-bg-elevated:     #18191E;
-  --color-bg-card:         #1E1F24;
-  --color-bg-card-hover:   #26272D;
-  --color-bg-subtle:       #2C2D33;
-  --color-bg-surface:      #1E1F24;
-  --color-surface:         #1E1F24;
-  --color-surface-hover:   #26272D;
-  --color-bg:              #101114;
-  --color-bg-glass:        rgba(16, 17, 20, 0.88);
+  /* ── Legacy Mapped Color Tokens ── */
+  --color-bg-base: var(--bg);
+  --color-bg-elevated: var(--surface);
+  --color-bg-card: var(--surface);
+  --color-bg-card-hover: var(--raised);
+  --color-bg-subtle: var(--surface);
+  --color-bg-surface: var(--surface);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--raised);
+  --color-bg: var(--bg);
+  --color-bg-glass: var(--surface);
 
-  --color-text-primary:    #E5E5E1;
-  --color-text-secondary:  #B0B0AB;
-  --color-text-tertiary:   #95958D;
-  --color-text-muted:      #8C8C84;
-  --color-text-bright:     #EDEDEA;
-  --color-text-dim:        #95958D;
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-text-tertiary: var(--subtle);
+  --color-text-muted: var(--muted);
+  --color-text-bright: var(--text);
+  --color-text-dim: var(--subtle);
 
-  --color-border:          rgba(229, 229, 225, 0.13);
-  --color-border-hairline: rgba(229, 229, 225, 0.09);
-  --color-border-subtle:   rgba(229, 229, 225, 0.15);
-  --color-border-strong:   rgba(229, 229, 225, 0.26);
-  --color-border-focus:    #3FBFA0;
+  --color-border: var(--line);
+  --color-border-hairline: var(--line);
+  --color-border-subtle: var(--line);
+  --color-border-strong: var(--control);
+  --color-border-focus: var(--focus);
 
-  --color-accent:          #3FBFA0;
-  --color-accent-primary:  #3FBFA0;
-  --color-accent-contrast: #0A0C0E;
-  --color-accent-secondary: #7EC9B5;
-  --color-accent-cyan:     #7EC9B5; /* Alias — legacy compat, migrate to accent-secondary */
-  --color-accent-emerald:  #3FBFA0;
-  --color-accent-amber:    #D4A24B;
-  --color-accent-glow:     rgba(63, 191, 160, 0.18);
-  --color-accent-muted:    rgba(63, 191, 160, 0.13);
-  --color-accent-subtle:   rgba(63, 191, 160, 0.08);
-  --color-accent-border:   rgba(63, 191, 160, 0.25);
-  
-  --color-success:         #3FBFA0;
-  --color-warning:         #D4A24B;
+  --color-accent: var(--accent);
+  --color-accent-primary: var(--accent);
+  --color-accent-contrast: var(--on-accent);
+  --color-accent-secondary: var(--accent-hover);
+  --color-accent-cyan: var(--accent);
+  --color-accent-emerald: var(--ok);
+  --color-accent-amber: var(--accent);
+  --color-accent-glow: transparent;
+  --color-accent-muted: var(--raised);
+  --color-accent-subtle: var(--surface);
+  --color-accent-border: var(--line);
 
-  /* Semantic: Error */
-  --color-error:           #D45B5B;
-  --color-error-muted:     rgba(212, 91, 91, 0.12);
+  --color-success: var(--ok);
+  --color-warning: var(--accent);
+  --color-error: var(--error);
+  --color-error-muted: var(--raised);
 
-  /* Secondary Accent: Copper */
-  --color-accent-copper:   #C48850;
-  --color-accent-copper-muted: rgba(196, 136, 80, 0.20);
+  --color-accent-copper: var(--control);
+  --color-accent-copper-muted: var(--raised);
 
   /* Code Syntax */
-  --color-syntax-keyword:  #C48850;
-  --color-syntax-type:     #7EC9B5;
-  --color-syntax-string:   #8CBF6E;
-  --color-syntax-property: #E5E5E1;
+  --color-syntax-keyword: var(--text);
+  --color-syntax-type: var(--control);
+  --color-syntax-string: var(--ok);
+  --color-syntax-property: var(--text);
 
-  /* Traffic Lights */
-  --color-dot-red:         #D45B5B;
-  --color-dot-yellow:      #D4A24B;
-  --color-dot-green:       #3FBFA0;
+  /* Dot Indicators */
+  --color-dot-red: var(--error);
+  --color-dot-yellow: var(--accent);
+  --color-dot-green: var(--ok);
 
-  /* SignalSweep */
-  --color-chassis:         rgba(16, 17, 20, 0.92);
-  --color-tungsten:        rgba(133, 133, 128, 0.6);
-  --color-signal:          #3FBFA0;
-  --color-cold-steel:      rgba(63, 191, 160, 0.45);
+  /* Signal Primitives */
+  --color-chassis: var(--surface);
+  --color-tungsten: var(--subtle);
+  --color-signal: var(--accent);
+  --color-cold-steel: var(--control);
 
-  --card-shadow:           0 10px 30px -10px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(229, 229, 225, 0.07);
-  --card-shadow-hover:     0 20px 40px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(63, 191, 160, 0.35), 0 0 20px rgba(63, 191, 160, 0.10);
+  /* DESIGN.md Mandate: Borders only, zero tile drop-shadows */
+  --card-shadow: none;
+  --card-shadow-hover: none;
 
-  --canvas-grid-color:     rgba(133, 133, 128, 0.07);
-  --canvas-particle-color: rgba(63, 191, 160, 0.50);
-  --canvas-line-color:     rgba(63, 191, 160, 0.16);
-
-  --focus-ring:            2px solid #7EC9B5;
-  --focus-offset:          3px;
+  --canvas-grid-color: var(--line);
+  --canvas-particle-color: var(--control);
+  --canvas-line-color: var(--line);
 }
 
-/* ── Light Theme (Brushed Titanium — Studio) ── */
-[data-theme="light"] {
-  --color-bg-base:         #F7F7F5;
-  --color-bg-elevated:     #FFFFFF;
-  --color-bg-card:         #FFFFFF;
-  --color-bg-card-hover:   #EFEFE9;
-  --color-bg-subtle:       #E0DFD8;
-  --color-bg-surface:      #F7F7F5;
-  --color-surface:         #FFFFFF;
-  --color-surface-hover:   #EFEFE9;
-  --color-bg:              #FFFFFF;
-  --color-bg-glass:        rgba(247, 247, 245, 0.92);
-
-  --color-text-primary:    #1A1A18;
-  --color-text-secondary:  #3D3D39;
-  --color-text-tertiary:   #5C5C57;
-  --color-text-muted:      #626260;
-  --color-text-bright:     #1A1A18;
-  --color-text-dim:        #5C5C57;
-
-  --color-border:          rgba(26, 26, 24, 0.13);
-  --color-border-hairline: rgba(26, 26, 24, 0.09);
-  --color-border-subtle:   rgba(26, 26, 24, 0.15);
-  --color-border-strong:   rgba(26, 26, 24, 0.26);
-  --color-border-focus:    #2A8C74;
-
-  --color-accent:          #237A65;
-  --color-accent-primary:  #237A65;
-  --color-accent-contrast: #FFFFFF;
-  --color-accent-secondary: #2A8C74;
-  --color-accent-cyan:     #2A8C74; /* Alias — legacy compat, migrate to accent-secondary */
-  --color-accent-emerald:  #1F7A62;
-  --color-accent-amber:    #A07830;
-  --color-accent-glow:     rgba(35, 122, 101, 0.16);
-  --color-accent-muted:    rgba(35, 122, 101, 0.11);
-  --color-accent-subtle:   rgba(35, 122, 101, 0.06);
-  --color-accent-border:   rgba(35, 122, 101, 0.22);
-  
-  --color-success:         #1F7A62;
-  --color-warning:         #A07830;
-
-  /* Semantic: Error */
-  --color-error:           #B84040;
-  --color-error-muted:     rgba(184, 64, 64, 0.10);
-
-  /* Secondary Accent: Copper */
-  --color-accent-copper:   #8B5A2E;
-  --color-accent-copper-muted: rgba(139, 90, 46, 0.15);
-
-  /* Code Syntax */
-  --color-syntax-keyword:  #8B5A2E;
-  --color-syntax-type:     #2A8C74;
-  --color-syntax-string:   #4A7A35;
-  --color-syntax-property: #1A1A18;
-
-  /* Traffic Lights */
-  --color-dot-red:         #B84040;
-  --color-dot-yellow:      #A07830;
-  --color-dot-green:       #2A8C74;
-
-  /* SignalSweep */
-  --color-chassis:         rgba(247, 247, 245, 0.92);
-  --color-tungsten:        rgba(92, 92, 87, 0.5);
-  --color-signal:          #2A8C74;
-  --color-cold-steel:      rgba(42, 140, 116, 0.35);
-
-  --card-shadow:           0 4px 20px -4px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(26, 26, 24, 0.07);
-  --card-shadow-hover:     0 12px 30px -8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(42, 140, 116, 0.40);
-
-  --canvas-grid-color:     rgba(26, 26, 24, 0.04);
-  --canvas-particle-color: rgba(42, 140, 116, 0.45);
-  --canvas-line-color:     rgba(42, 140, 116, 0.12);
-
-  --focus-ring:            2px solid #2A8C74;
-  --focus-offset:          3px;
-}
-
-/* ── Atmosphere & Film Grain Overlay ── */
+/* ── Static Noise Grain Layer (≤ 20KB, 3–4% opacity, off on touch) ── */
 html[data-grain="true"]::before {
   content: "";
   position: fixed;
@@ -230,29 +211,12 @@ html[data-grain="true"]::before {
   height: 100vh;
   pointer-events: none;
   z-index: 99998;
-  opacity: 0.045;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-html[data-grain="true"]::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 99997;
-  opacity: 0.025;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.4),
-    rgba(0, 0, 0, 0.4) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-}
-
-html[data-theme="light"][data-grain="true"]::after {
-  opacity: 0.015;
+@media (pointer: coarse), (hover: none) {
+  html[data-grain="true"]::before {
+    display: none;
+  }
 }

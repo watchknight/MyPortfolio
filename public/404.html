@@ -5,11 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Signal Loss // 404 — Abdur Rahman Moayed</title>
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#101114" />
+    <meta name="theme-color" content="#0E1A36" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" href="/fonts/instrument-sans-700.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/geist-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <style>
+      :root {
+        --bg: #0E1A36;
+        --surface: #14244A;
+        --line: #263A6A;
+        --line-strong: #5F78B2;
+        --text: #F1EDE4;
+        --muted: #A9B4CC;
+        --subtle: #94A2C2;
+        --accent: #FFB224;
+        --accent-hover: #FFC247;
+        --on-accent: #0E1A36;
+        --focus: #FFB224;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #EEF1F7;
+          --surface: #F8F9FC;
+          --line: #CBD4E6;
+          --line-strong: #9BAECF;
+          --text: #0E1A36;
+          --muted: #43557A;
+          --subtle: #5A6D94;
+          --accent: #FFB224;
+          --accent-hover: #E69D15;
+          --on-accent: #0E1A36;
+          --focus: #0E1A36;
+        }
+      }
       *, *::before, *::after {
         box-sizing: border-box;
         margin: 0;
@@ -17,24 +44,14 @@
       }
       body {
         min-height: 100dvh;
-        background-color: #101114;
-        color: #E5E5E1;
-        font-family: 'Geist', -apple-system, system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif;
         display: flex;
         align-items: center;
         padding: clamp(1.5rem, 5vw, 4rem);
         position: relative;
         overflow: hidden;
-      }
-      /* Subtle light line */
-      .sweep-line {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, #3FBFA0 20%, #7EC9B5 50%, #3FBFA0 80%, transparent 100%);
-        box-shadow: 0 0 24px 2px rgba(63, 191, 160, 0.3);
       }
       .container {
         max-width: 48rem;
@@ -43,10 +60,10 @@
         gap: 1.5rem;
       }
       .badge {
-        font-family: 'Instrument Sans', sans-serif;
+        font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
         font-size: 0.8125rem;
         font-weight: 600;
-        color: #858580;
+        color: var(--muted);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         display: inline-flex;
@@ -57,36 +74,35 @@
         content: '';
         width: 6px;
         height: 6px;
-        background-color: #858580;
+        background-color: var(--accent);
         border-radius: 50%;
         display: inline-block;
       }
       h1 {
-        font-family: 'Instrument Sans', sans-serif;
         font-size: clamp(2.5rem, 6vw, 4.5rem);
         font-weight: 700;
-        letter-spacing: -0.03em;
-        line-height: 1.05;
-        color: #E5E5E1;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        color: var(--text);
       }
       p {
         font-size: clamp(1rem, 1.2vw + 0.5rem, 1.1875rem);
         line-height: 1.6;
-        color: #B0B0AB;
-        max-width: 48ch;
+        color: var(--muted);
+        max-width: 62ch;
       }
       .meta-box {
-        background-color: #1E1F24;
-        border: 1px solid rgba(63, 191, 160, 0.20);
-        border-radius: 6px;
+        background-color: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
         padding: 1rem 1.25rem;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
         font-size: 0.8125rem;
-        color: #858580;
+        color: var(--subtle);
         margin-block: 0.5rem;
       }
       .meta-box span {
-        color: #E5E5E1;
+        color: var(--text);
       }
       .actions {
         display: flex;
@@ -97,41 +113,39 @@
       a {
         display: inline-flex;
         align-items: center;
-        font-family: 'Instrument Sans', sans-serif;
         font-size: 0.875rem;
-        font-weight: 500;
+        font-weight: 600;
         padding: 0.75rem 1.5rem;
-        border-radius: 4px;
+        border-radius: 999px;
         text-decoration: none;
         transition: all 120ms ease;
       }
       .btn-primary {
-        color: #101114;
-        background-color: #E5E5E1;
-        border: 1px solid #E5E5E1;
+        color: var(--on-accent);
+        background-color: var(--accent);
+        border: 1px solid var(--accent);
       }
       .btn-primary:hover {
-        background-color: #B0B0AB;
-        border-color: #B0B0AB;
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
       }
       .btn-secondary {
-        color: #B0B0AB;
+        color: var(--text);
         background-color: transparent;
-        border: 1px solid rgba(63, 191, 160, 0.30);
+        border: 1px solid var(--line);
       }
       .btn-secondary:hover {
-        color: #E5E5E1;
-        border-color: #7EC9B5;
-        background-color: #1E1F24;
+        color: var(--text);
+        border-color: var(--line-strong);
+        background-color: var(--surface);
       }
       :focus-visible {
-        outline: 2px solid #7EC9B5;
+        outline: 2px solid var(--focus);
         outline-offset: 2px;
       }
     </style>
   </head>
   <body>
-    <div class="sweep-line"></div>
     <main class="container">
       <div class="badge">Signal Loss // Status: 404_Sector_Unmapped</div>
       <h1>Signal Void</h1>

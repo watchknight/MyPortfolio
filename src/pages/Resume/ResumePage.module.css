@@ -28,7 +28,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--color-accent-primary);
+  color: var(--muted);
 }
 
 .pageTitle {
@@ -64,7 +64,6 @@
 }
 
 .primaryAction:hover {
-  box-shadow: 0 0 14px var(--color-accent-glow);
   transform: translateY(-1px);
 }
 
@@ -117,8 +116,8 @@
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-xs);
   background: var(--color-accent-subtle);
-  border: 1px solid var(--color-accent-glow);
-  color: var(--color-accent-primary);
+  border: 1px solid var(--accent);
+  color: var(--text);
   margin-bottom: 0.25rem;
 }
 
@@ -127,7 +126,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--color-accent-primary);
-  box-shadow: 0 0 6px var(--color-accent-primary);
 }
 
 .resumeHeader {
@@ -150,7 +148,7 @@
 .candidateTitle {
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--color-accent-primary);
+  color: var(--muted);
   margin: 0;
 }
 
@@ -175,7 +173,7 @@
 }
 
 .contactLink:hover {
-  color: var(--color-accent-primary);
+  color: var(--text);
 }
 
 .contactSeparator {
@@ -241,7 +239,7 @@
 
 .entryOrg {
   font-size: 1rem;
-  color: var(--color-accent-primary);
+  color: var(--text);
   font-weight: 500;
 }
 
@@ -289,8 +287,8 @@
 }
 
 .inlineTouchLink {
-  color: var(--color-accent) !important;
-  text-decoration: underline;
+  color: var(--text) !important;
+  text-decoration: underline var(--accent);
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -314,8 +312,8 @@
   }
   .resumeSheet * {
     clip-path: none !important;
-    background: #fff !important;
-    color: #000 !important;
+    background: white !important;
+    color: black !important;
     box-shadow: none !important;
   }
   .resumeSheetContent {

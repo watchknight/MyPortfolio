@@ -72,7 +72,7 @@ export function WaypointDock({ onOpenSysCheck }: WaypointDockProps) {
         aria-label="Run Systems Check"
       >
         <span className={styles.sysCheckPulse} />
-        <span>&gt;_ RUN_SYS_CHECK</span>
+        <span>Run Systems Check</span>
       </button>
 
       <div className={styles.dockTrack}>

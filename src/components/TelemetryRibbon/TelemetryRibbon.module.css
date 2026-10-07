@@ -8,7 +8,6 @@
   padding: 0.65rem 0;
   user-select: none;
   z-index: 2;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), inset 0 -1px 0 rgba(0, 0, 0, 0.4);
 }
 
 .track {
@@ -77,14 +76,12 @@
   height: 5px;
   border-radius: 50%;
   background: var(--color-accent-cyan);
-  box-shadow: 0 0 8px var(--color-accent-cyan);
   display: inline-block;
   animation: pulseDot 2s infinite ease-in-out;
 }
 
 .dotEmerald {
   background: var(--color-accent-emerald);
-  box-shadow: 0 0 8px var(--color-accent-emerald);
 }
 
 .separator {

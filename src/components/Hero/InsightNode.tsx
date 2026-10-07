@@ -70,8 +70,7 @@ export function InsightNode({
       role="button"
       aria-expanded={isOpen}
       aria-label={`${keyword} (explore ${title})`}
-      data-cursor="inspect"
-      data-cursor-label="INSIGHT"
+      data-cursor="link"
     >
       <span className={styles.nodeIcon} aria-hidden="true">
         {icon === 'radar' && (

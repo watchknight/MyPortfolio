@@ -49,7 +49,6 @@ export function ParticleText({
     let animationId: number | null = null;
     let isRunning = false;
     let groups: ParticleGroup[] = [];
-    let isDark = document.documentElement.getAttribute('data-theme') !== 'light';
 
     let mouseX = -10000;
     let mouseY = -10000;
@@ -62,14 +61,13 @@ export function ParticleText({
       if (width === 0) return;
       lastWidth = width;
 
-      isDark = document.documentElement.getAttribute('data-theme') !== 'light';
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       const offCanvas = document.createElement('canvas');
       const octx = offCanvas.getContext('2d', { willReadFrequently: true });
       if (!octx) return;
 
-      const fontFamily = '"Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      const fontFamily = '"Bricolage Grotesque Variable", "Bricolage Fallback", system-ui, sans-serif';
       let fontSize = Math.floor(Math.min(width * 0.076, 50));
       const minFontSize = 17;
 
@@ -105,42 +103,19 @@ export function ParticleText({
       octx.textBaseline = 'top';
 
       lines.forEach((line, index) => {
-        octx.fillStyle = line.highlight ? '#00FF00' : '#FF0000';
+        octx.fillStyle = line.highlight ? 'green' : 'red';
         const y = topPadding + index * lineHeight;
         octx.fillText(line.text, 0, y);
       });
 
       const imgData = octx.getImageData(0, 0, width, height).data;
 
-      const darkLine1Colors = [
-        'rgba(229, 229, 225, 0.98)',
-        'rgba(237, 237, 234, 0.92)',
-        'rgba(63, 191, 160, 0.85)',
-        'rgba(196, 136, 80, 0.80)',
-      ];
+      const cs = getComputedStyle(document.documentElement);
+      const textPrimary = cs.getPropertyValue('--text').trim() || 'currentColor';
+      const textMuted = cs.getPropertyValue('--muted').trim() || 'currentColor';
 
-      const darkLine2Colors = [
-        'rgba(63, 191, 160, 1)',
-        'rgba(196, 136, 80, 1)',
-        'rgba(140, 191, 110, 0.95)',
-        'rgba(126, 201, 181, 0.95)',
-        'rgba(229, 229, 225, 1)',
-      ];
-
-      const lightLine1Colors = [
-        'rgba(26, 26, 24, 0.95)',
-        'rgba(45, 45, 41, 0.9)',
-        'rgba(92, 92, 87, 0.85)',
-      ];
-
-      const lightLine2Colors = [
-        'rgba(42, 140, 116, 1)',
-        'rgba(139, 90, 46, 0.98)',
-        'rgba(74, 122, 53, 0.95)',
-      ];
-
-      const line1Palette = isDark ? darkLine1Colors : lightLine1Colors;
-      const line2Palette = isDark ? darkLine2Colors : lightLine2Colors;
+      const line1Palette = [textPrimary, textMuted];
+      const line2Palette = [textPrimary];
 
       const newGroups: ParticleGroup[] = [
         ...line1Palette.map((color) => ({ color, particles: [] as Particle[] })),
@@ -250,16 +225,18 @@ export function ParticleText({
       }
 
       if (isMouseActive && mouseX >= -10 && mouseX <= width + 10 && mouseY >= -10 && mouseY <= height + 10) {
+        const cs = getComputedStyle(document.documentElement);
+        const accent = cs.getPropertyValue('--accent').trim() || 'currentColor';
+        const control = cs.getPropertyValue('--control').trim() || 'currentColor';
         ctx.save();
-        ctx.strokeStyle = isDark ? 'rgba(63, 191, 160, 0.40)' : 'rgba(42, 140, 116, 0.45)';
+        ctx.strokeStyle = control;
         ctx.lineWidth = 1.25;
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, width < 600 ? 22 : 28, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.fillStyle = isDark ? '#3FBFA0' : '#2A8C74';
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = isDark ? 'rgba(63, 191, 160, 0.70)' : 'rgba(42, 140, 116, 0.6)';
+        ctx.fillStyle = accent;
+        ctx.shadowBlur = 0;
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
         ctx.fill();

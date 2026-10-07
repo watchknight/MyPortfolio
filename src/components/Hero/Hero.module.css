@@ -31,15 +31,7 @@
   right: 0;
   bottom: 0;
   pointer-events: none;
-  background: radial-gradient(
-    480px circle at var(--mouse-x, 200px) var(--mouse-y, 100px),
-    rgba(63, 191, 160, 0.08) 0%,
-    rgba(63, 191, 160, 0.02) 40%,
-    transparent 70%
-  );
-  opacity: var(--spotlight-opacity, 0);
-  transition: opacity 0.35s ease;
-  z-index: 0;
+  display: none;
 }
 
 .heroRight {
@@ -52,28 +44,22 @@
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--text-micro);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-accent);
+  color: var(--text);
   padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
-  background: rgba(16, 17, 20, 0.70);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(63, 191, 160, 0.25);
-  box-shadow: 0 0 16px rgba(63, 191, 160, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--line);
   position: relative;
   z-index: 1;
   user-select: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .eyebrow:hover {
-  border-color: rgba(63, 191, 160, 0.45);
-  box-shadow: 0 0 20px rgba(63, 191, 160, 0.18);
+  border-color: var(--control);
 }
 
 .eyebrowDot {
@@ -81,7 +67,6 @@
   height: 6.5px;
   border-radius: 50%;
   background: var(--color-success);
-  box-shadow: 0 0 10px var(--color-success);
   animation: pulseBeacon 2.2s infinite ease-in-out;
 }
 
@@ -132,10 +117,9 @@
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 300;
-  color: var(--color-accent);
+  color: var(--text);
   opacity: 0.9;
   margin-right: 0.22em;
-  text-shadow: 0 0 16px rgba(63, 191, 160, 0.35);
   user-select: none;
 }
 
@@ -144,30 +128,11 @@
 }
 
 .heroTitleHighlight {
-  background: linear-gradient(
-    115deg,
-    #EDEDEA 0%,
-    #3FBFA0 25%,
-    #C48850 52%,
-    #8CBF6E 78%,
-    #3FBFA0 100%
-  );
-  background-size: 260% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: heroShimmer 8s linear infinite;
   display: inline;
   font-weight: 700;
-  filter: drop-shadow(0 2px 14px rgba(63, 191, 160, 0.20));
-}
-
-@keyframes heroShimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 260% 50%;
-  }
+  color: var(--text);
+  text-decoration: underline var(--accent);
+  text-underline-offset: 4px;
 }
 
 /* Micro Tactical Role Scrubber */
@@ -180,14 +145,14 @@
 }
 
 .roleTab {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--line);
   padding: 0.3rem 0.65rem;
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 500;
-  color: var(--color-text-tertiary);
+  color: var(--muted);
   cursor: pointer;
   transition: all var(--duration-fast) ease;
   display: inline-flex;
@@ -197,29 +162,26 @@
 }
 
 .roleTab:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.16);
-  color: var(--color-text-secondary);
+  background: var(--raised);
+  border-color: var(--control);
+  color: var(--text);
 }
 
 .roleTabActive {
-  background: rgba(63, 191, 160, 0.12);
-  border-color: rgba(63, 191, 160, 0.35);
-  color: #FFFFFF;
-  box-shadow: 0 0 14px rgba(63, 191, 160, 0.18);
+  background: var(--raised);
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 .roleTabIndicator {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 6px var(--color-accent);
+  background: var(--accent);
 }
 
 .roleTab:not(.roleTabActive) .roleTabIndicator {
-  background: var(--color-text-muted);
-  box-shadow: none;
+  background: var(--muted);
   opacity: 0.4;
 }
 
@@ -290,16 +252,13 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   transition: transform var(--duration-fast) var(--ease-out-expo),
-              box-shadow var(--duration-fast) var(--ease-out-expo),
               opacity var(--duration-fast) ease;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }
 
 .btnPrimary:hover {
   transform: translateY(-2px);
   opacity: 0.95;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
 }
 
 .btnPrimary svg {

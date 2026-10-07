@@ -26,7 +26,7 @@
 }
 
 .fileIcon {
-  color: var(--color-accent-primary);
+  color: var(--control);
   display: flex;
   align-items: center;
 }
@@ -69,7 +69,7 @@
 
 .copyButton:hover {
   color: var(--color-text-primary);
-  border-color: var(--color-accent-primary);
+  border-color: var(--accent);
 }
 
 .codeArea {
@@ -112,14 +112,14 @@
 }
 
 .activeToken {
-  background: rgba(63, 191, 160, 0.10);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
   border-radius: 2px;
   cursor: help;
   transition: background 0.15s ease;
 }
 
 .activeToken:hover {
-  background: rgba(63, 191, 160, 0.22);
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
   color: var(--color-syntax-type);
 }
 
@@ -145,59 +145,58 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-success);
-  box-shadow: 0 0 6px var(--color-success);
+  background: var(--ok);
 }
 
 /* ── Light Theme High-Contrast Code Tokens ── */
 :global([data-theme="light"]) .codeArea {
-  background: var(--color-text-bright);
-  color: #1E1F24;
+  background: var(--surface);
+  color: var(--text);
 }
 
 :global([data-theme="light"]) .keyword {
-  color: var(--color-syntax-keyword); /* deep royal purple */
+  color: var(--color-syntax-keyword);
   font-weight: 700;
 }
 
 :global([data-theme="light"]) .typeName {
-  color: var(--color-syntax-type); /* celadon teal (WCAG AA on light bg) */
+  color: var(--color-syntax-type);
   font-weight: 700;
 }
 
 :global([data-theme="light"]) .propKey {
-  color: var(--color-text-primary); /* deep near-black */
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
 :global([data-theme="light"]) .stringVal {
-  color: var(--color-syntax-string); /* olive sage (WCAG AA on light bg) */
+  color: var(--color-syntax-string);
   font-weight: 600;
 }
 
 :global([data-theme="light"]) .comment {
-  color: var(--color-text-muted); /* slate gray */
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="light"]) .punct {
-  color: var(--color-text-secondary); /* deep slate */
+  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
 :global([data-theme="light"]) .fileBadge {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.16);
+  background: var(--raised);
+  border-color: var(--line);
   color: var(--color-text-secondary);
   font-weight: 600;
 }
 
 :global([data-theme="light"]) .copyButton {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.18);
+  background: var(--raised);
+  border-color: var(--line);
   color: var(--color-text-primary);
 }
 
 :global([data-theme="light"]) .cardFooter {
-  background: #ffffff;
+  background: var(--surface);
   color: var(--color-text-tertiary);
 }

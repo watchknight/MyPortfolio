@@ -435,6 +435,7 @@ export function HeroSandbox({ onNavigate }: { onNavigate: (path: string) => void
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
+              data-cursor="hide"
             />
             <button type="submit" className={styles.execBtn} aria-label="Run command" data-cursor="link">
               ↵ RUN

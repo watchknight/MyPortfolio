@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
+import { RollText } from '../../components/RollText/RollText';
 import { sound } from '../../utils/audio';
 import styles from './NotFoundPage.module.css';
 
@@ -9,13 +9,13 @@ interface NotFoundPageProps {
 }
 
 export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
-  const [currentPath, setCurrentPath] = useState<string>('/unknown');
+  const [currentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') return window.location.pathname;
+    return '/unknown';
+  });
 
   useEffect(() => {
-    document.title = 'Signal Void // 404 — Abdur Rahman Moayed';
-    if (typeof window !== 'undefined') {
-      setCurrentPath(window.location.pathname);
-    }
+    document.title = 'Page Not Found — Abdur Rahman Moayed';
   }, []);
 
   useEffect(() => {
@@ -52,14 +52,13 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
       <header className={styles.header}>
         <div className={styles.badgeRow}>
           <span className={styles.statusDot} />
-          <span className={styles.eyebrow}>[ sector 404 // signal void ]</span>
+          <span className={styles.eyebrow}>Page not found</span>
         </div>
-        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="404">
-          <ScrambleText text="Sector 404: Signal Void" />
+        <h1 className={styles.title}>
+          Page Not Found
         </h1>
         <p className={styles.subtitle}>
-          The requested coordinate or ledger record does not exist on this node.
-          It may have been relocated, filtered by edge security rules, or never initialized.
+          The page you are looking for does not exist or may have been moved. Return to the home page or explore selected works below.
         </p>
       </header>
 
@@ -69,26 +68,26 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
         tiltIntensity={4}
       >
         <div className={styles.diagnosticHeader}>
-          <span className={styles.termTitle}>ORIGIN_NODE_DIAGNOSTIC</span>
-          <span className={styles.termCode}>ERR_SECTOR_UNMAPPED</span>
+          <span className={styles.termTitle}>Diagnostic Details</span>
+          <span className={styles.termCode}>404</span>
         </div>
 
         <div className={styles.telemetryGrid}>
           <div className={styles.telemetryRow}>
-            <span className={styles.telemetryLabel}>DIAG_STATUS:</span>
-            <span className={styles.telemetryValueDanger}>404 NOT FOUND // ZERO TELEMETRY</span>
+            <span className={styles.telemetryLabel}>Status:</span>
+            <span className={styles.telemetryValueDanger}>404 Not Found</span>
           </div>
           <div className={styles.telemetryRow}>
-            <span className={styles.telemetryLabel}>TARGET_VECTOR:</span>
+            <span className={styles.telemetryLabel}>Requested Path:</span>
             <span className={styles.telemetryValue}>{currentPath}</span>
           </div>
           <div className={styles.telemetryRow}>
-            <span className={styles.telemetryLabel}>GATEWAY_NODE:</span>
-            <span className={styles.telemetryValue}>Dhaka Sentinel [23.8103° N, 90.4125° E]</span>
+            <span className={styles.telemetryLabel}>Location:</span>
+            <span className={styles.telemetryValue}>Dhaka, Bangladesh</span>
           </div>
           <div className={styles.telemetryRow}>
-            <span className={styles.telemetryLabel}>RESOLUTION:</span>
-            <span className={styles.telemetryValueSuccess}>Reroute to primary ledger recommended</span>
+            <span className={styles.telemetryLabel}>Action:</span>
+            <span className={styles.telemetryValueSuccess}>Return to homepage</span>
           </div>
         </div>
       </SpotlightCard>
@@ -104,7 +103,7 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
-          <span>Reroute to Main Ledger [H]</span>
+          <RollText>Return to Home [H]</RollText>
         </button>
 
         <button
@@ -118,7 +117,7 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
             <line x1="8" y1="21" x2="16" y2="21" />
             <line x1="12" y1="17" x2="12" y2="21" />
           </svg>
-          <span>Explore Selected Works</span>
+          <RollText>Explore Selected Works</RollText>
         </button>
 
         <button
@@ -131,7 +130,7 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
             <polyline points="22,6 12,13 2,6" />
           </svg>
-          <span>Contact Terminal</span>
+          <RollText>Contact Me</RollText>
         </button>
       </div>
 

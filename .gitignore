@@ -25,6 +25,8 @@ dist-ssr
 
 # Temporary test artifacts
 screenshots/
+/*.png
 .chrome-profile*
+.chrome-temp*
 lighthouse-report.json
 

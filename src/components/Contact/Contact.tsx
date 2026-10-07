@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ScrambleText } from '../ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './Contact.module.css';
@@ -21,11 +20,11 @@ export function Contact() {
           <div className={styles.terminalHead}>
             <div className={styles.terminalIdentity}>
               <span className={styles.terminalDot} />
-              <span>TERMINAL://COMMUNICATION_DISPATCH</span>
+              <span>Communication dispatch</span>
             </div>
             <div className={styles.terminalMeta}>
-              <span className={styles.terminalPill}>RESPONSE_WINDOW &lt; 24H</span>
-              <span>UTC+6 (DHAKA)</span>
+              <span className={styles.terminalPill}>Response &lt; 24h</span>
+              <span>UTC+6 (Dhaka)</span>
             </div>
           </div>
 
@@ -33,7 +32,7 @@ export function Contact() {
             <div className={styles.dispatchCol}>
               <div className={styles.titleGroup}>
                 <h2 className={styles.title}>
-                  <ScrambleText text="Initiate Direct Contact" />
+                  Initiate Direct Contact
                 </h2>
                 <p className={styles.intro}>
                   I am actively seeking international remote software engineering internships. If you are

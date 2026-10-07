@@ -10,8 +10,8 @@ const CORE_ASSETS = [
   '/favicon.svg',
   '/og-image.png',
   '/manifest.json',
-  '/fonts/instrument-sans-700.woff2',
-  '/fonts/geist-400.woff2',
+  '/fonts/bricolage-grotesque-latin-wght-normal.woff2',
+  '/fonts/jetbrains-mono-latin-wght-normal.woff2',
 ];
 
 self.addEventListener('install', (event) => {
@@ -85,7 +85,7 @@ self.addEventListener('fetch', (event) => {
           if (fallbackHome) return fallbackHome;
 
           return new Response(
-            '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline — Abdur Rahman Moayed</title><style>body{background:#101114;color:#E5E5E1;font-family:sans-serif;padding:2rem;text-align:center;}</style></head><body><h1>Connection Offline</h1><p>Cached portfolio ledger remains available once reconnecting.</p><a href="/" style="color:#3FBFA0">Return to Terminal</a></body></html>',
+            '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline — Abdur Rahman Moayed</title><style>body{background:Canvas;color:CanvasText;font-family:sans-serif;padding:2rem;text-align:center;}</style></head><body><h1>Connection Offline</h1><p>Cached portfolio ledger remains available once reconnecting.</p><a href="/" style="color:CanvasText;text-decoration:underline;">Return to Home</a></body></html>',
             { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
           );
         })

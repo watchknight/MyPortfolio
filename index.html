@@ -9,12 +9,44 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
+    <!-- Theme Color for both schemes (dark #0E1A36, light #EEF1F7) -->
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0E1A36" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#EEF1F7" />
+    <meta name="theme-color" content="#0E1A36" />
+
+    <!-- Zero-Flash Theme Boot Script: runs before first paint -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme = (saved === 'dark' || saved === 'light') ? saved : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+          var meta = document.querySelector('meta[name="theme-color"]:not([media])');
+          var schemeMeta = document.querySelector('meta[name="theme-color"][media*="' + theme + '"]');
+          if (meta && schemeMeta) meta.setAttribute('content', schemeMeta.getAttribute('content'));
+
+          var savedGrain = localStorage.getItem('grain');
+          var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+          if (savedGrain === 'true' || (savedGrain === null && !isTouch)) {
+            document.documentElement.setAttribute('data-grain', 'true');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Motion Gating & Failsafe Script -->
+    <script>
+      if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+        document.documentElement.classList.add("js-motion");
+        window.__motionFailsafe = setTimeout(() => document.documentElement.classList.remove("js-motion"), 3000);
+      }
+    </script>
+
     <!-- Primary Meta Tags -->
     <title>Abdur Rahman Moayed — Software Engineer &amp; Systems Architect</title>
     <meta name="title" content="Abdur Rahman Moayed — Software Engineer &amp; Systems Architect" />
     <meta name="description" content="Software engineer specializing in browser internals, systems-level security, and high-performance web architecture. B.Sc. in Computer Science &amp; Engineering at East West University." />
     <meta name="author" content="Abdur Rahman Moayed" />
-    <meta name="theme-color" content="#101114" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://moayed.onrender.com/" />
 
@@ -45,13 +77,12 @@
     <!-- Web App Manifest -->
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- Preload Critical Above-The-Fold Webfonts -->
-    <link rel="preload" href="/fonts/instrument-sans-700.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/geist-400.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Preload Critical Above-The-Fold Primary Webfont -->
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <noscript>
-      <div style="background:#1E1F24;color:#858580;font-family:monospace;font-size:0.8rem;padding:0.6rem 1rem;text-align:center;border-bottom:1px solid #2C2D33;position:relative;z-index:9999;">
+      <div style="background:var(--surface);color:var(--muted);font-family:var(--font-mono);font-size:0.8rem;padding:0.6rem 1rem;text-align:center;border-bottom:1px solid var(--line);position:relative;z-index:9999;">
         ⚡ JavaScript execution is disabled. Viewing static prerendered archive — all project records, engineering credentials, and case studies remain legible.
       </div>
     </noscript>
