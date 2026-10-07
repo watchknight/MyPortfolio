@@ -185,3 +185,101 @@ code, pre, kbd {
 .perspective-container {
   perspective: 1200px;
 }
+
+/* ── Custom Cursor (Phase 4) ── */
+
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor [data-cursor],
+html.has-cursor [data-magnetic] {
+  cursor: none;
+}
+
+html.has-cursor [data-cursor="hide"] {
+  cursor: crosshair;
+}
+
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select,
+html.has-cursor [contenteditable],
+html.has-cursor [data-cursor="hide"]:is(input, textarea, select, [contenteditable]),
+html.has-cursor iframe,
+html.has-cursor iframe[data-cursor="hide"] {
+  cursor: auto;
+}
+
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursor-ring {
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  border: 1.5px solid color-mix(in srgb, var(--text) 45%, transparent);
+  transition: opacity 0.2s, background-color 0.25s, border-color 0.25s;
+}
+
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: opacity 0.2s, background-color 0.25s;
+}
+
+.cursor-ring.is-on,
+.cursor-dot.is-on {
+  opacity: 1;
+}
+
+.cursor-ring.is-hidden,
+.cursor-dot.is-hidden {
+  opacity: 0;
+}
+
+.cursor-ring.is-hover {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
+}
+
+.cursor-ring.is-inspect {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border-color: var(--accent);
+}
+
+.cursor-label {
+  position: absolute;
+  left: 12px;
+  top: -13px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: 600 12px/1.5 var(--font-sans);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cursor-ring.is-inspect .cursor-label:not(:empty) {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-ring,
+  .cursor-dot {
+    display: none;
+  }
+}
+

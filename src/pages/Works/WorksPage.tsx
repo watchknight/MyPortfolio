@@ -143,6 +143,8 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
               key={p.id}
               as="article"
               data-tile
+              data-cursor="inspect"
+              data-cursor-label="View project"
               className={styles.projectCard}
               contentClassName={styles.projectCardContent}
               tiltIntensity={9}

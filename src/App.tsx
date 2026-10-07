@@ -1,7 +1,7 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { useRouter } from './hooks/useRouter';
 import { projects, type ProjectData } from './data/projects';
-import { CustomCursor } from './components/CustomCursor/CustomCursor';
+import { initCursor } from './motion/cursor';
 import { Nav } from './components/Nav/Nav';
 import { HomePage } from './pages/Home/HomePage';
 import { useScrollLock } from './utils/scrollLock';
@@ -33,6 +33,10 @@ export default function App({ initialPath, routes }: AppProps) {
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
 
   useScrollLock(Boolean(selectedProject) || sysCheckOpen);
+
+  useEffect(() => {
+    return initCursor();
+  }, []);
 
   useEffect(() => {
     const handleOpenSys = () => setSysCheckOpen(true);
@@ -67,7 +71,6 @@ export default function App({ initialPath, routes }: AppProps) {
       <a href="#main-content" className="skipLink">
         Skip to main content
       </a>
-      <CustomCursor />
       <Suspense fallback={null}>
         {sysCheckOpen && <LazySysDiagnosticModal isOpen={sysCheckOpen} onClose={() => setSysCheckOpen(false)} />}
         {selectedProject && <LazyCaseStudyModal project={selectedProject} onClose={() => setSelectedProject(null)} />}

@@ -326,6 +326,7 @@ export function CommandPalette({
               setSelectedIndex(0);
             }}
             aria-autocomplete="list"
+            data-cursor="hide"
           />
           <button
             type="button"
