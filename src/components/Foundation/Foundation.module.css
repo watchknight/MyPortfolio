@@ -15,7 +15,7 @@
   font-size: var(--text-micro);
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--color-accent);
+  color: var(--muted);
   margin-bottom: 0.5rem;
   display: block;
 }
@@ -71,8 +71,8 @@
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-pill);
   background-color: var(--color-accent-muted);
-  border: 1px solid var(--color-accent-glow);
-  color: var(--color-accent);
+  border: 1px solid var(--accent);
+  color: var(--text);
   font-family: var(--font-mono);
   font-size: var(--text-micro);
   font-weight: 700;
@@ -93,12 +93,7 @@
   bottom: 0.5rem;
   left: 0.35rem;
   width: 2px;
-  background: linear-gradient(
-    to bottom,
-    var(--color-accent) 0%,
-    var(--color-accent-glow) 50%,
-    var(--color-border-hairline) 100%
-  );
+  background: var(--line);
   border-radius: 1px;
 }
 
@@ -123,20 +118,18 @@
   border-radius: 50%;
   background-color: var(--color-surface);
   border: 2px solid var(--color-border-strong);
-  box-shadow: 0 0 0 2px var(--color-surface);
+  outline: 2px solid var(--color-surface);
   transition: all var(--duration-fast) ease;
 }
 
 .timelineNodeActive {
   background-color: var(--color-accent);
-  border-color: #fff;
-  box-shadow: 0 0 10px var(--color-accent);
+  border-color: var(--on-accent);
 }
 
 .milestoneItem:hover .timelineNode {
   border-color: var(--color-accent);
   background-color: var(--color-accent);
-  box-shadow: 0 0 8px var(--color-accent);
 }
 
 .milestoneHeader {
@@ -156,7 +149,8 @@
 }
 
 .milestoneYearActive {
-  color: var(--color-accent);
+  color: var(--text);
+  font-weight: 700;
 }
 
 .milestoneBadges {
@@ -172,8 +166,8 @@
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-xs);
   background-color: var(--color-accent-muted);
-  border: 1px solid var(--color-accent-glow);
-  color: var(--color-accent);
+  border: 1px solid var(--accent);
+  color: var(--text);
 }
 
 .milestoneBadgeHonor {
@@ -247,8 +241,8 @@
 }
 
 .courseworkTag:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent-glow);
+  color: var(--text);
+  border-color: var(--accent);
   background-color: var(--color-accent-muted);
 }
 
@@ -288,7 +282,7 @@
 .compDomain {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 .compValue {
@@ -316,7 +310,7 @@
   font-size: var(--text-micro);
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--color-accent);
+  color: var(--muted);
 }
 
 .schemaTitle {

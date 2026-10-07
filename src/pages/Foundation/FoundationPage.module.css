@@ -21,7 +21,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--color-accent-primary);
+  color: var(--muted);
 }
 
 .title {
@@ -115,7 +115,6 @@
 .timelineDotActive {
   border-color: var(--color-accent-primary);
   background: var(--color-accent-primary);
-  box-shadow: 0 0 8px var(--color-accent-primary);
 }
 
 .yearRow {
@@ -130,7 +129,7 @@
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--color-accent-primary);
+  color: var(--text);
 }
 
 .badgeGroup {
@@ -156,8 +155,8 @@
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-sm);
   background: var(--color-accent-muted);
-  border: 1px solid var(--color-accent-glow);
-  color: var(--color-accent-primary);
+  border: 1px solid var(--accent);
+  color: var(--text);
 }
 
 .itemTitle {

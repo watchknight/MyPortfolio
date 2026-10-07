@@ -102,10 +102,10 @@ export function CanvasGrid() {
     const getThemeColors = () => {
       const style = getComputedStyle(document.documentElement);
       return {
-        grid: style.getPropertyValue('--canvas-grid-color').trim() || 'rgba(133, 133, 128, 0.07)',
-        particle: style.getPropertyValue('--canvas-particle-color').trim() || 'rgba(63, 191, 160, 0.50)',
-        line: style.getPropertyValue('--canvas-line-color').trim() || 'rgba(63, 191, 160, 0.16)',
-        accent: style.getPropertyValue('--color-accent-primary').trim() || 'rgba(63, 191, 160, 0.9)',
+        grid: style.getPropertyValue('--line').trim(),
+        particle: style.getPropertyValue('--control').trim(),
+        line: style.getPropertyValue('--line').trim(),
+        accent: style.getPropertyValue('--accent').trim(),
       };
     };
 

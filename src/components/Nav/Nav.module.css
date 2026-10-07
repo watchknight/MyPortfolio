@@ -76,7 +76,6 @@
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-success);
-  box-shadow: 0 0 8px var(--color-success);
   animation: pulseDot 2.2s infinite ease-in-out;
 }
 
@@ -123,16 +122,10 @@
 
 .navLink:hover .navLinkLabel {
   color: var(--color-text-primary);
-  text-shadow: 0 0 14px rgba(63, 191, 160, 0.40);
-}
-
-:global([data-theme="light"]) .navLink:hover .navLinkLabel {
-  color: #1A1A18;
-  text-shadow: none;
 }
 
 .navLinkActive .navLinkLabel {
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -140,21 +133,10 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius-pill);
-  background: rgba(63, 191, 160, 0.08);
-  border: 1px solid rgba(63, 191, 160, 0.25);
-  box-shadow: 0 0 16px rgba(63, 191, 160, 0.12),
-              inset 0 1px 0 0 var(--color-border-subtle);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--surface);
+  border: 1px solid var(--line);
   z-index: 1;
   pointer-events: none;
-}
-
-:global([data-theme="light"]) .navHoverPill {
-  background: rgba(42, 140, 116, 0.08);
-  border: 1px solid rgba(42, 140, 116, 0.22);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
-              inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
 .navActiveGlow {
@@ -164,8 +146,7 @@
   right: 20%;
   height: 2px;
   border-radius: 2px;
-  background: var(--color-accent);
-  box-shadow: 0 0 10px var(--color-accent), 0 0 4px var(--color-accent);
+  background: var(--accent);
   z-index: 2;
   pointer-events: none;
 }
@@ -187,9 +168,9 @@
 }
 
 .cmdKPill:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent-glow);
-  background-color: var(--color-accent-muted);
+  color: var(--text);
+  border-color: var(--line);
+  background-color: var(--raised);
 }
 
 .cmdKBadge {
@@ -203,8 +184,8 @@
 }
 
 .cmdKPill:hover .cmdKBadge {
-  color: var(--color-accent);
-  border-color: var(--color-accent-glow);
+  color: var(--text);
+  border-color: var(--line);
 }
 
 .dhakaClock {
@@ -222,8 +203,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background-color: var(--color-accent-cyan);
-  box-shadow: 0 0 6px var(--color-accent-cyan);
+  background-color: var(--ok);
 }
 
 .dhakaPulseOffline {
@@ -231,7 +211,6 @@
   height: 5px;
   border-radius: 50%;
   background-color: var(--color-error);
-  box-shadow: 0 0 6px rgba(212, 91, 91, 0.50);
 }
 
 .dhakaPulseSync {
@@ -384,8 +363,9 @@
   }
 
   .mobileLinkActive {
-    color: var(--color-accent);
-    border-bottom-color: var(--color-accent);
+    color: var(--text);
+    border-bottom-color: var(--accent);
+    font-weight: 700;
   }
 }
 

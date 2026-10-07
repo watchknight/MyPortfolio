@@ -1,19 +1,11 @@
 .guestbookWrapper {
   width: 100%;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-strong);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.4),
-              0 0 25px var(--color-accent-glow);
   overflow: hidden;
   margin-top: 2.5rem;
   margin-bottom: 2rem;
-}
-
-:global([data-theme="light"]) .guestbookWrapper {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.08);
 }
 
 .guestbookHead {
@@ -21,15 +13,10 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  border-bottom: 1px solid var(--color-border-hairline);
-  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--line);
+  background: var(--raised);
   gap: 1.5rem;
   flex-wrap: wrap;
-}
-
-:global([data-theme="light"]) .guestbookHead {
-  background: #F7F7F5;
-  border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
 .titleArea {
@@ -49,7 +36,6 @@
   height: 8px;
   border-radius: 50%;
   background: var(--color-accent);
-  box-shadow: 0 0 8px var(--color-accent);
 }
 
 .badgeText {
@@ -57,7 +43,7 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--color-accent);
+  color: var(--muted);
 }
 
 .title {
@@ -123,8 +109,7 @@
 }
 
 .colorActive .colorDot {
-  border-color: #ffffff;
-  box-shadow: 0 0 10px currentColor;
+  border-color: var(--text);
   transform: scale(1.15);
 }
 
@@ -157,7 +142,8 @@
 
 .sizeActive {
   background: var(--color-bg-card);
-  color: var(--color-accent);
+  color: var(--text);
+  font-weight: 700;
 }
 
 .actionGroup {
@@ -223,20 +209,15 @@
 
 .actionSave:hover:not(:disabled) {
   opacity: 0.9;
-  box-shadow: 0 0 12px var(--color-accent-glow);
 }
 
 .canvasContainer {
   position: relative;
   width: 100%;
   height: 200px;
-  background: #0A0B0D;
+  background: var(--surface);
   cursor: crosshair;
   touch-action: none;
-}
-
-:global([data-theme="light"]) .canvasContainer {
-  background: #ffffff;
 }
 
 .canvas {

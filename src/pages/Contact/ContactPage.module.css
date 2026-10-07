@@ -21,7 +21,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--color-accent-primary);
+  color: var(--muted);
 }
 
 .title {
@@ -76,7 +76,6 @@
   height: 7px;
   border-radius: 50%;
   background: var(--color-accent-primary);
-  box-shadow: 0 0 8px var(--color-accent-primary);
   animation: pulseBeacon 2s infinite ease-in-out;
 }
 
@@ -111,7 +110,7 @@
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--color-accent-primary);
+  color: var(--text);
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border-subtle);
   padding: 0.5rem 1rem;
@@ -125,7 +124,7 @@
 
 .copyBtn:hover {
   background: var(--color-accent-muted);
-  border-color: var(--color-accent-glow);
+  border-color: var(--accent);
 }
 
 .socialRow {
@@ -171,7 +170,7 @@
 
 .dispatchBanner {
   background: var(--color-accent-subtle);
-  border: 1px solid var(--color-accent-glow);
+  border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   padding: 0.85rem 1rem;
   display: flex;
@@ -187,7 +186,7 @@
   gap: 0.5rem;
   font-family: var(--font-mono);
   font-weight: 700;
-  color: var(--color-accent-primary);
+  color: var(--text);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -197,8 +196,8 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--color-accent-primary);
-  text-decoration: underline;
+  color: var(--text);
+  text-decoration: underline var(--accent);
   cursor: pointer;
   font-family: var(--font-mono);
   font-size: 0.78rem;
@@ -245,8 +244,8 @@
 }
 
 .errorBanner {
-  background: rgba(212, 91, 91, 0.10);
-  border: 1px solid rgba(212, 91, 91, 0.30);
+  background: color-mix(in srgb, var(--color-error) 12%, transparent);
+  border: 1px solid var(--color-error);
   border-radius: var(--radius-sm);
   padding: 0.85rem 1rem;
   display: flex;
@@ -273,35 +272,33 @@
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-error);
-  box-shadow: 0 0 6px rgba(212, 91, 91, 0.65);
 }
 
 .formInput,
 .formTextarea {
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: 0.75rem 0.95rem;
-  color: var(--color-text-primary);
+  color: var(--text);
   font-family: var(--font-body);
   font-size: 1rem;
   min-height: 44px;
   box-sizing: border-box;
-  outline: none;
-  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+  transition: border-color var(--duration-fast) ease;
 }
 
-.formInput:focus,
-.formTextarea:focus {
-  border-color: var(--color-accent-primary);
-  box-shadow: 0 0 0 1px var(--color-accent-glow);
+.formInput:focus-visible,
+.formTextarea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-color: var(--focus);
 }
 
 .formInputError,
 .formTextareaError {
   border-color: var(--color-error) !important;
-  box-shadow: 0 0 0 1px rgba(212, 91, 91, 0.35) !important;
-  background-color: rgba(212, 91, 91, 0.02);
+  background-color: color-mix(in srgb, var(--color-error) 4%, transparent);
 }
 
 .formTextarea {
@@ -330,7 +327,6 @@
 }
 
 .sendBtn:hover:not(:disabled) {
-  box-shadow: 0 0 16px var(--color-accent-glow);
   transform: translateY(-1px);
 }
 

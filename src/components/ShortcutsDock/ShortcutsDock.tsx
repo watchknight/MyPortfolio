@@ -81,6 +81,10 @@ export function ShortcutsDock() {
           const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', nextTheme);
           localStorage.setItem('theme', nextTheme);
+          const metaTheme = document.querySelector('meta[name="theme-color"]:not([media])');
+          if (metaTheme) {
+            metaTheme.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
+          }
           sound.playChirp(400, 800, 0.03, 0.05);
         },
       },
@@ -110,9 +114,10 @@ export function ShortcutsDock() {
   );
 
   useEffect(() => {
-    // Restore grain preference
+    // Restore grain preference (off by default on touch devices, on by default on desktop)
+    const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
     const savedGrain = localStorage.getItem('grain');
-    if (savedGrain === 'true') {
+    if ((savedGrain === 'true' || (savedGrain === null && !isTouch)) && !isTouch) {
       document.documentElement.setAttribute('data-grain', 'true');
     }
 

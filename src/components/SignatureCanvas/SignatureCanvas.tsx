@@ -12,16 +12,15 @@ export function SignatureCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
-  const [color, setColor] = useState('#3FBFA0'); // Cyan default
+  const [activeToken, setActiveToken] = useState('--accent');
   const [lineWidth, setLineWidth] = useState(3);
   const [strokeCount, setStrokeCount] = useState(0);
   const lastPointRef = useRef<Point | null>(null);
 
   const colors = [
-    { label: 'Verdigris', val: '#3FBFA0' },
-    { label: 'Celadon', val: '#7EC9B5' },
-    { label: 'Copper', val: '#C48850' },
-    { label: 'Sage', val: '#8CBF6E' },
+    { label: 'Text', token: '--text' },
+    { label: 'Accent', token: '--accent' },
+    { label: 'Control', token: '--control' },
   ];
 
   // Initialize canvas size
@@ -84,10 +83,10 @@ export function SignatureCanvas() {
     const coords = getCanvasCoords(e);
     if (!coords || !lastPointRef.current) return;
 
-    ctx.strokeStyle = color;
+    const strokeColor = getComputedStyle(document.documentElement).getPropertyValue(activeToken).trim() || 'currentColor';
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = lineWidth;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = color;
+    ctx.shadowBlur = 0;
 
     ctx.beginPath();
     ctx.moveTo(lastPointRef.current.x, lastPointRef.current.y);
@@ -148,11 +147,11 @@ export function SignatureCanvas() {
           <div className={styles.colorGroup}>
             {colors.map((c) => (
               <button
-                key={c.val}
+                key={c.token}
                 type="button"
-                className={`${styles.colorBtn} ${color === c.val ? styles.colorActive : ''}`}
+                className={`${styles.colorBtn} ${activeToken === c.token ? styles.colorActive : ''}`}
                 onClick={() => {
-                  setColor(c.val);
+                  setActiveToken(c.token);
                   sound.playClick(800, 0.01, 0.03);
                 }}
                 aria-label={`Select ${c.label} color`}
@@ -160,7 +159,7 @@ export function SignatureCanvas() {
               >
                 <span
                   className={styles.colorDot}
-                  style={{ backgroundColor: c.val, color: c.val }}
+                  style={{ backgroundColor: `var(${c.token})`, color: `var(${c.token})` }}
                 />
               </button>
             ))}

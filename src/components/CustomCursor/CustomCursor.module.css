@@ -22,9 +22,8 @@
   margin-top: -14px;
   margin-left: -14px;
   border-radius: 50%;
-  border: 1.5px solid var(--color-accent);
-  background: var(--color-accent-glow);
-  box-shadow: 0 0 16px var(--color-accent-glow);
+  border: 1.5px solid var(--accent);
+  background: transparent;
   transition: width 0.22s var(--ease-out-expo),
               height 0.22s var(--ease-out-expo),
               margin 0.22s var(--ease-out-expo),
@@ -54,7 +53,7 @@
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #FFFFFF;
+  color: var(--text);
   text-transform: uppercase;
   white-space: nowrap;
   pointer-events: none;
@@ -66,10 +65,10 @@
   height: 68px;
   margin-top: -34px;
   margin-left: -34px;
-  background: rgba(63, 191, 160, 0.25);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border-color: #3FBFA0;
+  border-color: var(--accent);
 }
 
 .hoverInspect .dot {
@@ -82,8 +81,8 @@
   height: 48px;
   margin-top: -24px;
   margin-left: -24px;
-  background: var(--color-accent-glow);
-  border-color: var(--color-accent);
+  background: transparent;
+  border-color: var(--accent);
 }
 
 .hoverLink .dot {

@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 200;
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: color-mix(in srgb, var(--bg) 80%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -19,9 +19,8 @@
   width: 100%;
   max-width: 44rem;
   height: 100vh;
-  background-color: var(--color-bg-base);
-  border-left: 1px solid var(--color-border-hairline);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
+  background-color: var(--bg);
+  border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -53,7 +52,7 @@
   font-family: var(--font-mono);
   font-size: var(--text-micro);
   font-weight: 600;
-  color: var(--color-accent);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -97,13 +96,12 @@
 
 .closeBtn:hover {
   background: var(--color-bg-card-hover);
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 10px var(--color-accent-glow);
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 .closeBtn:hover .closeKbd {
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 .tabBar {
@@ -136,8 +134,9 @@
 
 .tabBtnActive {
   background-color: var(--color-bg-subtle);
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 600;
+  border-bottom: 2px solid var(--accent);
 }
 
 .contentBody {
@@ -208,8 +207,8 @@
 
 .codeBox {
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border-hairline);
-  background-color: #0C0D10;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
   overflow: hidden;
 }
 
@@ -218,11 +217,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.65rem 1rem;
-  background-color: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid var(--color-border-hairline);
+  background-color: var(--raised);
+  border-bottom: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: var(--text-micro);
-  color: var(--color-text-tertiary);
+  color: var(--subtle);
 }
 
 .copyBtn {
@@ -230,17 +229,17 @@
   font-size: 11px;
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-xs);
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--color-text-secondary);
+  background-color: var(--raised);
+  border: 1px solid var(--line);
+  color: var(--muted);
   cursor: pointer;
   transition: all var(--duration-fast) ease;
 }
 
 .copyBtn:hover {
-  color: #EDEDEA;
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
+  color: var(--on-accent);
+  background-color: var(--accent);
+  border-color: var(--accent);
 }
 
 .codeContent {
@@ -248,15 +247,15 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: #B0B0AB;
+  color: var(--muted);
   overflow-x: auto;
   margin: 0;
 }
 
 .footer {
   padding: 1.25rem 2rem;
-  border-top: 1px solid var(--color-border-hairline);
-  background-color: var(--color-bg-elevated);
+  border-top: 1px solid var(--line);
+  background-color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -274,9 +273,9 @@
   gap: 0.45rem;
   padding: 0.65rem 1.15rem;
   border-radius: var(--radius-pill);
-  background-color: rgba(63, 191, 160, 0.10);
-  border: 1px solid var(--color-accent-emerald);
-  color: var(--color-accent-emerald);
+  background-color: var(--surface);
+  border: 1px solid var(--ok);
+  color: var(--ok);
   font-family: var(--font-body);
   font-size: var(--text-meta);
   font-weight: 600;
@@ -285,16 +284,15 @@
 }
 
 .liveAction:hover {
-  background-color: var(--color-accent-emerald);
-  color: #000;
+  background-color: var(--ok);
+  color: var(--bg);
 }
 
 .liveDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: var(--color-accent-emerald);
-  box-shadow: 0 0 8px var(--color-accent-emerald);
+  background-color: var(--ok);
 }
 
 .primaryAction {

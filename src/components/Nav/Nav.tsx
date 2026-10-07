@@ -30,11 +30,41 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const [pingStatus, setPingStatus] = useState<'measuring' | 'online' | 'offline'>('measuring');
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
+      const current = document.documentElement.getAttribute('data-theme') as 'dark' | 'light' | null;
+      if (current === 'dark' || current === 'light') return current;
       const saved = localStorage.getItem('theme') as 'dark' | 'light' | null;
-      return saved || 'dark';
+      if (saved === 'dark' || saved === 'light') return saved;
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     }
     return 'dark';
   });
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const current = document.documentElement.getAttribute('data-theme') as 'dark' | 'light' | null;
+      if (current === 'dark' || current === 'light') {
+        setTheme(current);
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const nextTheme = prev === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('theme', nextTheme);
+      const meta = document.querySelector('meta[name="theme-color"]:not([media])');
+      const schemeMeta = document.querySelector(`meta[name="theme-color"][media*="${nextTheme}"]`);
+      if (meta && schemeMeta) {
+        const schemeColor = schemeMeta.getAttribute('content');
+        if (schemeColor) meta.setAttribute('content', schemeColor);
+      }
+      sound.playClick(900, 0.03, 0.06);
+      return nextTheme;
+    });
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -83,16 +113,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       isMounted = false;
       clearInterval(pingInterval);
     };
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const nextTheme = prev === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = nextTheme;
-      localStorage.setItem('theme', nextTheme);
-      sound.playClick(900, 0.03, 0.06);
-      return nextTheme;
-    });
   }, []);
 
   const toggleSound = useCallback(() => {

@@ -1,4 +1,4 @@
-/* Non-Boxy Cybernetic Aerospace Chamfer Chassis */
+/* Aerospace Chamfer Chassis */
 .cardShell {
   position: relative;
   width: 100%;
@@ -6,22 +6,6 @@
   min-width: 0;
   box-sizing: border-box;
   height: 100%;
-  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.45));
-  transition: filter var(--duration-normal) var(--ease-default);
-}
-
-:global([data-theme="light"]) .cardShell {
-  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.08));
-}
-
-.cardShell:hover {
-  filter: drop-shadow(0 22px 50px rgba(0, 0, 0, 0.65))
-          drop-shadow(0 0 25px rgba(63, 191, 160, 0.18));
-}
-
-:global([data-theme="light"]) .cardShell:hover {
-  filter: drop-shadow(0 20px 42px rgba(42, 140, 116, 0.16))
-          drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
 }
 
 .cardBevel {
@@ -42,45 +26,15 @@
     16px 100%,
     0 calc(100% - 16px)
   );
-  background: linear-gradient(
-    135deg,
-    rgba(63, 191, 160, 0.50) 0%,
-    rgba(229, 229, 225, 0.12) 30%,
-    rgba(196, 136, 80, 0.20) 70%,
-    rgba(63, 191, 160, 0.65) 100%
-  );
-  padding: 1.5px;
+  background: var(--line);
+  padding: 1px;
   transform-style: preserve-3d;
   will-change: transform;
   transition: background var(--duration-normal) var(--ease-default);
 }
 
-:global([data-theme="light"]) .cardBevel {
-  background: linear-gradient(
-    135deg,
-    rgba(42, 140, 116, 0.5) 0%,
-    rgba(0, 0, 0, 0.12) 40%,
-    rgba(42, 140, 116, 0.35) 100%
-  );
-}
-
 .cardShell:hover .cardBevel {
-  background: linear-gradient(
-    135deg,
-    rgba(63, 191, 160, 0.80) 0%,
-    rgba(229, 229, 225, 0.25) 40%,
-    rgba(196, 136, 80, 0.35) 70%,
-    rgba(63, 191, 160, 0.90) 100%
-  );
-}
-
-:global([data-theme="light"]) .cardShell:hover .cardBevel {
-  background: linear-gradient(
-    135deg,
-    rgba(42, 140, 116, 0.8) 0%,
-    rgba(0, 0, 0, 0.18) 40%,
-    rgba(42, 140, 116, 0.6) 100%
-  );
+  background: var(--control);
 }
 
 .chamferCanvas {
@@ -100,31 +54,14 @@
     15px 100%,
     0 calc(100% - 15px)
   );
-  background: linear-gradient(165deg, rgba(30, 31, 36, 0.95) 0%, rgba(16, 17, 20, 0.98) 100%);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: var(--surface);
   display: flex;
   flex-direction: column;
 }
 
-:global([data-theme="light"]) .chamferCanvas {
-  background: linear-gradient(165deg, #ffffff 0%, #F7F7F5 100%);
-}
-
 .spotlightOverlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--duration-fast) ease;
-  z-index: 2;
-  background: radial-gradient(450px circle at 50% 50%, var(--color-accent-glow), transparent 65%);
+  display: none;
 }
-
-.cardShell:hover .spotlightOverlay {
-  opacity: 1;
-}
-
 
 .innerContent {
   position: relative;

@@ -3,22 +3,13 @@
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-strong);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.4),
-              0 0 25px var(--color-accent-glow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 380px;
-}
-
-:global([data-theme="light"]) .sandboxContainer {
-  background: var(--color-bg-card);
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.08),
-              0 0 20px rgba(42, 140, 116, 0.06);
 }
 
 .windowHeader {
@@ -26,18 +17,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1rem;
-  background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border-hairline);
+  background: var(--raised);
+  border-bottom: 1px solid var(--line);
   gap: 1rem;
   flex-wrap: wrap;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-}
-
-:global([data-theme="light"]) .windowHeader {
-  background: var(--color-bg-card);
-  border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
 .windowControls {
@@ -97,14 +83,8 @@
 .tabBtnActive {
   background: var(--color-bg-card);
   border-color: var(--color-border-strong);
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 600;
-}
-
-:global([data-theme="light"]) .tabBtnActive {
-  background: var(--color-bg-card);
-  border-color: rgba(0, 0, 0, 0.14);
-  color: var(--color-accent);
 }
 
 /* Tab 1: Terminal Body */
@@ -142,7 +122,7 @@
 }
 
 .log_cmd {
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -183,11 +163,6 @@
   display: none;
 }
 
-:global([data-theme="light"]) .quickBar {
-  background: var(--color-bg-card);
-  border-top-color: rgba(0, 0, 0, 0.08);
-}
-
 .quickLabel {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -214,15 +189,10 @@
   transition: all var(--duration-fast) ease;
 }
 
-:global([data-theme="light"]) .quickChip {
-  background: var(--color-bg-card);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
 .quickChip:hover {
   background: var(--color-bg-card-hover);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--accent);
+  color: var(--text);
   transform: translateY(-1px);
 }
 
@@ -238,15 +208,10 @@
   box-sizing: border-box;
 }
 
-:global([data-theme="light"]) .inputBar {
-  background: var(--color-bg-card);
-  border-top-color: rgba(0, 0, 0, 0.08);
-}
-
 .promptArrow {
   font-family: var(--font-mono);
   font-size: 14px;
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 700;
 }
 
@@ -256,13 +221,12 @@
   border: none;
   font-family: var(--font-mono);
   font-size: 16px;
-  color: var(--color-text-primary);
   outline: none;
   min-height: 44px;
 }
 
 .cmdInput:focus-visible {
-  outline: var(--focus-ring) !important;
+  outline: 2px solid var(--focus) !important;
   outline-offset: 2px !important;
   border-radius: var(--radius-xs);
 }
@@ -326,11 +290,6 @@
   gap: 0.35rem;
 }
 
-:global([data-theme="light"]) .telemetryCard {
-  background: var(--color-bg-card);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
 .tcLabel {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -369,7 +328,6 @@
   height: 8px;
   border-radius: 50%;
   background: var(--color-success);
-  box-shadow: 0 0 10px var(--color-success);
   animation: pingPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
@@ -429,9 +387,9 @@
   font-weight: 700;
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-xs);
-  background: var(--color-accent-subtle);
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text);
 }
 
 .matrixList {
@@ -450,16 +408,11 @@
   border-radius: var(--radius-xs);
 }
 
-:global([data-theme="light"]) .matrixItem {
-  background: var(--color-bg-card);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
 .miBullet {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--control);
 }
 
 .miTitle {

@@ -1,19 +1,10 @@
 .simWrapper {
   width: 100%;
-  background: var(--color-bg-base);
-  border: 1px solid var(--color-border-hairline);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   overflow: hidden;
   margin-top: 0.25rem;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05),
-              0 8px 24px -6px rgba(0, 0, 0, 0.3);
-}
-
-:global([data-theme="light"]) .simWrapper {
-  background: #F7F7F5;
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8),
-              0 6px 20px -4px rgba(0, 0, 0, 0.05);
 }
 
 .simHeader {
@@ -21,13 +12,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.55rem 0.85rem;
-  background: var(--color-bg-elevated);
-  border-bottom: 1px solid var(--color-border-hairline);
+  background: var(--raised);
+  border-bottom: 1px solid var(--line);
   gap: 0.5rem;
-}
-
-:global([data-theme="light"]) .simHeader {
-  background: #EFEFE9;
 }
 
 .macControls {
@@ -139,15 +126,15 @@
 }
 
 .pfCleanScreen {
-  background: #000000;
+  background: var(--bg);
   border-radius: var(--radius-xs);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
 }
 
 .pfPlayer {
   height: 110px;
-  background: linear-gradient(135deg, #0C0D10 0%, #080910 100%);
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,12 +145,12 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba(63, 191, 160, 0.18);
-  border: 1px solid var(--color-accent);
+  background: var(--raised);
+  border: 1px solid var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-accent);
+  color: var(--accent);
   font-size: 12px;
 }
 
@@ -183,38 +170,38 @@
   font-weight: 700;
   padding: 0.2rem 0.45rem;
   border-radius: var(--radius-xs);
-  background: rgba(63, 191, 160, 0.18);
-  border: 1px solid var(--color-dot-green);
-  color: var(--color-dot-green);
+  background: var(--raised);
+  border: 1px solid var(--ok);
+  color: var(--ok);
 }
 
 .pfPillMeta {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--color-text-tertiary);
+  color: var(--muted);
 }
 
 .pfStatusBar {
   padding: 0.4rem 0.65rem;
-  background: #0E0F13;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--raised);
+  border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--color-accent);
+  color: var(--accent);
   display: flex;
   justify-content: space-between;
 }
 
 .pfAdScreen {
-  background: #000000;
+  background: var(--bg);
   border-radius: var(--radius-xs);
   overflow: hidden;
-  border: 1px solid rgba(212, 91, 91, 0.25);
+  border: 1px solid var(--line);
 }
 
 .pfAdBlocked {
   height: 110px;
-  background: #0a0505;
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -238,22 +225,22 @@
 .pfAdSub {
   font-family: var(--font-body);
   font-size: 10px;
-  color: var(--color-text-tertiary);
+  color: var(--muted);
   margin: 0.15rem 0;
 }
 
 .pfAdTimer {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--color-dot-yellow);
-  background: rgba(212, 162, 75, 0.12);
+  color: var(--accent);
+  background: var(--raised);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
 }
 
 .pfStatusBarWarn {
   padding: 0.4rem 0.65rem;
-  background: #180909;
+  background: var(--raised);
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--color-dot-red);
@@ -302,11 +289,6 @@
   padding: 0.65rem;
 }
 
-:global([data-theme="light"]) .fgTerminal {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
 .fgTermHead {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -330,7 +312,8 @@
 
 /* DocLensBD Specific */
 .dlMeshContainer {
-  background: #090A0D;
+  background: var(--bg);
+  border: 1px solid var(--line);
   border-radius: var(--radius-xs);
   padding: 1rem;
   display: flex;
@@ -343,7 +326,7 @@
 .dlFaceGraphic {
   width: 140px;
   height: 90px;
-  border: 1px dashed rgba(63, 191, 160, 0.35);
+  border: 1px dashed var(--line);
   border-radius: 50% 50% 45% 45%;
   position: relative;
   display: flex;
@@ -365,7 +348,7 @@
 .dlNoseBridge {
   width: 2px;
   height: 14px;
-  background: rgba(63, 191, 160, 0.25);
+  background: var(--control);
   position: absolute;
   top: 42px;
   left: calc(50% - 1px);
@@ -383,7 +366,7 @@
   width: 38px;
   height: 24px;
   border: 2px solid var(--color-accent);
-  background: rgba(63, 191, 160, 0.13);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
   border-radius: 4px;
   transition: all var(--duration-fast) ease;
 }
@@ -512,15 +495,6 @@
   padding: 0.65rem;
 }
 
-:global([data-theme="light"]) .rbResultCard {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-:global([data-theme="light"]) .rbBadge {
-  color: #1F7A62;
-}
-
 .rbResultHead {
   display: flex;
   justify-content: space-between;
@@ -531,7 +505,7 @@
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  color: var(--color-dot-green);
+  color: var(--ok);
 }
 
 .rbQueryTime {
@@ -565,10 +539,6 @@
   padding: 0.5rem;
   background: var(--color-bg-elevated);
   border-radius: var(--radius-xs);
-}
-
-:global([data-theme="light"]) .poshraPipeline {
-  background: #ffffff;
 }
 
 .poshraStep {
