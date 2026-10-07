@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
+import { RollText } from '../../components/RollText/RollText';
 import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './ContactPage.module.css';
@@ -86,16 +87,44 @@ export function ContactPage() {
     }
   };
 
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(profileData.contact.email);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(profileData.contact.email).catch(() => {});
+      }
+    } catch {
+      // ignore
+    }
     setCopied(true);
     sound.playClick(900, 0.03, 0.08);
-    setTimeout(() => setCopied(false), 2200);
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = setTimeout(() => {
+      setCopied(false);
+      copyTimeoutRef.current = null;
+    }, 1600);
   };
 
   const handleCopyDraft = () => {
-    const draft = `To: ${profileData.contact.email}\nSubject: ${formData.subject || 'Project Inquiry'}\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-    navigator.clipboard.writeText(draft);
+    try {
+      const draft = `To: ${profileData.contact.email}\nSubject: ${formData.subject || 'Project Inquiry'}\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(draft).catch(() => {});
+      }
+    } catch {
+      // ignore
+    }
     setDraftCopied(true);
     sound.playClick(900, 0.03, 0.08);
     setTimeout(() => setDraftCopied(false), 3000);
@@ -178,10 +207,10 @@ export function ContactPage() {
             <span className={styles.infoValue}>{profileData.contact.email}</span>
             <button
               type="button"
-              className={styles.copyBtn}
+              className={`${styles.copyBtn} ${copied ? 'btn-copied' : ''}`}
               onClick={handleCopyEmail}
             >
-              {copied ? '✓ Copied to clipboard' : 'Copy Email Address'}
+              <RollText>{copied ? 'Copied' : 'Copy email'}</RollText>
             </button>
           </SpotlightCard>
 
@@ -408,7 +437,7 @@ export function ContactPage() {
               </>
             ) : (
               <>
-                <span>Draft &amp; Send Message</span>
+                <RollText>Draft &amp; Send Message</RollText>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />

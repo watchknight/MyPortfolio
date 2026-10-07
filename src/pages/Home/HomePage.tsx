@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { gsap } from '../../motion/index';
+import { RollText } from '../../components/RollText/RollText';
 import { RotatingClause } from '../../components/RotatingClause/RotatingClause';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
@@ -45,18 +47,66 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Sync View Mode (Grid vs Table)
+  const viewContainerRef = useRef<HTMLDivElement>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scrollToSelectedWork = useCallback(() => {
+    document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth' });
+    sound.playTick();
+  }, []);
+
+  const scrollToContact = useCallback(() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    sound.playTick();
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    sound.playTick();
+  }, []);
+
+  const applyViewMode = useCallback((mode: 'grid' | 'table') => {
+    const container = viewContainerRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (!container || reduce) {
+      setViewMode(mode);
+      localStorage.setItem('view_mode', mode);
+      return;
+    }
+
+    gsap.killTweensOf(container);
+    gsap.to(container, {
+      opacity: 0,
+      duration: 0.1,
+      ease: 'power2.in',
+      overwrite: true,
+      onComplete: () => {
+        setViewMode(mode);
+        localStorage.setItem('view_mode', mode);
+        gsap.fromTo(container, { opacity: 0 }, { opacity: 1, duration: 0.1, ease: 'power2.out', overwrite: true });
+      },
+    });
+  }, []);
+
+  // Sync View Mode (Grid vs Table) from external events (Nav, ⌘K, G/T shortcuts)
   useEffect(() => {
     const handleView = (e: Event) => {
       const custom = e as CustomEvent<'grid' | 'table'>;
-      if (custom.detail) {
-        setViewMode(custom.detail);
-        localStorage.setItem('view_mode', custom.detail);
+      if (custom.detail && custom.detail !== viewMode) {
+        applyViewMode(custom.detail);
       }
     };
     window.addEventListener('set-view-mode', handleView);
     return () => window.removeEventListener('set-view-mode', handleView);
-  }, []);
+  }, [viewMode, applyViewMode]);
+
+  const changeViewMode = useCallback((mode: 'grid' | 'table') => {
+    if (mode === viewMode) return;
+    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
+    applyViewMode(mode);
+    window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
+  }, [viewMode, applyViewMode]);
 
   // Telemetry: FPS monitoring
   useEffect(() => {
@@ -86,32 +136,30 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
   }, []);
 
   const handleCopyEmail = useCallback(() => {
-    navigator.clipboard.writeText(profileData.contact.email);
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(profileData.contact.email).catch(() => {});
+      }
+    } catch {
+      // ignore clipboard error in headless/restricted environments
+    }
     setCopiedEmail(true);
     sound.playClick(900, 0.03, 0.06);
-    setTimeout(() => setCopiedEmail(false), 1600); // exactly 1.6s per spec
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = setTimeout(() => {
+      setCopiedEmail(false);
+      copyTimeoutRef.current = null;
+    }, 1600); // exactly 1.6s per spec
   }, []);
 
-  const scrollToSelectedWork = useCallback(() => {
-    document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth' });
-    sound.playTick();
-  }, []);
-
-  const scrollToContact = useCallback(() => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-    sound.playTick();
-  }, []);
-
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    sound.playTick();
-  }, []);
-
-  const changeViewMode = useCallback((mode: 'grid' | 'table') => {
-    setViewMode(mode);
-    localStorage.setItem('view_mode', mode);
-    window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
-    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Featured and secondary project subsets
@@ -149,7 +197,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
-                  View My Works
+                  <RollText>View My Works</RollText>
                 </button>
               </Magnetic>
 
@@ -161,7 +209,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
-                  Get in Touch
+                  <RollText>Get in Touch</RollText>
                 </button>
               </Magnetic>
 
@@ -175,7 +223,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
-                  Download Résumé
+                  <RollText>Download Résumé</RollText>
                 </a>
               </Magnetic>
             </div>
@@ -288,7 +336,8 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           </div>
         </header>
 
-        {viewMode === 'table' ? (
+        <div ref={viewContainerRef}>
+          {viewMode === 'table' ? (
           <div className={styles.tableWrapper}>
             <ProjectLedger
               projects={projects}
@@ -611,6 +660,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             </div>
           </div>
         )}
+        </div>
       </section>
 
       {/* ── 4. ABOUT AND TOOLS (bento) ── */}
@@ -796,13 +846,13 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               <Magnetic strength={0.3}>
                 <button
                   type="button"
-                  className={styles.copyEmailBtn}
+                  className={`${styles.copyEmailBtn} ${copiedEmail ? 'btn-copied' : ''}`}
                   onClick={handleCopyEmail}
                   aria-live="polite"
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
-                  {copiedEmail ? 'Copied' : 'Copy email'}
+                  <RollText>{copiedEmail ? 'Copied' : 'Copy email'}</RollText>
                 </button>
               </Magnetic>
             </div>
@@ -838,20 +888,20 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 data-cursor="link"
                 data-magnetic="0.3"
               >
-                Send me a message
+                <RollText>Send me a message</RollText>
               </button>
             </Magnetic>
 
             <Magnetic strength={0.3}>
               <button
                 type="button"
-                className={styles.secondaryPillBtn}
+                className={`${styles.secondaryPillBtn} ${copiedEmail ? 'btn-copied' : ''}`}
                 onClick={handleCopyEmail}
                 aria-live="polite"
                 data-cursor="link"
                 data-magnetic="0.3"
               >
-                {copiedEmail ? 'Copied' : 'Copy email'}
+                <RollText>{copiedEmail ? 'Copied' : 'Copy email'}</RollText>
               </button>
             </Magnetic>
           </div>

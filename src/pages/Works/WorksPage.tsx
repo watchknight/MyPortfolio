@@ -1,4 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { gsap } from '../../motion/index';
+import { RollText } from '../../components/RollText/RollText';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
@@ -19,17 +21,42 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
     return 'grid';
   });
 
+  const viewContainerRef = useRef<HTMLDivElement>(null);
+
+  const applyViewMode = useCallback((mode: 'grid' | 'table') => {
+    const container = viewContainerRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (!container || reduce) {
+      setViewMode(mode);
+      localStorage.setItem('view_mode', mode);
+      return;
+    }
+
+    gsap.killTweensOf(container);
+    gsap.to(container, {
+      opacity: 0,
+      duration: 0.1,
+      ease: 'power2.in',
+      overwrite: true,
+      onComplete: () => {
+        setViewMode(mode);
+        localStorage.setItem('view_mode', mode);
+        gsap.fromTo(container, { opacity: 0 }, { opacity: 1, duration: 0.1, ease: 'power2.out', overwrite: true });
+      },
+    });
+  }, []);
+
   useEffect(() => {
     const handleView = (e: Event) => {
       const custom = e as CustomEvent<'grid' | 'table'>;
-      if (custom.detail) {
-        setViewMode(custom.detail);
-        localStorage.setItem('view_mode', custom.detail);
+      if (custom.detail && custom.detail !== viewMode) {
+        applyViewMode(custom.detail);
       }
     };
     window.addEventListener('set-view-mode', handleView);
     return () => window.removeEventListener('set-view-mode', handleView);
-  }, []);
+  }, [viewMode, applyViewMode]);
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return projects;
@@ -39,6 +66,13 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
   const handleFilterClick = (filter: 'all' | 'Web App' | 'Tool' | 'Commercial') => {
     sound.playTick();
     setActiveFilter(filter);
+  };
+
+  const handleToggleView = (mode: 'grid' | 'table') => {
+    if (mode === viewMode) return;
+    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
+    applyViewMode(mode);
+    window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
   };
 
   return (
@@ -62,28 +96,28 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
             className={`${styles.filterBtn} ${activeFilter === 'all' ? styles.filterBtnActive : ''}`}
             onClick={() => handleFilterClick('all')}
           >
-            All Works ({projects.length})
+            <RollText>All Works ({projects.length})</RollText>
           </button>
           <button
             type="button"
             className={`${styles.filterBtn} ${activeFilter === 'Web App' ? styles.filterBtnActive : ''}`}
             onClick={() => handleFilterClick('Web App')}
           >
-            Web Applications
+            <RollText>Web Applications</RollText>
           </button>
           <button
             type="button"
             className={`${styles.filterBtn} ${activeFilter === 'Tool' ? styles.filterBtnActive : ''}`}
             onClick={() => handleFilterClick('Tool')}
           >
-            Tools &amp; Extensions
+            <RollText>Tools &amp; Extensions</RollText>
           </button>
           <button
             type="button"
             className={`${styles.filterBtn} ${activeFilter === 'Commercial' ? styles.filterBtnActive : ''}`}
             onClick={() => handleFilterClick('Commercial')}
           >
-            E-Commerce
+            <RollText>E-Commerce</RollText>
           </button>
         </div>
 
@@ -92,11 +126,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
           <button
             type="button"
             className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
-            onClick={() => {
-              setViewMode('grid');
-              window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
-              sound.playClick(650, 0.02, 0.06);
-            }}
+            onClick={() => handleToggleView('grid')}
             title="Card Grid Mode [G]"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -110,11 +140,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
           <button
             type="button"
             className={`${styles.viewToggleBtn} ${viewMode === 'table' ? styles.viewToggleBtnActive : ''}`}
-            onClick={() => {
-              setViewMode('table');
-              window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
-              sound.playClick(720, 0.02, 0.06);
-            }}
+            onClick={() => handleToggleView('table')}
             title="Data Table Mode [T]"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -128,6 +154,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
       </div>
 
       {/* Projects Showcase (Grid or Table) */}
+      <div ref={viewContainerRef}>
       {viewMode === 'table' ? (
         <div className={styles.tableWrapper}>
           <ProjectLedger
@@ -194,7 +221,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                     onClick={() => sound.playTick()}
                     data-cursor="link"
                   >
-                    <span>Visit Live Site</span>
+                    <RollText>Visit Live Site</RollText>
                     <span className={styles.actionArrow}>&rarr;</span>
                   </a>
                 )}
@@ -208,7 +235,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                   }}
                   data-cursor="link"
                 >
-                  <span>Explore Architecture</span>
+                  <RollText>Explore Architecture</RollText>
                   {!p.liveUrl && <span className={styles.actionArrow}>&rarr;</span>}
                 </button>
 
@@ -225,7 +252,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
                     </svg>
-                    <span>Source</span>
+                    <RollText>Source</RollText>
                   </a>
                 )}
               </div>
@@ -234,6 +261,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
         })}
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -198,7 +198,23 @@
   height: 8px;
   border-radius: 50%;
   background-color: var(--on-accent);
-  animation: pulseDot 2.5s infinite ease-in-out;
+  animation: availabilityPulse 2.4s infinite ease-in-out;
+}
+
+@keyframes availabilityPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroAccentDot {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 .heroAccentKicker {

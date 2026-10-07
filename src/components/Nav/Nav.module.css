@@ -95,14 +95,19 @@
   font-weight: 600;
 }
 
-.navHoverPill {
+.navActivePill {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
   border-radius: var(--r-pill);
   background: var(--raised);
   border: 1px solid var(--line);
   z-index: 1;
   pointer-events: none;
+  opacity: 0;
+  will-change: transform, width, opacity;
 }
 
 .availabilityWrap {
@@ -118,17 +123,22 @@
   height: 8px;
   border-radius: 50%;
   background-color: var(--ok);
-  animation: pulseDot 2.8s infinite ease-in-out;
+  animation: availabilityPulse 2.4s infinite ease-in-out;
 }
 
-@keyframes pulseDot {
+@keyframes availabilityPulse {
   0%, 100% {
     opacity: 1;
-    transform: scale(1);
   }
   50% {
-    opacity: 0.45;
-    transform: scale(0.85);
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availabilityDot {
+    animation: none;
+    opacity: 1;
   }
 }
 
@@ -245,18 +255,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  animation: popoverFadeIn var(--duration-fast) var(--ease-out-expo);
-}
-
-@keyframes popoverFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  transform-origin: top right;
 }
 
 .controlsHeader {
@@ -431,6 +430,7 @@
   gap: 4px;
   pointer-events: auto;
   z-index: 1000;
+  transform-origin: top center;
 }
 
 .mobileMenuItem {

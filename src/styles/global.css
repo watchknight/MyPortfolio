@@ -283,3 +283,67 @@ html.has-cursor iframe[data-cursor="hide"] {
   }
 }
 
+/* ── Motion System: Initial State Gating & View Transitions ── */
+html.js-motion [data-hero-title],
+html.js-motion [data-hero-in],
+html.js-motion [data-tile] { opacity: 0; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* ── Micro-Interactions: Button Label Roll ── */
+.btn-roll {
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  height: 1.25em;
+  vertical-align: middle;
+}
+
+.btn-roll-track {
+  display: inline-flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+  will-change: transform;
+}
+
+.btn-roll-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.25em;
+  line-height: 1.25em;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button:hover .btn-roll-track,
+  a:hover .btn-roll-track {
+    transform: translateY(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-roll-track {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* ── Micro-Interactions: Copied State Pop ── */
+.btn-copied {
+  color: var(--ok) !important;
+  border-color: var(--ok) !important;
+  animation: scalePop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scalePop {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-copied {
+    animation: none !important;
+  }
+}
+

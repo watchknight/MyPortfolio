@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
+import { gsap } from '../../motion/index';
 import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
@@ -290,10 +291,66 @@ export function CommandPalette({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isOpen, filteredCommands, selectedIndex, handleClose]);
 
-  if (!isOpen) return null;
+  const [isRendered, setIsRendered] = useState(isOpen);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const exitTlRef = useRef<gsap.core.Timeline | null>(null);
+
+  if (isOpen && !isRendered) {
+    setIsRendered(true);
+  }
+
+  useLayoutEffect(() => {
+    if (!isRendered || !backdropRef.current || !paletteRef.current) return;
+    const backdrop = backdropRef.current;
+    const palette = paletteRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    // Always cancel pending exit animation when toggling state
+    if (exitTlRef.current) {
+      exitTlRef.current.kill();
+      exitTlRef.current = null;
+    }
+    gsap.killTweensOf([palette, backdrop]);
+
+    if (isOpen) {
+      if (reduce) {
+        gsap.set(backdrop, { opacity: 1 });
+        gsap.set(palette, { opacity: 1, scale: 1, y: 0 });
+      } else {
+        gsap.fromTo(backdrop, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out', overwrite: true });
+        gsap.fromTo(palette, { opacity: 0, scale: 0.97, y: 8 }, { opacity: 1, scale: 1, y: 0, duration: 0.25, ease: 'expo.out', overwrite: true });
+      }
+    } else {
+      if (reduce) {
+        gsap.set([palette, backdrop], { opacity: 0 });
+        requestAnimationFrame(() => setIsRendered(false));
+      } else {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            setIsRendered(false);
+            exitTlRef.current = null;
+          },
+        });
+        tl.to(palette, { opacity: 0, scale: 0.97, y: 8, duration: 0.2, ease: 'power2.in' }, 0)
+          .to(backdrop, { opacity: 0, duration: 0.2, ease: 'power2.in' }, 0);
+        exitTlRef.current = tl;
+      }
+    }
+
+    return () => {
+      if (exitTlRef.current) {
+        exitTlRef.current.kill();
+        exitTlRef.current = null;
+      }
+      gsap.killTweensOf([palette, backdrop]);
+    };
+  }, [isOpen, isRendered]);
+
+  if (!isRendered) return null;
 
   return (
     <div
+      ref={backdropRef}
       className={styles.backdrop}
       onClick={handleClose}
       role="dialog"

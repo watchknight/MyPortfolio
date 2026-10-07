@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
 import { sound } from '../../utils/audio';
 import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
+import { gsap, toggleTheme as toggleThemeMotion } from '../../motion/index';
 import type { RoutePath } from '../../hooks/useRouter';
 import styles from './Nav.module.css';
 
@@ -20,9 +20,10 @@ interface NavProps {
 
 export function Nav({ currentPath, onNavigate }: NavProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuRendered, setMobileMenuRendered] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [controlsOpen, setControlsOpen] = useState(false);
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [controlsRendered, setControlsRendered] = useState(false);
   const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
   const [grainActive, setGrainActive] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -52,6 +53,88 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
   const controlsRef = useRef<HTMLDivElement>(null);
   const controlsBtnRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const controlsExitTweenRef = useRef<gsap.core.Tween | null>(null);
+  const mobileExitTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  // Nav active pill gliding refs
+  const navLinksRef = useRef<HTMLDivElement>(null);
+  const activePillRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const xToRef = useRef<((value: number) => void) | null>(null);
+  const wToRef = useRef<((value: number) => void) | null>(null);
+
+  const isFirstNavMount = useRef(true);
+
+  // Setup GSAP quickTo for nav active pill
+  useEffect(() => {
+    if (typeof window === 'undefined' || !activePillRef.current) return;
+    const pill = activePillRef.current;
+    xToRef.current = gsap.quickTo(pill, 'x', { duration: 0.35, ease: 'power3.out' });
+    wToRef.current = gsap.quickTo(pill, 'width', { duration: 0.35, ease: 'power3.out' });
+  }, []);
+
+  const movePillToTarget = useCallback((targetEl: HTMLElement | null, animate = true) => {
+    const pill = activePillRef.current;
+    const container = navLinksRef.current;
+    if (!pill || !container) return;
+
+    if (!targetEl) {
+      gsap.to(pill, { opacity: 0, duration: 0.2, ease: 'power3.out', overwrite: 'auto' });
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+    const targetX = targetRect.left - containerRect.left;
+    const targetWidth = targetRect.width;
+
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (!animate || reduce) {
+      gsap.set(pill, { x: targetX, width: targetWidth, opacity: 1 });
+    } else {
+      const isCurrentlyHidden = parseFloat(pill.style.opacity || '0') === 0;
+      if (isCurrentlyHidden) {
+        gsap.set(pill, { x: targetX, width: targetWidth });
+      } else {
+        xToRef.current?.(targetX);
+        wToRef.current?.(targetWidth);
+      }
+      gsap.to(pill, { opacity: 1, duration: 0.2, ease: 'power3.out', overwrite: 'auto' });
+    }
+  }, []);
+
+  // Update pill position when currentPath changes
+  useEffect(() => {
+    const activeEl = linkRefs.current[currentPath];
+    if (isFirstNavMount.current) {
+      isFirstNavMount.current = false;
+      movePillToTarget(activeEl || null, false);
+    } else {
+      movePillToTarget(activeEl || null, true);
+    }
+  }, [currentPath, movePillToTarget]);
+
+  // Update pill position on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = linkRefs.current[currentPath];
+      movePillToTarget(activeEl || null, false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [currentPath, movePillToTarget]);
+
+  const handleNavHover = (path: string) => {
+    const el = linkRefs.current[path];
+    if (el) movePillToTarget(el, true);
+  };
+
+  const handleNavLeave = () => {
+    const activeEl = linkRefs.current[currentPath];
+    movePillToTarget(activeEl || null, true);
+  };
 
   // Sync grain attribute to document
   useEffect(() => {
@@ -76,21 +159,39 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+  // Micro-interaction 7: Theme toggle with circular reveal and icon swap
+  const handleToggleTheme = useCallback((e?: React.MouseEvent<HTMLButtonElement>) => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    let x = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+    let y = 24;
+
+    if (e && e.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    } else if (typeof document !== 'undefined') {
+      const btn = document.querySelector('[aria-label*="theme"]') as HTMLElement | null;
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = rect.top + rect.height / 2;
+      }
+    }
+
+    toggleThemeMotion(next, x, y, (newTheme: 'dark' | 'light') => {
+      setTheme(newTheme);
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
       const meta = document.querySelector('meta[name="theme-color"]:not([media])');
-      const schemeMeta = document.querySelector(`meta[name="theme-color"][media*="${next}"]`);
+      const schemeMeta = document.querySelector(`meta[name="theme-color"][media*="${newTheme}"]`);
       if (meta && schemeMeta) {
         const color = schemeMeta.getAttribute('content');
         if (color) meta.setAttribute('content', color);
       }
-      sound.playClick(900, 0.03, 0.06);
-      return next;
     });
-  }, []);
+
+    sound.playClick(900, 0.03, 0.06);
+  }, [theme]);
 
   const toggleSound = useCallback(() => {
     const active = sound.toggle();
@@ -149,7 +250,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
         toggleSound();
       } else if (key === 'd') {
         e.preventDefault();
-        toggleTheme();
+        handleToggleTheme();
       } else if (key === 's') {
         e.preventDefault();
         openSysDiagnostic();
@@ -164,7 +265,107 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [changeViewMode, toggleSound, toggleTheme, openSysDiagnostic, toggleGrain, controlsOpen, mobileMenuOpen]);
+  }, [changeViewMode, toggleSound, handleToggleTheme, openSysDiagnostic, toggleGrain, controlsOpen, mobileMenuOpen]);
+
+  // Micro-Interaction 5: Controls Popover enter/exit animation
+  if (controlsOpen && !controlsRendered) {
+    setControlsRendered(true);
+  }
+
+  useLayoutEffect(() => {
+    if (!controlsRendered || !controlsRef.current) return;
+    const el = controlsRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (controlsExitTweenRef.current) {
+      controlsExitTweenRef.current.kill();
+      controlsExitTweenRef.current = null;
+    }
+    gsap.killTweensOf(el);
+
+    if (controlsOpen) {
+      if (reduce) {
+        gsap.set(el, { opacity: 1, scale: 1, y: 0 });
+      } else {
+        gsap.fromTo(el, { opacity: 0, scale: 0.97, y: 8 }, { opacity: 1, scale: 1, y: 0, duration: 0.25, ease: 'expo.out', overwrite: true });
+      }
+    } else {
+      if (reduce) {
+        gsap.set(el, { opacity: 0 });
+        requestAnimationFrame(() => setControlsRendered(false));
+      } else {
+        controlsExitTweenRef.current = gsap.to(el, {
+          opacity: 0,
+          scale: 0.97,
+          y: 8,
+          duration: 0.2,
+          ease: 'power2.in',
+          onComplete: () => {
+            setControlsRendered(false);
+            controlsExitTweenRef.current = null;
+          },
+        });
+      }
+    }
+
+    return () => {
+      if (controlsExitTweenRef.current) {
+        controlsExitTweenRef.current.kill();
+        controlsExitTweenRef.current = null;
+      }
+      gsap.killTweensOf(el);
+    };
+  }, [controlsOpen, controlsRendered]);
+
+  // Micro-Interaction 5: Mobile menu sheet enter/exit animation
+  if (mobileMenuOpen && !mobileMenuRendered) {
+    setMobileMenuRendered(true);
+  }
+
+  useLayoutEffect(() => {
+    if (!mobileMenuRendered || !mobileMenuRef.current) return;
+    const el = mobileMenuRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (mobileExitTweenRef.current) {
+      mobileExitTweenRef.current.kill();
+      mobileExitTweenRef.current = null;
+    }
+    gsap.killTweensOf(el);
+
+    if (mobileMenuOpen) {
+      if (reduce) {
+        gsap.set(el, { opacity: 1, scale: 1, y: 0 });
+      } else {
+        gsap.fromTo(el, { opacity: 0, scale: 0.97, y: 8 }, { opacity: 1, scale: 1, y: 0, duration: 0.25, ease: 'expo.out', overwrite: true });
+      }
+    } else {
+      if (reduce) {
+        gsap.set(el, { opacity: 0 });
+        requestAnimationFrame(() => setMobileMenuRendered(false));
+      } else {
+        mobileExitTweenRef.current = gsap.to(el, {
+          opacity: 0,
+          scale: 0.97,
+          y: 8,
+          duration: 0.2,
+          ease: 'power2.in',
+          onComplete: () => {
+            setMobileMenuRendered(false);
+            mobileExitTweenRef.current = null;
+          },
+        });
+      }
+    }
+
+    return () => {
+      if (mobileExitTweenRef.current) {
+        mobileExitTweenRef.current.kill();
+        mobileExitTweenRef.current = null;
+      }
+      gsap.killTweensOf(el);
+    };
+  }, [mobileMenuOpen, mobileMenuRendered]);
 
   // Click outside to close Controls Popover
   useEffect(() => {
@@ -214,18 +415,27 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
           <span className={styles.separatorDot} aria-hidden="true">·</span>
 
-          {/* 2. Desktop Nav Links */}
+          {/* 2. Desktop Nav Links with GSAP quickTo background pill */}
           <div
+            ref={navLinksRef}
             className={styles.navLinks}
-            onMouseLeave={() => setHoveredNav(null)}
+            onMouseLeave={handleNavLeave}
           >
+            <div
+              ref={activePillRef}
+              className={styles.navActivePill}
+              data-nav-pill
+              aria-hidden="true"
+            />
             {navItems.map((item, idx) => {
               const isActive = currentPath === item.path;
-              const isHovered = hoveredNav === item.path;
 
               return (
                 <Magnetic key={item.path} strength={0.25}>
                   <a
+                    ref={(el) => {
+                      linkRefs.current[item.path] = el;
+                    }}
                     href={item.path}
                     className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
                     onClick={(e) => {
@@ -235,19 +445,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                       setMobileMenuOpen(false);
                     }}
                     onMouseEnter={() => {
-                      setHoveredNav(item.path);
+                      handleNavHover(item.path);
                       sound.playClick(900 + idx * 75, 0.015, 0.03);
                     }}
                     data-cursor="link"
                     data-magnetic="0.3"
                   >
-                    {isHovered && (
-                      <motion.span
-                        layoutId="navHoverPill"
-                        className={styles.navHoverPill}
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
-                    )}
                     <span className={styles.navLinkLabel}>{item.label}</span>
                   </a>
                 </Magnetic>
@@ -257,18 +460,18 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
           <span className={`${styles.separatorDot} ${styles.hideMobile}`} aria-hidden="true">·</span>
 
-          {/* 3. Availability Dot */}
+          {/* 3. Availability Dot: CSS-only 2.4s opacity pulse */}
           <div
             className={styles.availabilityWrap}
             title="Available for Internships & Projects"
             aria-label="Available for Internships & Projects"
           >
-            <span className={styles.availabilityDot} />
+            <span className={styles.availabilityDot} data-availability-dot />
           </div>
 
           <span className={styles.separatorDot} aria-hidden="true">·</span>
 
-          {/* 4. ⌘K Search Trigger (Desktop: chip, Touch/Mobile: icon-only) */}
+          {/* 4. ⌘K Search Trigger */}
           <Magnetic strength={0.3}>
             <button
               type="button"
@@ -282,12 +485,10 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               data-cursor="link"
               data-magnetic="0.3"
             >
-              {/* Desktop hint chip */}
               <span className={styles.cmdKDesktopChip}>
                 <span className={styles.cmdKText}>Command</span>
                 <kbd className={styles.cmdKBadge}>⌘K</kbd>
               </span>
-              {/* Touch icon-only */}
               <span className={styles.cmdKTouchIcon} aria-hidden="true">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
@@ -299,12 +500,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
           <span className={styles.separatorDot} aria-hidden="true">·</span>
 
-          {/* 5. Theme Toggle */}
+          {/* 5. Theme Toggle with Circular Reveal & Icon Swap */}
           <Magnetic strength={0.3}>
             <button
               type="button"
               className={styles.iconBtn}
-              onClick={toggleTheme}
+              onClick={handleToggleTheme}
               aria-label={theme === 'dark' ? 'Switch to light theme (D)' : 'Switch to dark theme (D)'}
               title={`Theme: ${theme === 'dark' ? 'Dark' : 'Light'} [D]`}
               data-cursor="link"
@@ -379,7 +580,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
         </nav>
 
         {/* 7. Controls Popover */}
-        {controlsOpen && (
+        {controlsRendered && (
           <div
             id="controls-popover"
             ref={controlsRef}
@@ -482,8 +683,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
         )}
 
         {/* Mobile Expanded Menu Dropdown */}
-        {mobileMenuOpen && (
-          <div className={styles.mobileDropdown} role="menu">
+        {mobileMenuRendered && (
+          <div
+            ref={mobileMenuRef}
+            className={styles.mobileDropdown}
+            role="menu"
+          >
             {navItems.map((item) => (
               <a
                 key={item.path}
@@ -511,7 +716,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
         onSelectProject={(id) => {
           window.dispatchEvent(new CustomEvent('open-project-modal', { detail: id }));
         }}
-        onToggleTheme={toggleTheme}
+        onToggleTheme={handleToggleTheme}
         onToggleSound={toggleSound}
         onToggleView={changeViewMode}
         onOpenSysCheck={openSysDiagnostic}

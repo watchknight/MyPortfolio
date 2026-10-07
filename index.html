@@ -34,6 +34,14 @@
       })();
     </script>
 
+    <!-- Motion Gating & Failsafe Script -->
+    <script>
+      if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+        document.documentElement.classList.add("js-motion");
+        window.__motionFailsafe = setTimeout(() => document.documentElement.classList.remove("js-motion"), 3000);
+      }
+    </script>
+
     <!-- Primary Meta Tags -->
     <title>Abdur Rahman Moayed — Software Engineer &amp; Systems Architect</title>
     <meta name="title" content="Abdur Rahman Moayed — Software Engineer &amp; Systems Architect" />
