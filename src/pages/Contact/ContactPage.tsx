@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './ContactPage.module.css';
@@ -149,9 +148,9 @@ export function ContactPage() {
     <div className={styles.pageContainer}>
       {/* Header */}
       <header className={styles.header}>
-        <span className={styles.eyebrow}>[ direct communication ]</span>
+        <span className={styles.eyebrow}>Direct communication</span>
         <h1 className={styles.title} data-cursor="inspect" data-cursor-label="CONTACT">
-          <ScrambleText text="Get in Touch" />
+          Get in Touch
         </h1>
         <p className={styles.subtitle}>
           Have a software project, an internship opportunity, or want to connect?

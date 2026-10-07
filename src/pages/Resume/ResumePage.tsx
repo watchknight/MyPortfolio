@@ -1,5 +1,4 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './ResumePage.module.css';
@@ -15,9 +14,9 @@ export function ResumePage() {
       {/* Top Action Bar */}
       <div className={styles.topBar}>
         <div className={styles.headerText}>
-          <span className={styles.eyebrow}>[ verified credentials ]</span>
+          <span className={styles.eyebrow}>Verified credentials</span>
           <h1 className={styles.pageTitle} data-cursor="inspect" data-cursor-label="CV">
-            <ScrambleText text="Curriculum Vitae" />
+            Curriculum Vitae
           </h1>
         </div>
 
@@ -63,7 +62,7 @@ export function ResumePage() {
         <header className={styles.resumeHeader}>
           <div className={styles.credentialPill}>
             <span className={styles.credentialDot} />
-            <span>VERIFIED CREDENTIAL // EWU CSE UNDERGRADUATE</span>
+            <span>EWU CSE Undergraduate</span>
           </div>
           <h2 className={styles.candidateName}>{profileData.name}</h2>
           <p className={styles.candidateTitle}>{profileData.role} &bull; {profileData.institution}</p>

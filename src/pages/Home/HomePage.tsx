@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
-import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { HeroSandbox } from '../../components/HeroSandbox/HeroSandbox';
-import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
-import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
-import { ParticleText } from '../../components/ParticleText/ParticleText';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
-import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
-import { RadarSweep } from '../../components/RadarSweep/RadarSweep';
+import { useState, useEffect, useCallback } from 'react';
 import { RotatingClause } from '../../components/RotatingClause/RotatingClause';
+import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
+import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
+import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
+import { TerminalTile } from '../../components/TerminalTile/TerminalTile';
+import { Magnetic } from '../../components/Magnetic/Magnetic';
 import { projects } from '../../data/projects';
+import { profileData } from '../../data/profile';
 import { sound } from '../../utils/audio';
 import styles from './HomePage.module.css';
 
@@ -18,7 +16,6 @@ interface HomePageProps {
 }
 
 export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
-  const [scrolled, setScrolled] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('view_mode') as 'grid' | 'table') || 'grid';
@@ -26,15 +23,29 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     return 'grid';
   });
 
+  const [dhakaTime, setDhakaTime] = useState('');
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [ping, setPing] = useState(14);
+  const [fps, setFps] = useState(60);
+
+  // Live Dhaka Clock (updates each minute, shows UTC+6)
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+    const updateTime = () => {
+      const formatted = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Dhaka',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(new Date());
+      setDhakaTime(formatted);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    updateTime();
+    const interval = setInterval(updateTime, 60000);
+    return () => clearInterval(interval);
   }, []);
 
+  // Sync View Mode (Grid vs Table)
   useEffect(() => {
     const handleView = (e: Event) => {
       const custom = e as CustomEvent<'grid' | 'table'>;
@@ -46,95 +57,172 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     window.addEventListener('set-view-mode', handleView);
     return () => window.removeEventListener('set-view-mode', handleView);
   }, []);
+
+  // Telemetry: FPS monitoring
+  useEffect(() => {
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let animId: number;
+
+    const loop = (now: number) => {
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        setFps(Math.min(120, Math.max(30, frameCount)));
+        frameCount = 0;
+        lastTime = now;
+      }
+      animId = requestAnimationFrame(loop);
+    };
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  // Telemetry: Ping jitter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPing(Math.floor(12 + Math.random() * 5));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleCopyEmail = useCallback(() => {
+    navigator.clipboard.writeText(profileData.contact.email);
+    setCopiedEmail(true);
+    sound.playClick(900, 0.03, 0.06);
+    setTimeout(() => setCopiedEmail(false), 1600); // exactly 1.6s per spec
+  }, []);
+
+  const scrollToSelectedWork = useCallback(() => {
+    document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth' });
+    sound.playTick();
+  }, []);
+
+  const scrollToContact = useCallback(() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    sound.playTick();
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    sound.playTick();
+  }, []);
+
+  const changeViewMode = useCallback((mode: 'grid' | 'table') => {
+    setViewMode(mode);
+    localStorage.setItem('view_mode', mode);
+    window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
+    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
+  }, []);
+
+  // Featured and secondary project subsets
+  const purefeed = projects.find((p) => p.id === 'purefeed');
+  const doclensbd = projects.find((p) => p.id === 'doclensbd');
+  const otherProjects = projects.filter(
+    (p) => p.id === 'focusguard' || p.id === 'rannabanna' || p.id === 'poshra'
+  );
+
+  const cores = typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 8 : 8;
+
   return (
     <div className={styles.homeContainer}>
-      {/* 1. Interactive Hero */}
+      {/* ── 2. HERO (min-height 100svh, content bottom-aligned, left-aligned) ── */}
       <section className={styles.heroSection} aria-label="Introduction">
-        <div className={styles.heroLeft}>
-          <div className={styles.statusPill}>
-            <span className={styles.statusDot} />
-            <span>Available for Internships &amp; Projects</span>
+        <div className={styles.heroGrid}>
+          {/* Cols 1–8: Headline, typewriter, CTAs */}
+          <div className={styles.heroContent}>
+            <h1 className={styles.heroTitle} data-hero-title>
+              Hi, this is Moayed.
+              <br />
+              I build fast, reliable software.
+            </h1>
+
+            <p className={styles.heroLead} data-hero-in>
+              I build software that <RotatingClause />
+            </p>
+
+            <div className={styles.heroActions} data-hero-in>
+              <Magnetic strength={0.3}>
+                <button
+                  type="button"
+                  className={styles.primaryPillBtn}
+                  onClick={scrollToSelectedWork}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  View My Works
+                </button>
+              </Magnetic>
+
+              <Magnetic strength={0.3}>
+                <button
+                  type="button"
+                  className={styles.secondaryPillBtn}
+                  onClick={scrollToContact}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  Get in Touch
+                </button>
+              </Magnetic>
+
+              <Magnetic strength={0.3}>
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.heroTextLink}
+                  onClick={() => sound.playTick()}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  Download Résumé
+                </a>
+              </Magnetic>
+            </div>
           </div>
 
-          <div className={styles.titleWrapper}>
-            <ParticleText
-              lines={[
-                { text: 'Hi, This is Moayed. I build', highlight: false },
-                { text: 'fast, reliable software.', highlight: true },
-              ]}
-              dataCursor="repel"
-              dataCursorLabel="MAGNETIC"
-            />
-          </div>
+          {/* Cols 9–12: Two stacked tiles (ACCENT tile + Surface Dhaka tile) */}
+          <div className={styles.heroTiles}>
+            {/* ACCENT tile: The only accent tile in view */}
+            <div className={styles.heroAccentTile} data-tile="accent">
+              <div className={styles.heroAccentHeader}>
+                <span className={styles.heroAccentDot} />
+                <span className={styles.heroAccentKicker}>AVAILABLE</span>
+              </div>
+              <h3 className={styles.heroAccentTitle}>
+                Available for Internships &amp; Projects
+              </h3>
+              <p className={styles.heroAccentDesc}>
+                East West University CSE • Remote Worldwide
+              </p>
+            </div>
 
-          <p className={styles.lead}>
-            I&apos;m a Computer Science student at East West University in Dhaka, Bangladesh.
-            I build software that <RotatingClause />
-          </p>
-
-          <div className={styles.heroActions}>
-            <button
-              type="button"
-              className={styles.primaryBtn}
-              onClick={() => {
-                sound.playClick();
-                onNavigate('/works');
-              }}
-            >
-              <span>View My Works</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
-
-            <button
-              type="button"
-              className={styles.secondaryBtn}
-              onClick={() => {
-                sound.playClick();
-                onNavigate('/contact');
-              }}
-            >
-              <span>Get in Touch</span>
-            </button>
-
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.secondaryBtn}
-              onClick={() => sound.playTick()}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              <span>Download Résumé</span>
-            </a>
+            {/* Surface tile: Dhaka, Bangladesh + Live Local Time */}
+            <div className={styles.heroSurfaceTile} data-tile="surface">
+              <div className={styles.heroSurfaceHeader}>
+                <span className={styles.dhakaLocation}>Dhaka, Bangladesh</span>
+                <span className={styles.dhakaTzPill}>UTC+6</span>
+              </div>
+              <div className={styles.dhakaTimeDisplay}>
+                <span className={styles.dhakaTimeDigits}>{dhakaTime || '14:32'}</span>
+                <span className={styles.dhakaTimeSub}>Local Time</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className={styles.heroRight}>
-          <HeroSandbox onNavigate={onNavigate} />
-        </div>
-
-        {/* Tactical Scroll Explorer Prompt */}
+        {/* Scroll to explore chevron/label */}
         <div
-          className={`${styles.scrollIndicator} ${scrolled ? styles.scrollIndicatorHidden : ''}`}
-          onClick={() => {
-            document.getElementById('featured-work')?.scrollIntoView({ behavior: 'smooth' });
-            sound.playTick();
-          }}
+          className={styles.scrollIndicator}
+          onClick={scrollToSelectedWork}
           role="button"
           tabIndex={0}
-          aria-label="Scroll to explore featured work"
+          aria-label="Scroll to explore selected work"
           data-cursor="link"
         >
-          <span className={styles.scrollText}>Scroll to explore</span>
+          <span>Scroll to explore</span>
           <svg
-            className={styles.scrollArrow}
+            className={styles.scrollChevron}
             width="14"
             height="14"
             viewBox="0 0 24 24"
@@ -143,36 +231,31 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </div>
       </section>
 
-      {/* 2. Featured Projects (Only 2 top highlights, clean & simple) */}
-      <section id="featured-work" className={styles.section} aria-label="Featured Projects">
+      {/* ── 3. SELECTED WORK (bento) ── */}
+      <section id="selected-work" className={styles.section} aria-label="Selected Work">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
-            <span className={styles.sectionEyebrow}>[ selected projects ]</span>
-            <h2 className={styles.sectionTitle} data-cursor="inspect" data-cursor-label="PROJECTS">
-              <ScrambleText text="Featured Work" />
-            </h2>
+            <span className={styles.sectionEyebrow}>Selected projects</span>
+            <h2 className={styles.sectionTitle}>Selected Work</h2>
           </div>
 
           <div className={styles.headerRightControls}>
-            {/* View Mode Switcher */}
-            <div className={styles.viewModeToggle} role="group" aria-label="View format">
+            <div className={styles.viewModeToggle} role="group" aria-label="Project view format">
               <button
                 type="button"
                 className={`${styles.viewToggleBtn} ${viewMode === 'grid' ? styles.viewToggleBtnActive : ''}`}
-                onClick={() => {
-                  setViewMode('grid');
-                  window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'grid' }));
-                  sound.playClick(650, 0.02, 0.06);
-                }}
-                title="Switch to 3D Card Grid [G]"
+                onClick={() => changeViewMode('grid')}
+                title="Switch to Bento Grid View [G]"
+                data-cursor="link"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <rect x="3" y="3" width="7" height="7" />
                   <rect x="14" y="3" width="7" height="7" />
                   <rect x="14" y="14" width="7" height="7" />
@@ -183,14 +266,11 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               <button
                 type="button"
                 className={`${styles.viewToggleBtn} ${viewMode === 'table' ? styles.viewToggleBtnActive : ''}`}
-                onClick={() => {
-                  setViewMode('table');
-                  window.dispatchEvent(new CustomEvent('set-view-mode', { detail: 'table' }));
-                  sound.playClick(720, 0.02, 0.06);
-                }}
+                onClick={() => changeViewMode('table')}
                 title="Switch to Data Ledger Table [T]"
+                data-cursor="link"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="3" y1="6" x2="21" y2="6" />
                   <line x1="3" y1="12" x2="21" y2="12" />
                   <line x1="3" y1="18" x2="21" y2="18" />
@@ -198,18 +278,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 <span>Table [T]</span>
               </button>
             </div>
-
-            <button
-              type="button"
-              className={styles.viewAllLink}
-              onClick={() => {
-                sound.playTick();
-                onNavigate('/works');
-              }}
-            >
-              <span>View all 6 projects</span>
-              <span>&rarr;</span>
-            </button>
           </div>
         </header>
 
@@ -221,200 +289,600 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             />
           </div>
         ) : (
-          <div className={styles.featuredGrid}>
-          {projects
-            .filter((p) => p.id === 'purefeed' || p.id === 'doclensbd')
-            .map((p) => (
-              <SpotlightCard
-                key={p.id}
-                as="article"
-                className={styles.featuredCard}
-                contentClassName={styles.featuredCardContent}
-                tiltIntensity={9}
+          <div className={styles.workBentoGrid}>
+            {/* Row 1: Feature Tile 1 — PureFeed (7×4, col span 7) */}
+            {purefeed && (
+              <article
+                className={`${styles.bentoTile} ${styles.featureTilePurefeed}`}
+                data-tile="feature"
+                data-cursor="inspect"
+                data-cursor-label="View project"
+                onClick={() => {
+                  sound.playClick();
+                  onSelectProject?.(purefeed.id);
+                }}
               >
-                {/* Precision Architectural Header */}
-                <div className={styles.cardHeaderBar}>
-                  <div className={styles.headerLeft}>
-                    <span className={styles.systemSerial}>{p.serial}</span>
-                    <span className={styles.categoryBadge}>
-                      <span className={styles.categoryDot} /> {p.category}
-                    </span>
+                <div className={styles.tileHeaderBar}>
+                  <div className={styles.tileHeaderLeft}>
+                    <span className={styles.categoryBadge}>{purefeed.category}</span>
                   </div>
-                  <div className={styles.beaconBadge}>
-                    <span className={styles.beaconDot} />
-                    <span>{p.status}</span>
-                  </div>
+                  <span className={styles.metricChip}>{purefeed.perf}</span>
                 </div>
 
-                <div className={styles.cardBody}>
-                  <div className={styles.titleRow}>
-                    <h3 className={styles.cardTitle}>{p.title}</h3>
-                    <span className={styles.perfBadge}>{p.perf}</span>
-                  </div>
-                  <p className={styles.cardDescription}>{p.shortDescription}</p>
-                  <div className={styles.techList}>
-                    {p.tech.map((t) => (
-                      <span key={t} className={styles.techPill}>
+                <div className={styles.tileBody}>
+                  <h3 className={styles.tileTitle}>{purefeed.title}</h3>
+                  <p className={styles.tileDescClamped}>{purefeed.shortDescription}</p>
+
+                  <div className={styles.stackChips}>
+                    {purefeed.tech.map((t) => (
+                      <span key={t} className={styles.stackPill}>
                         {t}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className={styles.simulatorDeck}>
-                  <ProjectSimulator projectId={p.id} />
+                <div
+                  className={styles.featureMediaInset}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ProjectSimulator projectId="purefeed" />
                 </div>
 
-                <div className={styles.cardFooter}>
-                  {p.liveUrl && (
-                    <a
-                      href={p.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.primaryActionBtn}
-                      onClick={() => sound.playTick()}
-                      data-cursor="link"
-                    >
-                      <span>Visit Live Site</span>
-                      <span className={styles.actionArrow}>&rarr;</span>
-                    </a>
-                  )}
-
+                <div className={styles.tileActionsRow}>
                   <button
                     type="button"
-                    className={p.liveUrl ? styles.secondaryActionBtn : styles.primaryActionBtn}
-                    onClick={() => {
+                    className={styles.tilePrimaryBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
                       sound.playClick();
-                      if (onSelectProject) {
-                        onSelectProject(p.id);
-                      } else {
-                        onNavigate('/works');
-                      }
+                      onSelectProject?.(purefeed.id);
                     }}
                     data-cursor="link"
                   >
                     <span>Explore Architecture</span>
-                    {!p.liveUrl && <span className={styles.actionArrow}>&rarr;</span>}
+                    <span>&rarr;</span>
                   </button>
 
-                  {p.githubUrl && (
+                  {purefeed.githubUrl && (
                     <a
-                      href={p.githubUrl}
+                      href={purefeed.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={styles.secondaryActionBtn}
-                      onClick={() => sound.playTick()}
+                      className={styles.tileSecondaryBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playTick();
+                      }}
                       data-cursor="link"
-                      title="View Source on GitHub"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
                       </svg>
                       <span>Source</span>
                     </a>
                   )}
                 </div>
-              </SpotlightCard>
+              </article>
+            )}
+
+            {/* Row 1: Feature Tile 2 — DocLensBD (5×4, col span 5) */}
+            {doclensbd && (
+              <article
+                className={`${styles.bentoTile} ${styles.featureTileDoclens}`}
+                data-tile="feature"
+                data-cursor="inspect"
+                data-cursor-label="View project"
+                onClick={() => {
+                  sound.playClick();
+                  onSelectProject?.(doclensbd.id);
+                }}
+              >
+                <div className={styles.tileHeaderBar}>
+                  <div className={styles.tileHeaderLeft}>
+                    <span className={styles.categoryBadge}>{doclensbd.category}</span>
+                  </div>
+                  <span className={styles.metricChip}>{doclensbd.perf}</span>
+                </div>
+
+                <div className={styles.tileBody}>
+                  <h3 className={styles.tileTitle}>{doclensbd.title}</h3>
+                  <p className={styles.tileDescClamped}>{doclensbd.shortDescription}</p>
+
+                  <div className={styles.stackChips}>
+                    {doclensbd.tech.map((t) => (
+                      <span key={t} className={styles.stackPill}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  className={styles.featureMediaInset}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ProjectSimulator projectId="doclensbd" />
+                </div>
+
+                <div className={styles.tileActionsRow}>
+                  {doclensbd.liveUrl && (
+                    <a
+                      href={doclensbd.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.tilePrimaryBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playTick();
+                      }}
+                      data-cursor="link"
+                    >
+                      <span>Visit Live Site</span>
+                      <span>&rarr;</span>
+                    </a>
+                  )}
+
+                  {doclensbd.githubUrl && (
+                    <a
+                      href={doclensbd.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.tileSecondaryBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playTick();
+                      }}
+                      data-cursor="link"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                      </svg>
+                      <span>Source</span>
+                    </a>
+                  )}
+                </div>
+              </article>
+            )}
+
+            {/* Row 2: Standard Tiles (4×3 each: FocusGuard, Rannabanna, POSHRA) */}
+            {otherProjects.map((p) => (
+              <article
+                key={p.id}
+                className={`${styles.bentoTile} ${styles.standardWorkTile}`}
+                data-tile="standard"
+                data-cursor="inspect"
+                data-cursor-label="View project"
+                onClick={() => {
+                  sound.playClick();
+                  onSelectProject?.(p.id);
+                }}
+              >
+                <div className={styles.tileHeaderBar}>
+                  <span className={styles.categoryBadge}>{p.category}</span>
+                  <span className={styles.metricChip}>{p.perf}</span>
+                </div>
+
+                <div className={styles.tileBody}>
+                  <h3 className={styles.tileTitle}>{p.title}</h3>
+                  <p className={styles.tileDescClamped}>{p.shortDescription}</p>
+
+                  <div className={styles.stackChips}>
+                    {p.tech.slice(0, 3).map((t) => (
+                      <span key={t} className={styles.stackPill}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  className={styles.standardMediaInset}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ProjectSimulator projectId={p.id} />
+                </div>
+
+                <div className={styles.tileActionsRow}>
+                  {p.liveUrl ? (
+                    <a
+                      href={p.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.tilePrimaryBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playTick();
+                      }}
+                      data-cursor="link"
+                    >
+                      <span>Live Site</span>
+                      <span>&rarr;</span>
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.tilePrimaryBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playClick();
+                        onSelectProject?.(p.id);
+                      }}
+                      data-cursor="link"
+                    >
+                      <span>Inspect</span>
+                      <span>&rarr;</span>
+                    </button>
+                  )}
+
+                  {p.githubUrl && (
+                    <a
+                      href={p.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.tileSecondaryBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sound.playTick();
+                      }}
+                      data-cursor="link"
+                    >
+                      <span>Source</span>
+                    </a>
+                  )}
+                </div>
+              </article>
             ))}
-        </div>
-      )}
-      </section>
 
-      {/* 3. Background & Education Teaser */}
-      <section className={styles.section} aria-label="Education & Background">
-        <header className={styles.sectionHeader}>
-          <div className={styles.sectionTitleGroup}>
-            <span className={styles.sectionEyebrow}>[ academic record ]</span>
-            <h2 className={styles.sectionTitle} data-cursor="inspect" data-cursor-label="ACADEMICS">
-              <ScrambleText text="Education & Background" />
-            </h2>
-          </div>
-          <button
-            type="button"
-            className={styles.viewAllLink}
-            onClick={() => {
-              sound.playTick();
-              onNavigate('/foundation');
-            }}
-          >
-            <span>See full education timeline</span>
-            <span>&rarr;</span>
-          </button>
-        </header>
-
-        {/* Signature entrance: concentric ring radar sweep */}
-        <RadarSweep />
-
-        <SpotlightCard
-          className={styles.storyCard}
-          contentClassName={styles.storyCardContent}
-          tiltIntensity={5}
-        >
-          <div className={styles.storyContent}>
-            <p className={styles.storyParagraph}>
-              I am currently pursuing my <strong>Bachelor of Science in Computer Science &amp; Engineering</strong> at{' '}
-              <strong>East West University (EWU)</strong> in Dhaka, Bangladesh.
-            </p>
-            <p className={styles.storyParagraph}>
-              Throughout school and college, I built a strong foundation in algorithms, mathematics, and systems.
-              I earned National Board General Merit Scholarships for both my Class 8 (JSC) and Class 10 (SSC) board examinations.
-            </p>
-            <button
-              type="button"
-              className={styles.viewAllLink}
-              style={{ width: 'fit-content', marginTop: '0.5rem' }}
+            {/* Row 3: Full-Width INVERTED Tile (12×1): View all N projects */}
+            <div
+              className={styles.invertedViewAllTile}
+              data-tile="inverted"
               onClick={() => {
                 sound.playTick();
-                onNavigate('/foundation');
+                onNavigate('/works');
               }}
+              role="button"
+              tabIndex={0}
+              aria-label="View all projects in detail"
+              data-cursor="link"
             >
-              <span>Explore my skills &amp; coursework &rarr;</span>
-            </button>
-          </div>
-
-          <div className={styles.highlightsList}>
-            <div className={styles.highlightItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span><strong>East West University</strong> — B.Sc. CSE (2025—Present)</span>
-            </div>
-            <div className={styles.highlightItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span><strong>Board General Merit Scholarship</strong> — SSC Class 10 (GPA 5.0)</span>
-            </div>
-            <div className={styles.highlightItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span><strong>Board General Merit Scholarship</strong> — JSC Class 8 (GPA 5.0)</span>
-            </div>
-            <div className={styles.highlightItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span><strong>National Board Distinction</strong> — PSC Class 5 (GPA 5.0)</span>
+              <div className={styles.invertedContent}>
+                <span className={styles.invertedHeading}>
+                  View all {projects.length} architectural projects
+                </span>
+                <span className={styles.invertedSub}>
+                  Inspect comprehensive case studies, problem statements, and system telemetry &rarr;
+                </span>
+              </div>
+              <Magnetic strength={0.3}>
+                <span className={styles.invertedBtn} data-magnetic="0.3">
+                  Explore Works
+                </span>
+              </Magnetic>
             </div>
           </div>
-        </SpotlightCard>
+        )}
       </section>
 
-      {/* 4. Interactive Visitor Guestbook Canvas */}
-      <section className={styles.section} aria-label="Digital Guestbook">
-        <SignatureCanvas />
+      {/* ── 4. ABOUT AND TOOLS (bento) ── */}
+      <section id="about" className={styles.section} aria-label="About & Tools">
+        <header className={styles.sectionHeader}>
+          <div className={styles.sectionTitleGroup}>
+            <span className={styles.sectionEyebrow}>Background &amp; capabilities</span>
+            <h2 className={styles.sectionTitle}>About &amp; Systems</h2>
+          </div>
+        </header>
+
+        <div className={styles.aboutBentoGrid}>
+          {/* Row 1: About tile (5×3, surface) */}
+          <article className={`${styles.bentoTile} ${styles.aboutTile}`} data-tile="surface">
+            <div className={styles.tileHeaderBar}>
+              <span className={styles.tileSectionTag}>ENGINEER BIO</span>
+            </div>
+            <div className={styles.aboutBody}>
+              <h3 className={styles.aboutHeading}>About Moayed</h3>
+              <p className={styles.aboutParagraph}>
+                I am a Computer Science and Engineering undergraduate at{' '}
+                <strong>East West University</strong> in Dhaka, Bangladesh.
+                I specialize in browser engine internals (Chromium MV3), operating-system policy enforcement,
+                real-time 3D computer vision (MediaPipe), and low-overhead web architectures.
+              </p>
+              <p className={styles.aboutParagraph}>
+                I focus on solving real technical challenges with fast, clean, and reliable software designed for low bandwidth and latency-critical environments.
+              </p>
+            </div>
+            <div className={styles.aboutFooter}>
+              <Magnetic strength={0.3}>
+                <a
+                  href="/resume"
+                  className={styles.tilePrimaryBtn}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    sound.playClick();
+                    onNavigate('/resume');
+                  }}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  <span>View Résumé</span>
+                  <span>&rarr;</span>
+                </a>
+              </Magnetic>
+            </div>
+          </article>
+
+          {/* Row 1: Terminal tile (7×3, surface, mono) */}
+          <div className={`${styles.bentoTile} ${styles.terminalBentoTile}`} data-tile="surface">
+            <TerminalTile onNavigate={onNavigate} />
+          </div>
+
+          {/* Row 2: Stack tile (3×2, surface) */}
+          <article className={`${styles.bentoTile} ${styles.stackTile}`} data-tile="surface">
+            <div className={styles.tileHeaderBar}>
+              <span className={styles.tileSectionTag}>TECHNICAL STACK</span>
+            </div>
+            <h3 className={styles.smallTileTitle}>Core Technologies</h3>
+            <div className={styles.stackPillCloud}>
+              {profileData.skills.languages.slice(0, 5).map((s) => (
+                <span key={s} className={styles.techChip}>
+                  {s}
+                </span>
+              ))}
+              {profileData.skills.frontend.slice(0, 4).map((s) => (
+                <span key={s} className={styles.techChip}>
+                  {s}
+                </span>
+              ))}
+              {profileData.skills.backend.slice(0, 3).map((s) => (
+                <span key={s} className={styles.techChip}>
+                  {s}
+                </span>
+              ))}
+              {profileData.skills.systems.slice(0, 2).map((s) => (
+                <span key={s} className={styles.techChip}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </article>
+
+          {/* Row 2: Education tile (3×2, surface) */}
+          <article className={`${styles.bentoTile} ${styles.educationTile}`} data-tile="surface">
+            <div className={styles.tileHeaderBar}>
+              <span className={styles.tileSectionTag}>ACADEMIC RECORD</span>
+            </div>
+            <h3 className={styles.smallTileTitle}>Education</h3>
+            <div className={styles.eduChronology}>
+              <div className={styles.eduItem}>
+                <span className={styles.eduDegree}>East West University</span>
+                <span className={styles.eduDetails}>B.Sc. CSE (2025–Present)</span>
+              </div>
+              <div className={styles.eduItem}>
+                <span className={styles.eduDegree}>SSC Class 10 (GPA 5.0)</span>
+                <span className={styles.eduDetails}>Board General Merit Scholarship</span>
+              </div>
+              <div className={styles.eduItem}>
+                <span className={styles.eduDegree}>JSC Class 8 (GPA 5.0)</span>
+                <span className={styles.eduDetails}>Board General Merit Scholarship</span>
+              </div>
+            </div>
+            <div className={styles.eduFooter}>
+              <Magnetic strength={0.3}>
+                <a
+                  href="/foundation"
+                  className={styles.inlineTimelineLink}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    sound.playTick();
+                    onNavigate('/foundation');
+                  }}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  Full timeline &rarr;
+                </a>
+              </Magnetic>
+            </div>
+          </article>
+
+          {/* Row 2: Telemetry tile (3×2, surface) */}
+          <article className={`${styles.bentoTile} ${styles.telemetryTile}`} data-tile="surface">
+            <div className={styles.tileHeaderBar}>
+              <span className={styles.tileSectionTag}>TELEMETRY</span>
+              <span className={styles.telemetryPulseDot} />
+            </div>
+            <h3 className={styles.smallTileTitle}>Verified Readouts</h3>
+            <div className={styles.telemetryList}>
+              <div className={styles.telemetryItem}>
+                <span className={styles.telemLabel}>EDGE RTT:</span>
+                <span className={styles.telemVal}>{ping} ms</span>
+              </div>
+              <div className={styles.telemetryItem}>
+                <span className={styles.telemLabel}>BUDGET:</span>
+                <span className={styles.telemVal}>{fps} FPS</span>
+              </div>
+              <div className={styles.telemetryItem}>
+                <span className={styles.telemLabel}>CONCURRENCY:</span>
+                <span className={styles.telemVal}>{cores} Cores</span>
+              </div>
+              <div className={styles.telemetryItem}>
+                <span className={styles.telemLabel}>NODE:</span>
+                <span className={styles.telemVal}>Dhaka (UTC+6)</span>
+              </div>
+            </div>
+          </article>
+
+          {/* Row 2: Links tile (3×2, INVERTED) */}
+          <article className={`${styles.bentoTile} ${styles.linksInvertedTile}`} data-tile="inverted">
+            <div className={styles.tileHeaderBar}>
+              <span className={styles.invertedTileTag}>CONNECT</span>
+            </div>
+            <h3 className={styles.invertedTileTitle}>Direct Dispatch</h3>
+            <p className={styles.invertedTileDesc}>
+              Available for software engineering internships and projects.
+            </p>
+
+            <div className={styles.linksRow}>
+              <Magnetic strength={0.3}>
+                <a
+                  href="https://github.com/watchknight"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.invertedIconLink}
+                  onClick={() => sound.playTick()}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  GitHub
+                </a>
+              </Magnetic>
+
+              <Magnetic strength={0.3}>
+                <a
+                  href="https://linkedin.com/in/abdur-rahman-moayed-9225b5389"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.invertedIconLink}
+                  onClick={() => sound.playTick()}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  LinkedIn
+                </a>
+              </Magnetic>
+            </div>
+
+            <div className={styles.copyEmailWrapper}>
+              <Magnetic strength={0.3}>
+                <button
+                  type="button"
+                  className={styles.copyEmailBtn}
+                  onClick={handleCopyEmail}
+                  aria-live="polite"
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  {copiedEmail ? 'Copied' : 'Copy email'}
+                </button>
+              </Magnetic>
+            </div>
+          </article>
+        </div>
       </section>
 
-      {/* 5. Simple Contact Invite */}
-      <section className={styles.contactStrip} aria-label="Get in touch">
-        <h2 className={styles.contactHeadline}>Interested in working together?</h2>
-        <p className={styles.contactSubtext}>
-          I&apos;m currently open for software engineering internships and freelance web projects.
-          Feel free to reach out anytime.
-        </p>
-        <button
-          type="button"
-          className={styles.primaryBtn}
-          onClick={() => {
-            sound.playClick();
-            onNavigate('/contact');
-          }}
-        >
-          <span>Send me a message &rarr;</span>
-        </button>
+      {/* ── 5. GUESTBOOK BAND (one full-width surface tile, radius --r-xl) ── */}
+      <section id="guestbook" className={styles.section} aria-label="Digital Guestbook">
+        <div className={styles.guestbookTileContainer} data-tile="surface">
+          <SignatureCanvas />
+        </div>
+      </section>
+
+      {/* ── 6. CONTACT AND FOOTER ── */}
+      <section id="contact" className={styles.section} aria-label="Contact and Footer">
+        <div className={styles.contactCard} data-tile="surface">
+          <h2 className={styles.contactHeading}>Interested in working together?</h2>
+          <p className={styles.contactSubtext}>
+            I&apos;m currently open for software engineering internships and freelance web projects.
+            Feel free to reach out anytime.
+          </p>
+
+          <div className={styles.contactActions}>
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={styles.primaryPillBtn}
+                onClick={() => {
+                  sound.playClick();
+                  onNavigate('/contact');
+                }}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                Send me a message &rarr;
+              </button>
+            </Magnetic>
+
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={styles.secondaryPillBtn}
+                onClick={handleCopyEmail}
+                aria-live="polite"
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                {copiedEmail ? 'Copied' : 'Copy email'}
+              </button>
+            </Magnetic>
+          </div>
+
+          <div className={styles.socialLinksRow}>
+            <Magnetic strength={0.3}>
+              <a
+                href="https://github.com/watchknight"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                onClick={() => sound.playTick()}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                GitHub
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.3}>
+              <a
+                href="https://linkedin.com/in/abdur-rahman-moayed-9225b5389"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                onClick={() => sound.playTick()}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                LinkedIn
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.3}>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                onClick={() => sound.playTick()}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                Résumé (PDF)
+              </a>
+            </Magnetic>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer className={styles.footer}>
+          <div className={styles.footerInner}>
+            <span className={styles.footerCopyright}>
+              &copy; {new Date().getFullYear()} Abdur Rahman Moayed
+            </span>
+            <span className={styles.footerLocation}>
+              Dhaka, Bangladesh &bull; {dhakaTime || '14:32'} UTC+6
+            </span>
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={styles.backToTopBtn}
+                onClick={scrollToTop}
+                aria-label="Scroll back to top"
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                Back to top &uarr;
+              </button>
+            </Magnetic>
+          </div>
+        </footer>
       </section>
     </div>
   );

@@ -65,7 +65,7 @@ function DynamicTerminalLogs({
   const telemetry = useMemo(() => {
     return (
       PROJECT_TELEMETRY[project.id] || [
-        { tag: 'SYS_INIT', msg: `${project.title} telemetry active`, status: 'ONLINE' },
+        { tag: 'INIT', msg: `${project.title} telemetry active`, status: 'ONLINE' },
         { tag: 'METRIC', msg: `${project.metric.label}: ${project.metric.value}`, status: 'VERIFIED' },
         { tag: 'RUNTIME', msg: project.environment.slice(0, 3).join(', '), status: 'ACTIVE' },
         { tag: 'INSPECT', msg: 'Ready for deep architecture audit', status: 'STANDBY' },
@@ -76,12 +76,8 @@ function DynamicTerminalLogs({
   const [visibleCount, setVisibleCount] = useState(isReducedMotion ? telemetry.length : 1);
 
   useEffect(() => {
-    if (isReducedMotion) {
-      setVisibleCount(telemetry.length);
-      return;
-    }
+    if (isReducedMotion) return;
 
-    setVisibleCount(1);
     const interval = setInterval(() => {
       setVisibleCount((prev) => {
         if (prev < telemetry.length) {
@@ -159,7 +155,9 @@ function FloatingProjectPreview({
             <span className={`${styles.previewDot} ${styles.previewDotYellow}`} />
             <span className={`${styles.previewDot} ${styles.previewDotGreen}`} />
           </div>
-          <span className={styles.previewSerial}>{project.serial}</span>
+          <span className={styles.previewSerial}>
+            {project.serial.replace(/^SYS_\d+\s*\/\/\s*/i, '')}
+          </span>
         </div>
 
         <div className={styles.previewStatusBadge}>
@@ -270,9 +268,16 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
   // ── Hover & Floating Preview State ──
   const [hoveredProject, setHoveredProject] = useState<ProjectData | null>(null);
   const [activeTouchProjectId, setActiveTouchProjectId] = useState<string | null>(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(() => {
+    if (typeof window !== 'undefined') return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    return false;
+  });
+  const [isReducedMotion, setIsReducedMotion] = useState(() => {
+    if (typeof window !== 'undefined') return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return false;
+  });
 
+  const [initialPreviewPos, setInitialPreviewPos] = useState({ x: 0, y: 0 });
   const targetPos = useRef({ x: 0, y: 0 });
   const currentPos = useRef({ x: 0, y: 0 });
   const previewCardRef = useRef<HTMLDivElement>(null);
@@ -284,12 +289,10 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
     if (typeof window === 'undefined') return;
 
     const touchMq = window.matchMedia('(hover: none) and (pointer: coarse)');
-    setIsTouchDevice(touchMq.matches);
     const handleTouchChange = (e: MediaQueryListEvent) => setIsTouchDevice(e.matches);
     touchMq.addEventListener('change', handleTouchChange);
 
     const motionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setIsReducedMotion(motionMq.matches);
     const handleMotionChange = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     motionMq.addEventListener('change', handleMotionChange);
 
@@ -300,7 +303,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
   }, []);
 
   // RAF Smooth Cursor Lerp Positioner with Viewport Boundary Awareness
-  const positionCard = useCallback(() => {
+  const positionCard = useCallback(function updateCardPos() {
     if (!hoveredProjectRef.current) return;
 
     if (previewCardRef.current) {
@@ -337,7 +340,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
       card.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
     }
 
-    rafId.current = requestAnimationFrame(positionCard);
+    rafId.current = requestAnimationFrame(updateCardPos);
   }, []);
 
   const handleRowPointerEnter = (project: ProjectData, e: React.PointerEvent | React.MouseEvent) => {
@@ -347,6 +350,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
 
     targetPos.current = { x: e.clientX, y: e.clientY };
     currentPos.current = { x: e.clientX, y: e.clientY };
+    setInitialPreviewPos({ x: e.clientX, y: e.clientY });
 
     if (!isReducedMotion) {
       if (rafId.current) cancelAnimationFrame(rafId.current);
@@ -576,7 +580,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
                 <div className={styles.touchDrawerHeader}>
                   <div className={styles.touchDrawerSerial}>
                     <span className={styles.pulseIndicator} />
-                    <span>{project.serial}</span>
+                    <span>{project.serial.replace(/^SYS_\d+\s*\/\/\s*/i, '')}</span>
                   </div>
                   <span className={styles.touchDrawerMetric}>{project.metric.label}: {project.metric.value}</span>
                 </div>
@@ -625,7 +629,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
         <FloatingProjectPreview
           project={hoveredProject}
           cardRef={previewCardRef}
-          initialPos={{ x: targetPos.current.x, y: targetPos.current.y }}
+          initialPos={initialPreviewPos}
           isReducedMotion={isReducedMotion}
         />,
         document.body

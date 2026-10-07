@@ -33,8 +33,18 @@ export function CustomCursor() {
       if (cursorTarget) {
         const type = cursorTarget.getAttribute('data-cursor');
         const label = cursorTarget.getAttribute('data-cursor-label') || '';
-        setHoverType(type);
-        setHoverLabel(label);
+        if (type === 'hide') {
+          setVisible(false);
+          setHoverType('hide');
+          setHoverLabel('');
+        } else {
+          setHoverType(type);
+          setHoverLabel(label);
+        }
+      } else if (target.closest('input, textarea, iframe, [data-cursor="hide"]')) {
+        setVisible(false);
+        setHoverType('hide');
+        setHoverLabel('');
       } else if (target.closest('a, button, [role="button"]')) {
         setHoverType('link');
         setHoverLabel('');

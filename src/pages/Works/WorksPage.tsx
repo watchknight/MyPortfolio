@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
 import { projects } from '../../data/projects';
 import { sound } from '../../utils/audio';
@@ -46,9 +45,9 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
     <div className={styles.pageContainer}>
       {/* Header */}
       <header className={styles.header}>
-        <span className={styles.eyebrow}>[ portfolio &amp; case studies ]</span>
+        <span className={styles.eyebrow}>Portfolio &amp; case studies</span>
         <h1 className={styles.title} data-cursor="inspect" data-cursor-label="PROJECTS">
-          <ScrambleText text="Selected Works" />
+          Selected Works
         </h1>
         <p className={styles.subtitle}>
           A showcase of real web applications, browser extensions, and practical desktop tools I have engineered.
@@ -143,14 +142,17 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
             <SpotlightCard
               key={p.id}
               as="article"
+              data-tile
               className={styles.projectCard}
               contentClassName={styles.projectCardContent}
               tiltIntensity={9}
             >
-              {/* Precision Architectural Header */}
+              {/* Architectural Header */}
               <div className={styles.cardHeaderBar}>
                 <div className={styles.headerLeft}>
-                  <span className={styles.systemSerial}>{p.serial}</span>
+                  <span className={styles.systemSerial}>
+                    {p.serial.replace(/^SYS_\d+\s*\/\/\s*/i, '')}
+                  </span>
                   <span className={styles.categoryBadge}>
                     <span className={styles.categoryDot} /> {p.category}
                   </span>

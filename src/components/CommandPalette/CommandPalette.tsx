@@ -404,7 +404,7 @@ export function CommandPalette({
               <kbd>ESC</kbd> Close
             </button>
           </div>
-          <span className={styles.footerNode}>DHAKA_NODE // ACTIVE</span>
+          <span className={styles.footerNode}>Dhaka Node &bull; Active</span>
         </footer>
       </div>
     </div>

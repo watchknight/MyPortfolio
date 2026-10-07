@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { ScrambleText } from '../../components/ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './NotFoundPage.module.css';
 
@@ -9,13 +8,13 @@ interface NotFoundPageProps {
 }
 
 export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
-  const [currentPath, setCurrentPath] = useState<string>('/unknown');
+  const [currentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') return window.location.pathname;
+    return '/unknown';
+  });
 
   useEffect(() => {
-    document.title = 'Signal Void // 404 — Abdur Rahman Moayed';
-    if (typeof window !== 'undefined') {
-      setCurrentPath(window.location.pathname);
-    }
+    document.title = 'Page Not Found — Abdur Rahman Moayed';
   }, []);
 
   useEffect(() => {
@@ -52,10 +51,10 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
       <header className={styles.header}>
         <div className={styles.badgeRow}>
           <span className={styles.statusDot} />
-          <span className={styles.eyebrow}>[ sector 404 // signal void ]</span>
+          <span className={styles.eyebrow}>Page not found</span>
         </div>
         <h1 className={styles.title} data-cursor="inspect" data-cursor-label="404">
-          <ScrambleText text="Sector 404: Signal Void" />
+          Page Not Found
         </h1>
         <p className={styles.subtitle}>
           The requested coordinate or ledger record does not exist on this node.

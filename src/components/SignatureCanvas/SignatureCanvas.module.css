@@ -2,14 +2,14 @@
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: var(--r-xl);
   overflow: hidden;
-  margin-top: 2.5rem;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .guestbookHead {
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem 1.75rem;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -35,14 +35,13 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--accent);
 }
 
 .badgeText {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--muted);
 }
 

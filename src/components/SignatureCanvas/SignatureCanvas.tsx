@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from 'react';
-import { ScrambleText } from '../ScrambleText/ScrambleText';
 import { sound } from '../../utils/audio';
 import styles from './SignatureCanvas.module.css';
 
@@ -126,18 +125,15 @@ export function SignatureCanvas() {
   };
 
   return (
-    <div className={styles.guestbookWrapper} data-lenis-prevent="true">
+    <div className={styles.guestbookWrapper}>
       <div className={styles.guestbookHead}>
         <div className={styles.titleArea}>
-          <div className={styles.badgeRow}>
-            <span className={styles.badgeDot} />
-            <span className={styles.badgeText}>[ interactive guestbook ]</span>
-          </div>
+          <span className={styles.badgeText}>Interactive guestbook</span>
           <h2 className={styles.title} data-cursor="inspect" data-cursor-label="GUESTBOOK">
-            <ScrambleText text="Leave Your Digital Mark" />
+            Leave Your Digital Mark
           </h2>
           <p className={styles.subtitle}>
-            Sign or sketch with neon digital ink. Your coordinates render live on the canvas.
+            Sign or sketch with digital ink. Your coordinates render live on the canvas.
           </p>
         </div>
 
@@ -156,6 +152,7 @@ export function SignatureCanvas() {
                 }}
                 aria-label={`Select ${c.label} color`}
                 data-cursor="link"
+                data-magnetic="0.3"
               >
                 <span
                   className={styles.colorDot}
@@ -173,6 +170,7 @@ export function SignatureCanvas() {
               onClick={() => setLineWidth(2)}
               title="Fine stroke"
               data-cursor="link"
+              data-magnetic="0.3"
             >
               •
             </button>
@@ -182,6 +180,7 @@ export function SignatureCanvas() {
               onClick={() => setLineWidth(4)}
               title="Medium stroke"
               data-cursor="link"
+              data-magnetic="0.3"
             >
               ●
             </button>
@@ -191,6 +190,7 @@ export function SignatureCanvas() {
               onClick={() => setLineWidth(7)}
               title="Bold stroke"
               data-cursor="link"
+              data-magnetic="0.3"
             >
               ⬤
             </button>
@@ -204,6 +204,7 @@ export function SignatureCanvas() {
               onClick={clearCanvas}
               disabled={!hasDrawn}
               data-cursor="link"
+              data-magnetic="0.3"
             >
               Clear
             </button>
@@ -213,6 +214,7 @@ export function SignatureCanvas() {
               onClick={downloadSignature}
               disabled={!hasDrawn}
               data-cursor="link"
+              data-magnetic="0.3"
             >
               Save Badge ↓
             </button>
@@ -225,6 +227,7 @@ export function SignatureCanvas() {
         <canvas
           ref={canvasRef}
           className={styles.canvas}
+          data-cursor="hide"
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -242,8 +245,8 @@ export function SignatureCanvas() {
         )}
 
         <div className={styles.canvasFooterInfo}>
-          <span>VIRTUAL HARDWARE RASTERIZER // 60 FPS</span>
-          <span>{hasDrawn ? `${strokeCount} VECTORS RECORDED` : 'WAITING FOR INPUT'}</span>
+          <span>Interactive Canvas • 60 FPS</span>
+          <span>{hasDrawn ? `${strokeCount} vectors recorded` : 'Waiting for input'}</span>
         </div>
       </div>
     </div>
