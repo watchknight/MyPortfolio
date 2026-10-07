@@ -450,8 +450,9 @@
 .mobileMenuItem:hover,
 .mobileMenuItemActive {
   background-color: var(--raised);
-  color: var(--accent);
+  color: var(--text);
   font-weight: 600;
+  border-left: 2px solid var(--accent);
 }
 
 /* ── Responsive Viewports ── */

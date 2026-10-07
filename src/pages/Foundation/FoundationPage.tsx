@@ -96,7 +96,7 @@ export function FoundationPage() {
       {/* Header */}
       <header className={styles.header}>
         <span className={styles.eyebrow}>Education &amp; credentials</span>
-        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="ACADEMICS">
+        <h1 className={styles.title}>
           Background &amp; Skills
         </h1>
         <p className={styles.subtitle}>

@@ -86,7 +86,7 @@
 }
 
 .log_cmd {
-  color: var(--accent);
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -99,7 +99,8 @@
 }
 
 .log_warn {
-  color: var(--accent);
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .log_info {
@@ -152,7 +153,7 @@
 }
 
 .promptArrow {
-  color: var(--accent);
+  color: var(--text);
   font-size: 0.8125rem;
   font-weight: 700;
   user-select: none;

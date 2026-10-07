@@ -104,7 +104,7 @@ export function Hero() {
 
             {/* Kinetic Title Stack */}
             <div className={styles.titleContainer}>
-              <h1 className={styles.heroTitle} data-cursor="inspect" data-cursor-label="SYSTEMS">
+              <h1 className={styles.heroTitle}>
                 <span className={styles.titleLine1}>
                   <ScrambleText text="Systems Architect" />
                 </span>

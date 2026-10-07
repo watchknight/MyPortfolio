@@ -403,7 +403,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               {/* View Switch: Grid vs Table */}
               <div className={styles.controlRow}>
                 <div className={styles.controlInfo}>
-                  <span className={styles.controlLabel}>View Layout</span>
+                  <span className={styles.controlLabel}>View</span>
                   <span className={styles.controlShortcut}>G / T</span>
                 </div>
                 <div className={styles.segmentedControl} role="group" aria-label="Project View Layout">
@@ -429,7 +429,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               {/* Sound Toggle: On / Off */}
               <div className={styles.controlRow}>
                 <div className={styles.controlInfo}>
-                  <span className={styles.controlLabel}>Tactile Audio</span>
+                  <span className={styles.controlLabel}>Sound</span>
                   <span className={styles.controlShortcut}>M</span>
                 </div>
                 <button
@@ -447,7 +447,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               {/* Grain Toggle: On / Off */}
               <div className={styles.controlRow}>
                 <div className={styles.controlInfo}>
-                  <span className={styles.controlLabel}>Film Grain</span>
+                  <span className={styles.controlLabel}>Grain</span>
                   <span className={styles.controlShortcut}>F</span>
                 </div>
                 <button
@@ -465,7 +465,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               {/* System Diagnostics */}
               <div className={styles.controlRow}>
                 <div className={styles.controlInfo}>
-                  <span className={styles.controlLabel}>System Diagnostics</span>
+                  <span className={styles.controlLabel}>System</span>
                   <span className={styles.controlShortcut}>S</span>
                 </div>
                 <button
@@ -474,7 +474,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                   onClick={openSysDiagnostic}
                   data-cursor="link"
                 >
-                  Run Sys
+                  Diagnostics
                 </button>
               </div>
             </div>

@@ -53,7 +53,7 @@
 .searchIcon {
   width: 18px;
   height: 18px;
-  color: var(--color-accent);
+  color: var(--muted);
   flex-shrink: 0;
 }
 

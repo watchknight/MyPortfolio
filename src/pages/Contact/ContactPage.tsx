@@ -149,7 +149,7 @@ export function ContactPage() {
       {/* Header */}
       <header className={styles.header}>
         <span className={styles.eyebrow}>Direct communication</span>
-        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="CONTACT">
+        <h1 className={styles.title}>
           Get in Touch
         </h1>
         <p className={styles.subtitle}>
@@ -271,7 +271,7 @@ export function ContactPage() {
             <div className={styles.errorBanner} role="alert">
               <div className={styles.errorHeader}>
                 <span className={styles.errorDot} />
-                <span>Transmission Blocked // Form Validation Error</span>
+                <span>Form Validation Error</span>
               </div>
               <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
                 {submitError}
@@ -283,7 +283,7 @@ export function ContactPage() {
             <div className={styles.dispatchBanner} role="status">
               <div className={styles.dispatchHeader}>
                 <span className={styles.availDot} />
-                <span>Dispatched to Default Mail Client</span>
+                <span>Ready in Email Client</span>
               </div>
               <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
                 If your browser didn&apos;t automatically launch your email app, you can copy the full draft:
@@ -322,6 +322,7 @@ export function ContactPage() {
               autoComplete="name"
               autoCapitalize="words"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -350,6 +351,7 @@ export function ContactPage() {
               autoComplete="email"
               autoCapitalize="none"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -364,6 +366,7 @@ export function ContactPage() {
               onChange={(e) => handleChange('subject', e.target.value)}
               autoCapitalize="sentences"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -389,6 +392,7 @@ export function ContactPage() {
               onBlur={() => handleBlur('message')}
               autoCapitalize="sentences"
               disabled={isSubmitting}
+              data-cursor="hide"
             />
           </div>
 
@@ -400,7 +404,7 @@ export function ContactPage() {
             {isSubmitting ? (
               <>
                 <span className={styles.btnSpinner} aria-hidden="true" />
-                <span>PREPARING TRANSMISSION...</span>
+                <span>Sending message...</span>
               </>
             ) : (
               <>

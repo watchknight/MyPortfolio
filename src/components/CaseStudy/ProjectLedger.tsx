@@ -497,7 +497,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
                 }
               }}
               data-cursor="inspect"
-              data-cursor-label="INSPECT"
+              data-cursor-label="View project"
             >
               {/* Column 1: Name & Domain */}
               <div className={styles.nameCol} role="cell">
@@ -563,7 +563,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
                     sound.playDrawer();
                     onSelectProject(project);
                   }}
-                  data-cursor="inspect"
+                  data-cursor="link"
                 >
                   Inspect
                 </button>

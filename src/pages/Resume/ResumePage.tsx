@@ -15,7 +15,7 @@ export function ResumePage() {
       <div className={styles.topBar}>
         <div className={styles.headerText}>
           <span className={styles.eyebrow}>Verified credentials</span>
-          <h1 className={styles.pageTitle} data-cursor="inspect" data-cursor-label="CV">
+          <h1 className={styles.pageTitle}>
             Curriculum Vitae
           </h1>
         </div>

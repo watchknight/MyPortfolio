@@ -46,7 +46,7 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
       {/* Header */}
       <header className={styles.header}>
         <span className={styles.eyebrow}>Portfolio &amp; case studies</span>
-        <h1 className={styles.title} data-cursor="inspect" data-cursor-label="PROJECTS">
+        <h1 className={styles.title}>
           Selected Works
         </h1>
         <p className={styles.subtitle}>

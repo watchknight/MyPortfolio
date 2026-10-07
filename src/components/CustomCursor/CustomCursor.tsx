@@ -41,7 +41,7 @@ export function CustomCursor() {
           setHoverType(type);
           setHoverLabel(label);
         }
-      } else if (target.closest('input, textarea, iframe, [data-cursor="hide"]')) {
+      } else if (target.closest('input, textarea, iframe, canvas, [data-cursor="hide"]')) {
         setVisible(false);
         setHoverType('hide');
         setHoverLabel('');

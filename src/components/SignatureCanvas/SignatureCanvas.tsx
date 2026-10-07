@@ -129,7 +129,7 @@ export function SignatureCanvas() {
       <div className={styles.guestbookHead}>
         <div className={styles.titleArea}>
           <span className={styles.badgeText}>Interactive guestbook</span>
-          <h2 className={styles.title} data-cursor="inspect" data-cursor-label="GUESTBOOK">
+          <h2 className={styles.title}>
             Leave Your Digital Mark
           </h2>
           <p className={styles.subtitle}>

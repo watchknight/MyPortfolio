@@ -187,7 +187,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             <div className={styles.heroAccentTile} data-tile="accent">
               <div className={styles.heroAccentHeader}>
                 <span className={styles.heroAccentDot} />
-                <span className={styles.heroAccentKicker}>AVAILABLE</span>
               </div>
               <h3 className={styles.heroAccentTitle}>
                 Available for Internships &amp; Projects
@@ -215,6 +214,12 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         <div
           className={styles.scrollIndicator}
           onClick={scrollToSelectedWork}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              scrollToSelectedWork();
+            }
+          }}
           role="button"
           tabIndex={0}
           aria-label="Scroll to explore selected work"
@@ -243,7 +248,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
             <span className={styles.sectionEyebrow}>Selected projects</span>
-            <h2 className={styles.sectionTitle}>Selected Work</h2>
+            <h2 className={styles.sectionTitle}>Selected work</h2>
           </div>
 
           <div className={styles.headerRightControls}>
@@ -254,6 +259,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 onClick={() => changeViewMode('grid')}
                 title="Switch to Bento Grid View [G]"
                 data-cursor="link"
+                data-magnetic="0.3"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <rect x="3" y="3" width="7" height="7" />
@@ -269,6 +275,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 onClick={() => changeViewMode('table')}
                 title="Switch to Data Ledger Table [T]"
                 data-cursor="link"
+                data-magnetic="0.3"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="3" y1="6" x2="21" y2="6" />
@@ -297,9 +304,17 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 data-tile="feature"
                 data-cursor="inspect"
                 data-cursor-label="View project"
+                tabIndex={0}
                 onClick={() => {
                   sound.playClick();
                   onSelectProject?.(purefeed.id);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    sound.playClick();
+                    onSelectProject?.(purefeed.id);
+                  }
                 }}
               >
                 <div className={styles.tileHeaderBar}>
@@ -324,6 +339,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
                 <div
                   className={styles.featureMediaInset}
+                  data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ProjectSimulator projectId="purefeed" />
@@ -339,6 +355,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       onSelectProject?.(purefeed.id);
                     }}
                     data-cursor="link"
+                    data-magnetic="0.3"
                   >
                     <span>Explore Architecture</span>
                     <span>&rarr;</span>
@@ -355,6 +372,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                         sound.playTick();
                       }}
                       data-cursor="link"
+                      data-magnetic="0.3"
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
@@ -373,9 +391,17 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 data-tile="feature"
                 data-cursor="inspect"
                 data-cursor-label="View project"
+                tabIndex={0}
                 onClick={() => {
                   sound.playClick();
                   onSelectProject?.(doclensbd.id);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    sound.playClick();
+                    onSelectProject?.(doclensbd.id);
+                  }
                 }}
               >
                 <div className={styles.tileHeaderBar}>
@@ -400,6 +426,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
                 <div
                   className={styles.featureMediaInset}
+                  data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ProjectSimulator projectId="doclensbd" />
@@ -417,6 +444,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                         sound.playTick();
                       }}
                       data-cursor="link"
+                      data-magnetic="0.3"
                     >
                       <span>Visit Live Site</span>
                       <span>&rarr;</span>
@@ -434,6 +462,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                         sound.playTick();
                       }}
                       data-cursor="link"
+                      data-magnetic="0.3"
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
@@ -453,9 +482,17 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 data-tile="standard"
                 data-cursor="inspect"
                 data-cursor-label="View project"
+                tabIndex={0}
                 onClick={() => {
                   sound.playClick();
                   onSelectProject?.(p.id);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    sound.playClick();
+                    onSelectProject?.(p.id);
+                  }
                 }}
               >
                 <div className={styles.tileHeaderBar}>
@@ -478,6 +515,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
                 <div
                   className={styles.standardMediaInset}
+                  data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ProjectSimulator projectId={p.id} />
@@ -495,6 +533,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                         sound.playTick();
                       }}
                       data-cursor="link"
+                      data-magnetic="0.3"
                     >
                       <span>Live Site</span>
                       <span>&rarr;</span>
@@ -509,6 +548,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                         onSelectProject?.(p.id);
                       }}
                       data-cursor="link"
+                      data-magnetic="0.3"
                     >
                       <span>Inspect</span>
                       <span>&rarr;</span>
@@ -526,6 +566,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                         sound.playTick();
                       }}
                       data-cursor="link"
+                      data-magnetic="0.3"
                     >
                       <span>Source</span>
                     </a>
@@ -541,6 +582,13 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               onClick={() => {
                 sound.playTick();
                 onNavigate('/works');
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  sound.playTick();
+                  onNavigate('/works');
+                }
               }}
               role="button"
               tabIndex={0}
@@ -569,17 +617,14 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       <section id="about" className={styles.section} aria-label="About & Tools">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
-            <span className={styles.sectionEyebrow}>Background &amp; capabilities</span>
-            <h2 className={styles.sectionTitle}>About &amp; Systems</h2>
+            <span className={styles.sectionEyebrow}>Background and capabilities</span>
+            <h2 className={styles.sectionTitle}>About and tools</h2>
           </div>
         </header>
 
         <div className={styles.aboutBentoGrid}>
           {/* Row 1: About tile (5×3, surface) */}
           <article className={`${styles.bentoTile} ${styles.aboutTile}`} data-tile="surface">
-            <div className={styles.tileHeaderBar}>
-              <span className={styles.tileSectionTag}>ENGINEER BIO</span>
-            </div>
             <div className={styles.aboutBody}>
               <h3 className={styles.aboutHeading}>About Moayed</h3>
               <p className={styles.aboutParagraph}>
@@ -619,9 +664,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
           {/* Row 2: Stack tile (3×2, surface) */}
           <article className={`${styles.bentoTile} ${styles.stackTile}`} data-tile="surface">
-            <div className={styles.tileHeaderBar}>
-              <span className={styles.tileSectionTag}>TECHNICAL STACK</span>
-            </div>
             <h3 className={styles.smallTileTitle}>Core Technologies</h3>
             <div className={styles.stackPillCloud}>
               {profileData.skills.languages.slice(0, 5).map((s) => (
@@ -650,7 +692,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           {/* Row 2: Education tile (3×2, surface) */}
           <article className={`${styles.bentoTile} ${styles.educationTile}`} data-tile="surface">
             <div className={styles.tileHeaderBar}>
-              <span className={styles.tileSectionTag}>ACADEMIC RECORD</span>
+              <span className={styles.tileEyebrow}>Academic record</span>
             </div>
             <h3 className={styles.smallTileTitle}>Education</h3>
             <div className={styles.eduChronology}>
@@ -680,7 +722,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
-                  Full timeline &rarr;
+                  Full timeline
                 </a>
               </Magnetic>
             </div>
@@ -689,7 +731,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           {/* Row 2: Telemetry tile (3×2, surface) */}
           <article className={`${styles.bentoTile} ${styles.telemetryTile}`} data-tile="surface">
             <div className={styles.tileHeaderBar}>
-              <span className={styles.tileSectionTag}>TELEMETRY</span>
+              <span className={styles.tileEyebrow}>Telemetry</span>
               <span className={styles.telemetryPulseDot} />
             </div>
             <h3 className={styles.smallTileTitle}>Verified Readouts</h3>
@@ -715,9 +757,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
           {/* Row 2: Links tile (3×2, INVERTED) */}
           <article className={`${styles.bentoTile} ${styles.linksInvertedTile}`} data-tile="inverted">
-            <div className={styles.tileHeaderBar}>
-              <span className={styles.invertedTileTag}>CONNECT</span>
-            </div>
             <h3 className={styles.invertedTileTitle}>Direct Dispatch</h3>
             <p className={styles.invertedTileDesc}>
               Available for software engineering internships and projects.
@@ -799,7 +838,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 data-cursor="link"
                 data-magnetic="0.3"
               >
-                Send me a message &rarr;
+                Send me a message
               </button>
             </Magnetic>
 
@@ -867,7 +906,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               &copy; {new Date().getFullYear()} Abdur Rahman Moayed
             </span>
             <span className={styles.footerLocation}>
-              Dhaka, Bangladesh &bull; {dhakaTime || '14:32'} UTC+6
+              Dhaka, Bangladesh ({dhakaTime || '14:32'} UTC+6)
             </span>
             <Magnetic strength={0.3}>
               <button

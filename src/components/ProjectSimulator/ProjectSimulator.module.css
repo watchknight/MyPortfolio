@@ -61,7 +61,7 @@
   border-radius: var(--radius-xs);
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border-subtle);
-  color: var(--color-accent);
+  color: var(--text);
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -178,7 +178,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: var(--text);
   font-size: 12px;
 }
 
@@ -215,7 +215,7 @@
   border-top: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--accent);
+  color: var(--ok);
   display: flex;
   justify-content: space-between;
 }
@@ -260,7 +260,7 @@
 .pfAdTimer {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--accent);
+  color: var(--ok);
   background: var(--raised);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
@@ -307,7 +307,7 @@
 .fgPill:hover, .fgPillActive {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 .fgTerminal {
@@ -469,7 +469,7 @@
 .dlBtn:hover, .dlBtnActive {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 /* Rannabanna Specific */
@@ -482,7 +482,7 @@
 }
 
 .rbCount {
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 700;
 }
 
@@ -512,7 +512,7 @@
 .rbItemBtn:hover, .rbItemActive {
   background: var(--color-accent-subtle);
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -583,7 +583,7 @@
   border-radius: 50%;
   background: var(--color-accent-subtle);
   border: 1px solid var(--color-accent);
-  color: var(--color-accent);
+  color: var(--text);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
@@ -620,7 +620,7 @@
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 .poshraDesc {
@@ -640,7 +640,7 @@
 }
 
 .dspStatus {
-  color: var(--color-accent);
+  color: var(--ok);
   font-weight: 600;
   font-size: 9px;
   letter-spacing: 0.04em;
@@ -689,7 +689,7 @@
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 .dspName {
@@ -710,7 +710,7 @@
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--text);
   letter-spacing: 0.05em;
 }
 
