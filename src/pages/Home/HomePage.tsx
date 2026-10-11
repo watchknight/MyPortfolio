@@ -278,9 +278,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               <div className={styles.heroAccentHeader}>
                 <span className={styles.heroAccentDot} />
               </div>
-              <h3 className={styles.heroAccentTitle}>
+              <h2 className={styles.heroAccentTitle}>
                 Available for Internships &amp; Projects
-              </h3>
+              </h2>
               <p className={styles.heroAccentDesc}>
                 East West University CSE • Remote Worldwide
               </p>

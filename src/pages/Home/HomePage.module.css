@@ -347,25 +347,7 @@
   width: 100%;
 }
 
-:global(#selected-work) {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 1100px;
-}
 
-:global(#about) {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 850px;
-}
-
-:global(#guestbook) {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 500px;
-}
-
-:global(#contact) {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 450px;
-}
 
 .sectionHeader {
   display: flex;
@@ -1183,11 +1165,13 @@
   max-width: 480px;
 }
 
-.socialLink {
+.socialLink,
+.socialLink:link,
+.socialLink:visited {
   font-family: var(--font-sans);
   font-size: 0.84rem;
   font-weight: 500;
-  color: var(--muted);
+  color: var(--muted) !important;
   text-decoration: none;
   min-height: 44px;
   display: inline-flex;

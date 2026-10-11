@@ -69,7 +69,7 @@ export interface SystemsArchitect {
         </button>
       </header>
 
-      <pre className={styles.codeArea}>
+      <pre className={styles.codeArea} tabIndex={0} role="region" aria-label="TypeScript Schema Code">
         <code>
           <span className={styles.comment}>/**</span><br />
           <span className={styles.comment}> * @title Systems Architect &amp; Countermeasure Engineer Schema</span><br />

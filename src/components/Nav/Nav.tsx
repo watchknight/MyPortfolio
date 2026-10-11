@@ -5,6 +5,7 @@ import { Magnetic } from '../Magnetic/Magnetic';
 import { gsap, toggleTheme as toggleThemeMotion } from '../../motion/index';
 import type { RoutePath } from '../../hooks/useRouter';
 import { useScrollLock } from '../../utils/scrollLock';
+import { useFocusTrap } from '../../utils/focusTrap';
 import styles from './Nav.module.css';
 
 const navItems: { label: string; path: RoutePath }[] = [
@@ -59,6 +60,8 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const mobileExitTweenRef = useRef<gsap.core.Tween | null>(null);
 
   useScrollLock(mobileMenuOpen);
+  useFocusTrap(mobileMenuRef, mobileMenuOpen);
+  useFocusTrap(controlsRef, controlsOpen);
 
   // Nav active pill gliding refs
   const navLinksRef = useRef<HTMLDivElement>(null);
@@ -467,6 +470,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
           <div
             className={`${styles.availabilityWrap} ${styles.desktopOnly}`}
             title="Available for Internships & Projects"
+            role="status"
             aria-label="Available for Internships & Projects"
           >
             <span className={styles.availabilityDot} data-availability-dot />

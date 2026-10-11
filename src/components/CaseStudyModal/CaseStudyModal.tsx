@@ -230,7 +230,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
                     {copied ? 'Copied ✓' : 'Copy AST'}
                   </button>
                 </div>
-                <pre className={styles.codeContent}>
+                <pre className={styles.codeContent} tabIndex={0} role="region" aria-label="Code highlight">
                   <code>{project.codeHighlight.code}</code>
                 </pre>
               </div>

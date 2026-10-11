@@ -177,7 +177,7 @@
 
   /* Code Syntax */
   --color-syntax-keyword: var(--text);
-  --color-syntax-type: var(--control);
+  --color-syntax-type: var(--subtle);
   --color-syntax-string: var(--ok);
   --color-syntax-property: var(--text);
 

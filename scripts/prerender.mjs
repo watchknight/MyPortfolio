@@ -18,6 +18,10 @@ async function prerender() {
         output: {
           format: 'esm',
         },
+        onwarn(warning, warn) {
+          if (warning.code === 'INEFFECTIVE_DYNAMIC_IMPORT') return;
+          warn(warning);
+        },
       },
     },
   });
@@ -31,7 +35,7 @@ async function prerender() {
   }
   const template = fs.readFileSync(templatePath, 'utf-8');
 
-  const SITE_URL = (process.env.VITE_SITE_URL || 'https://moayed.onrender.com').replace(/\/$/, '');
+  const SITE_URL = (process.env.VITE_SITE_URL || 'https://watchknight-dev.onrender.com').replace(/\/$/, '');
 
   const routes = [
     {
