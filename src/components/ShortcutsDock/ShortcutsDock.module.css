@@ -83,7 +83,7 @@
   color: var(--muted);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (hover: none), (pointer: coarse) {
   .dockContainer {
     display: none;
   }

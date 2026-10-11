@@ -347,6 +347,26 @@
   width: 100%;
 }
 
+:global(#selected-work) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1100px;
+}
+
+:global(#about) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 850px;
+}
+
+:global(#guestbook) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
+:global(#contact) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 450px;
+}
+
 .sectionHeader {
   display: flex;
   align-items: flex-end;
@@ -402,7 +422,8 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.45rem 0.85rem;
-  min-height: 38px;
+  min-height: 44px;
+  box-sizing: border-box;
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 600;
@@ -611,12 +632,16 @@
   border-radius: var(--r-md);
   overflow: hidden;
   border: 1px solid var(--line);
+  aspect-ratio: 16 / 10;
+  min-height: 240px;
 }
 
 .standardMediaInset {
   border-radius: var(--r-md);
   overflow: hidden;
   border: 1px solid var(--line);
+  aspect-ratio: 16 / 10;
+  min-height: 240px;
 }
 
 .tileActionsRow {
@@ -633,8 +658,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.45rem 0.95rem;
-  min-height: 38px;
+  padding: 0.55rem 1rem;
+  min-height: 44px;
   border-radius: var(--r-pill);
   background: var(--raised);
   border: 1px solid var(--line);
@@ -656,8 +681,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.45rem 0.75rem;
-  min-height: 38px;
+  padding: 0.55rem 0.85rem;
+  min-height: 44px;
   border-radius: var(--r-pill);
   background: transparent;
   border: 1px solid transparent;
@@ -984,6 +1009,8 @@
   font-size: 0.75rem;
   border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
   padding-bottom: 0.35rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .telemLabel {
@@ -1057,6 +1084,9 @@
   font-size: 0.75rem;
   font-weight: 600;
   text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   transition: all var(--duration-fast) ease;
 }
 
@@ -1072,8 +1102,8 @@
 
 .copyEmailBtn {
   width: 100%;
-  padding: 0.5rem 0.85rem;
-  min-height: 38px;
+  padding: 0.55rem 0.85rem;
+  min-height: 44px;
   border-radius: var(--r-pill);
   background: var(--invert-text);
   color: var(--invert-bg);
@@ -1174,7 +1204,7 @@
 .footer {
   width: 100%;
   padding-top: 1.5rem;
-  padding-bottom: 2.5rem;
+  padding-bottom: max(2.5rem, calc(2.5rem + env(safe-area-inset-bottom)));
   border-top: 1px solid var(--line);
   margin-top: 1.5rem;
 }
@@ -1200,13 +1230,16 @@
   background: transparent;
   border: 1px solid var(--line);
   color: var(--muted);
-  padding: 0.4rem 0.85rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--r-pill);
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
-  min-height: 38px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all var(--duration-fast) ease;
 }
 

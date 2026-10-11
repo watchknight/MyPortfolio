@@ -31,9 +31,10 @@ html {
 }
 
 body {
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   line-height: var(--leading-body);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img, picture, video, canvas, svg {
@@ -46,10 +47,23 @@ input, button, textarea, select {
   color: inherit;
 }
 
+input, textarea, select {
+  font-size: 16px;
+}
+
+button, [role="button"], a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 button {
   cursor: pointer;
   background: none;
   border: none;
+}
+
+button:active, [role="button"]:active {
+  transform: scale(0.98);
 }
 
 a {

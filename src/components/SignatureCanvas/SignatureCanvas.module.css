@@ -77,10 +77,10 @@
 }
 
 .colorBtn {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -92,13 +92,19 @@
   transition: transform var(--duration-fast) ease;
 }
 
-.colorBtn:hover {
-  transform: scale(1.1);
+.colorBtn:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) {
+  .colorBtn:hover {
+    transform: scale(1.1);
+  }
 }
 
 .colorDot {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid transparent;
   pointer-events: none;
@@ -121,10 +127,10 @@
 }
 
 .sizeBtn {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border: none;
   background: transparent;
   color: var(--muted);
@@ -135,6 +141,10 @@
   cursor: pointer;
   border-radius: 50%;
   transition: all var(--duration-fast) ease;
+}
+
+.sizeBtn:active {
+  transform: scale(0.94);
 }
 
 .sizeActive {
@@ -154,7 +164,8 @@
   font-size: 0.8125rem;
   font-weight: 600;
   padding: 0.5rem 1rem;
-  min-height: 40px;
+  min-height: 44px;
+  min-width: 44px;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -167,6 +178,10 @@
   transition: all var(--duration-fast) ease;
 }
 
+.actionBtn:active {
+  transform: scale(0.96);
+}
+
 .actionBtn:focus-visible,
 .actionBtn:focus {
   outline: 2px solid var(--focus) !important;
@@ -177,15 +192,24 @@
   outline: none !important;
 }
 
-.actionBtn:hover:not(:disabled) {
-  background: var(--line);
-  color: var(--text);
-  border-color: var(--control);
+@media (hover: hover) {
+  .actionBtn:hover:not(:disabled) {
+    background: var(--line);
+    color: var(--text);
+    border-color: var(--control);
+  }
 }
 
 .actionBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.actionDrawBtn {
+  background: color-mix(in srgb, var(--accent) 15%, var(--raised));
+  border-color: var(--accent);
+  color: var(--text);
+  font-weight: 700;
 }
 
 .actionSave {
@@ -204,42 +228,72 @@
   outline: none !important;
 }
 
-.actionSave:hover:not(:disabled) {
-  background: var(--accent-hover);
-  color: var(--on-accent);
-  opacity: 1;
+@media (hover: hover) {
+  .actionSave:hover:not(:disabled) {
+    background: var(--accent-hover);
+    color: var(--on-accent);
+    opacity: 1;
+  }
 }
 
+/* ── Inline Canvas Surface: touch-action: pan-y (DOES NOT TRAP SCROLLING) ── */
 .canvasContainer {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 220px;
   background: var(--surface);
   cursor: crosshair;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 .canvas {
   width: 100%;
   height: 100%;
   display: block;
+  touch-action: pan-y;
 }
 
 .canvasPlaceholder {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   pointer-events: none;
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--muted);
+  padding: 1rem;
+  text-align: center;
+}
+
+.placeholderDrawBtn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: transform var(--duration-fast) ease;
+}
+
+.placeholderDrawBtn:active {
+  transform: scale(0.96);
 }
 
 .drawHand {
-  font-size: 16px;
+  font-size: 20px;
   animation: floatHand 2s ease-in-out infinite;
 }
 
@@ -260,4 +314,124 @@
   font-size: 9px;
   color: var(--subtle);
   pointer-events: none;
+}
+
+/* ── Full-Screen Drawing Sheet ── */
+.drawSheetOverlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  z-index: 10001;
+  background-color: var(--bg);
+  display: flex;
+  flex-direction: column;
+  touch-action: none;
+  padding-top: max(1rem, calc(0.75rem + env(safe-area-inset-top)));
+  padding-bottom: max(1rem, calc(0.75rem + env(safe-area-inset-bottom)));
+  padding-left: max(1rem, calc(0.75rem + env(safe-area-inset-left)));
+  padding-right: max(1rem, calc(0.75rem + env(safe-area-inset-right)));
+  box-sizing: border-box;
+}
+
+.drawSheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  gap: 1rem;
+}
+
+.drawSheetTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.drawSheetTitle {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.drawSheetMeta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+.drawSheetHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sheetClearBtn {
+  min-height: 44px;
+  min-width: 68px;
+  padding: 0 1rem;
+  border-radius: var(--r-pill);
+  background: var(--raised);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.sheetClearBtn:active {
+  transform: scale(0.96);
+}
+
+.sheetDoneBtn {
+  min-height: 44px;
+  min-width: 84px;
+  padding: 0 1.25rem;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.sheetDoneBtn:active {
+  transform: scale(0.96);
+}
+
+.drawSheetToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0.75rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.drawSheetCanvasWrap {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.sheetCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
 }

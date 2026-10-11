@@ -133,7 +133,7 @@
   gap: 2rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .projectsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -308,6 +308,8 @@
   min-width: 0;
   box-sizing: border-box;
   overflow: hidden;
+  aspect-ratio: 16 / 10;
+  min-height: 240px;
 }
 
 .cardActions {

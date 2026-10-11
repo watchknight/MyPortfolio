@@ -1,10 +1,13 @@
 .simWrapper {
   width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 240px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   overflow: hidden;
   margin-top: 0.25rem;
+  box-sizing: border-box;
 }
 
 .simHeader {

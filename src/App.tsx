@@ -139,9 +139,8 @@ export default function App({ initialPath, routes }: AppProps) {
         ref={mainRef}
         id="main-content"
         tabIndex={-1}
-        style={{ position: 'relative', zIndex: 1, minHeight: '100vh', outline: 'none' }}
       >
-        <Suspense fallback={<div style={{ minHeight: '80vh' }} />}>
+        <Suspense fallback={<div className="route-suspense-fallback" />}>
           {displayPath === '/' && (
             <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
           )}

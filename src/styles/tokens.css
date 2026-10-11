@@ -209,6 +209,7 @@ html[data-grain="true"]::before {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100svh;
   pointer-events: none;
   z-index: 99998;
   opacity: 0.035;

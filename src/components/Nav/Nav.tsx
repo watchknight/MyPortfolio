@@ -4,6 +4,7 @@ import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
 import { gsap, toggleTheme as toggleThemeMotion } from '../../motion/index';
 import type { RoutePath } from '../../hooks/useRouter';
+import { useScrollLock } from '../../utils/scrollLock';
 import styles from './Nav.module.css';
 
 const navItems: { label: string; path: RoutePath }[] = [
@@ -56,6 +57,8 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const controlsExitTweenRef = useRef<gsap.core.Tween | null>(null);
   const mobileExitTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  useScrollLock(mobileMenuOpen);
 
   // Nav active pill gliding refs
   const navLinksRef = useRef<HTMLDivElement>(null);
@@ -413,12 +416,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
             </a>
           </Magnetic>
 
-          <span className={styles.separatorDot} aria-hidden="true">·</span>
+          <span className={`${styles.separatorDot} ${styles.desktopOnly}`} aria-hidden="true">·</span>
 
           {/* 2. Desktop Nav Links with GSAP quickTo background pill */}
           <div
             ref={navLinksRef}
-            className={styles.navLinks}
+            className={`${styles.navLinks} ${styles.desktopOnly}`}
             onMouseLeave={handleNavLeave}
           >
             <div
@@ -458,104 +461,110 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
             })}
           </div>
 
-          <span className={`${styles.separatorDot} ${styles.hideMobile}`} aria-hidden="true">·</span>
+          <span className={`${styles.separatorDot} ${styles.hideMobile} ${styles.desktopOnly}`} aria-hidden="true">·</span>
 
           {/* 3. Availability Dot: CSS-only 2.4s opacity pulse */}
           <div
-            className={styles.availabilityWrap}
+            className={`${styles.availabilityWrap} ${styles.desktopOnly}`}
             title="Available for Internships & Projects"
             aria-label="Available for Internships & Projects"
           >
             <span className={styles.availabilityDot} data-availability-dot />
           </div>
 
-          <span className={styles.separatorDot} aria-hidden="true">·</span>
+          <span className={`${styles.separatorDot} ${styles.desktopOnly}`} aria-hidden="true">·</span>
 
           {/* 4. ⌘K Search Trigger */}
-          <Magnetic strength={0.3}>
-            <button
-              type="button"
-              className={styles.cmdKButton}
-              onClick={() => {
-                setCommandOpen(true);
-                sound.playDrawer();
-              }}
-              aria-label="Open command palette (⌘K)"
-              title="Search and commands [⌘K]"
-              data-cursor="link"
-              data-magnetic="0.3"
-            >
-              <span className={styles.cmdKDesktopChip}>
-                <span className={styles.cmdKText}>Command</span>
-                <kbd className={styles.cmdKBadge}>⌘K</kbd>
-              </span>
-              <span className={styles.cmdKTouchIcon} aria-hidden="true">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-              </span>
-            </button>
-          </Magnetic>
+          <div className={styles.desktopOnly}>
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={styles.cmdKButton}
+                onClick={() => {
+                  setCommandOpen(true);
+                  sound.playDrawer();
+                }}
+                aria-label="Open command palette (⌘K)"
+                title="Search and commands [⌘K]"
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                <span className={styles.cmdKDesktopChip}>
+                  <span className={styles.cmdKText}>Command</span>
+                  <kbd className={styles.cmdKBadge}>⌘K</kbd>
+                </span>
+                <span className={styles.cmdKTouchIcon} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </span>
+              </button>
+            </Magnetic>
+          </div>
 
-          <span className={styles.separatorDot} aria-hidden="true">·</span>
+          <span className={`${styles.separatorDot} ${styles.desktopOnly}`} aria-hidden="true">·</span>
 
           {/* 5. Theme Toggle with Circular Reveal & Icon Swap */}
-          <Magnetic strength={0.3}>
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={handleToggleTheme}
-              aria-label={theme === 'dark' ? 'Switch to light theme (D)' : 'Switch to dark theme (D)'}
-              title={`Theme: ${theme === 'dark' ? 'Dark' : 'Light'} [D]`}
-              data-cursor="link"
-              data-magnetic="0.3"
-            >
-              {theme === 'dark' ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              )}
-            </button>
-          </Magnetic>
+          <div className={styles.desktopOnly}>
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={styles.iconBtn}
+                onClick={handleToggleTheme}
+                aria-label={theme === 'dark' ? 'Switch to light theme (D)' : 'Switch to dark theme (D)'}
+                title={`Theme: ${theme === 'dark' ? 'Dark' : 'Light'} [D]`}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                {theme === 'dark' ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+              </button>
+            </Magnetic>
+          </div>
 
-          <span className={styles.separatorDot} aria-hidden="true">·</span>
+          <span className={`${styles.separatorDot} ${styles.desktopOnly}`} aria-hidden="true">·</span>
 
           {/* 6. Controls (Gear) Button */}
-          <Magnetic strength={0.3}>
-            <button
-              ref={controlsBtnRef}
-              type="button"
-              className={`${styles.iconBtn} ${controlsOpen ? styles.iconBtnActive : ''}`}
-              onClick={() => {
-                setControlsOpen((prev) => !prev);
-                sound.playClick(750, 0.02, 0.05);
-              }}
-              aria-label="Controls and layout options"
-              aria-expanded={controlsOpen}
-              aria-controls="controls-popover"
-              title="Controls & Preferences [G, T, M, S, F]"
-              data-cursor="link"
-              data-magnetic="0.3"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </button>
-          </Magnetic>
+          <div className={styles.desktopOnly}>
+            <Magnetic strength={0.3}>
+              <button
+                ref={controlsBtnRef}
+                type="button"
+                className={`${styles.iconBtn} ${controlsOpen ? styles.iconBtnActive : ''}`}
+                onClick={() => {
+                  setControlsOpen((prev) => !prev);
+                  sound.playClick(750, 0.02, 0.05);
+                }}
+                aria-label="Controls and layout options"
+                aria-expanded={controlsOpen}
+                aria-controls="controls-popover"
+                title="Controls & Preferences [G, T, M, S, F]"
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+              </button>
+            </Magnetic>
+          </div>
 
           {/* Mobile hamburger button */}
           <button
@@ -682,29 +691,194 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
           </div>
         )}
 
-        {/* Mobile Expanded Menu Dropdown */}
+        {/* Mobile Full-Height Sheet (per PHASE 6 spec) */}
         {mobileMenuRendered && (
           <div
             ref={mobileMenuRef}
-            className={styles.mobileDropdown}
-            role="menu"
+            className={styles.mobileSheetOverlay}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation Menu"
           >
-            {navItems.map((item) => (
+            {/* Sheet Top Bar */}
+            <div className={styles.mobileSheetHeader}>
               <a
-                key={item.path}
-                href={item.path}
-                className={`${styles.mobileMenuItem} ${currentPath === item.path ? styles.mobileMenuItemActive : ''}`}
+                href="/"
+                className={styles.brandLogo}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate(item.path);
+                  onNavigate('/');
                   sound.playTick();
                   setMobileMenuOpen(false);
                 }}
-                role="menuitem"
               >
-                {item.label}
+                Moayed
               </a>
-            ))}
+              <button
+                type="button"
+                className={styles.sheetCloseBtn}
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close navigation menu"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Links List */}
+            <nav className={styles.mobileNavLinks} aria-label="Mobile navigation links">
+              {navItems.map((item) => {
+                const isActive = currentPath === item.path;
+                return (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    className={`${styles.mobileNavLinkItem} ${isActive ? styles.mobileNavLinkItemActive : ''}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate(item.path);
+                      sound.playTick();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    {isActive && <span className={styles.mobileActiveDot} />}
+                  </a>
+                );
+              })}
+            </nav>
+
+            {/* Availability */}
+            <div className={styles.mobileAvailabilityCard}>
+              <div className={styles.mobileAvailabilityHead}>
+                <span className={styles.availabilityDot} />
+                <span className={styles.mobileAvailabilityTitle}>Available for Internships &amp; Projects</span>
+              </div>
+              <span className={styles.mobileAvailabilityDesc}>East West University CSE • Remote Worldwide</span>
+            </div>
+
+            {/* Theme & Search Action Buttons */}
+            <div className={styles.mobileActionsGrid}>
+              <button
+                type="button"
+                className={styles.mobileActionTile}
+                onClick={handleToggleTheme}
+                aria-label={`Toggle theme (currently ${theme})`}
+              >
+                <div className={styles.mobileActionTileLeft}>
+                  {theme === 'dark' ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="5" />
+                      <line x1="12" y1="1" x2="12" y2="3" />
+                      <line x1="12" y1="21" x2="12" y2="23" />
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                      <line x1="1" y1="12" x2="3" y2="12" />
+                      <line x1="21" y1="12" x2="23" y2="12" />
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                  )}
+                  <span>Theme: {theme === 'dark' ? 'Dark' : 'Light'}</span>
+                </div>
+                <span className={styles.mobileActionBadge}>Toggle</span>
+              </button>
+
+              <button
+                type="button"
+                className={styles.mobileActionTile}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setCommandOpen(true);
+                  sound.playDrawer();
+                }}
+                aria-label="Open Command Palette"
+              >
+                <div className={styles.mobileActionTileLeft}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <span>Command Palette</span>
+                </div>
+                <span className={styles.mobileActionBadge}>Search</span>
+              </button>
+            </div>
+
+            {/* Controls Section in Sheet */}
+            <div className={styles.mobileControlsBox}>
+              <span className={styles.mobileControlsHeading}>Controls &amp; Display</span>
+
+              {/* View Mode: Grid / Table */}
+              <div className={styles.mobileControlItem}>
+                <span className={styles.controlLabel}>Project View</span>
+                <div className={styles.segmentedControl} role="group" aria-label="Project View Layout">
+                  <button
+                    type="button"
+                    className={`${styles.segmentBtn} ${viewMode === 'grid' ? styles.segmentBtnActive : ''}`}
+                    onClick={() => changeViewMode('grid')}
+                  >
+                    Grid
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.segmentBtn} ${viewMode === 'table' ? styles.segmentBtnActive : ''}`}
+                    onClick={() => changeViewMode('table')}
+                  >
+                    Table
+                  </button>
+                </div>
+              </div>
+
+              {/* Sound Toggle */}
+              <div className={styles.mobileControlItem}>
+                <span className={styles.controlLabel}>Sound Effects</span>
+                <button
+                  type="button"
+                  className={`${styles.switchBtn} ${soundActive ? styles.switchBtnActive : ''}`}
+                  onClick={toggleSound}
+                  aria-pressed={soundActive}
+                >
+                  <span className={styles.switchKnob} />
+                  <span className={styles.switchStateText}>{soundActive ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+
+              {/* Grain Toggle */}
+              <div className={styles.mobileControlItem}>
+                <span className={styles.controlLabel}>Noise Grain</span>
+                <button
+                  type="button"
+                  className={`${styles.switchBtn} ${grainActive ? styles.switchBtnActive : ''}`}
+                  onClick={toggleGrain}
+                  aria-pressed={grainActive}
+                >
+                  <span className={styles.switchKnob} />
+                  <span className={styles.switchStateText}>{grainActive ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+
+              {/* System Diagnostics */}
+              <div className={styles.mobileControlItem}>
+                <span className={styles.controlLabel}>System Engine</span>
+                <button
+                  type="button"
+                  className={styles.actionPillBtn}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openSysDiagnostic();
+                  }}
+                >
+                  Run Diagnostics
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </header>

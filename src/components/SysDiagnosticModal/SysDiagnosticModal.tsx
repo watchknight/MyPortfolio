@@ -291,10 +291,11 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
             className={styles.closeButton}
             onClick={onClose}
             aria-label="Close Diagnostic Suite (Esc)"
-            title="Close (Esc)"
+            title="Close"
             data-cursor="link"
           >
-            [ESC] CLOSE
+            <span className={styles.escBadge}>[ESC] </span>
+            <span>CLOSE</span>
           </button>
         </header>
 

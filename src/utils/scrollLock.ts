@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
-import type Lenis from 'lenis';
 
-let lenisInstance: Lenis | null = null;
+interface LenisInstance {
+  start(): void;
+  stop(): void;
+}
+
+let lenisInstance: LenisInstance | null = null;
 let activeLocks = 0;
 
 /**
  * Registers the global active Lenis smooth scroll instance.
  */
-export function registerLenis(instance: Lenis | null): void {
+export function registerLenis(instance: LenisInstance | null): void {
   lenisInstance = instance;
 }
 

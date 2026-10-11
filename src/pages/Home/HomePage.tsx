@@ -108,8 +108,48 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
   }, [viewMode, applyViewMode]);
 
-  // Telemetry: FPS monitoring
+  const telemetryRef = useRef<HTMLElement>(null);
+  const [isTelemetryVisible, setIsTelemetryVisible] = useState(false);
+
+  // Monitor Telemetry tile visibility and document tab visibility
   useEffect(() => {
+    const el = telemetryRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsTelemetryVisible(true);
+      return;
+    }
+
+    let isIntersecting = false;
+    const updateVisibility = () => {
+      const isDocumentVisible = typeof document !== 'undefined' ? document.visibilityState === 'visible' : true;
+      setIsTelemetryVisible(isIntersecting && isDocumentVisible);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        updateVisibility();
+      },
+      { rootMargin: '100px' }
+    );
+
+    observer.observe(el);
+
+    const handleVisibilityChange = () => {
+      updateVisibility();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  // Telemetry: FPS monitoring (active only when tile is visible and tab is active)
+  useEffect(() => {
+    if (!isTelemetryVisible) return;
+
     let frameCount = 0;
     let lastTime = performance.now();
     let animId: number;
@@ -125,15 +165,17 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     };
     animId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animId);
-  }, []);
+  }, [isTelemetryVisible]);
 
-  // Telemetry: Ping jitter
+  // Telemetry: Ping jitter (active only when tile is visible and tab is active)
   useEffect(() => {
+    if (!isTelemetryVisible) return;
+
     const interval = setInterval(() => {
       setPing(Math.floor(12 + Math.random() * 5));
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isTelemetryVisible]);
 
   const handleCopyEmail = useCallback(() => {
     try {
@@ -779,7 +821,11 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
           </article>
 
           {/* Row 2: Telemetry tile (3×2, surface) */}
-          <article className={`${styles.bentoTile} ${styles.telemetryTile}`} data-tile="surface">
+          <article
+            ref={telemetryRef}
+            className={`${styles.bentoTile} ${styles.telemetryTile}`}
+            data-tile="surface"
+          >
             <div className={styles.tileHeaderBar}>
               <span className={styles.tileEyebrow}>Telemetry</span>
               <span className={styles.telemetryPulseDot} />

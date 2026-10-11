@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import styles from './RotatingClause.module.css';
 
@@ -37,21 +37,54 @@ export function RotatingClause({
   className = '',
 }: RotatingClauseProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
   const prefersReducedMotion = useReducedMotion();
 
+  // Monitor off-screen visibility and tab visibility state
   useEffect(() => {
-    // Under reduced motion, lock strictly to the first clause with no active timers
-    if (prefersReducedMotion || clauses.length <= 1) return;
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    let isIntersecting = true;
+    const updateVisibility = () => {
+      const isDocVisible = typeof document !== 'undefined' ? document.visibilityState === 'visible' : true;
+      setIsVisible(isIntersecting && isDocVisible);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        updateVisibility();
+      },
+      { rootMargin: '100px' }
+    );
+    observer.observe(el);
+
+    const handleVisibilityChange = () => {
+      updateVisibility();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Under reduced motion or when off-screen/tab hidden, pause timer
+    if (prefersReducedMotion || clauses.length <= 1 || !isVisible) return;
 
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % clauses.length);
     }, intervalMs);
 
     return () => clearInterval(timer);
-  }, [prefersReducedMotion, clauses.length, intervalMs]);
+  }, [prefersReducedMotion, clauses.length, intervalMs, isVisible]);
 
   return (
-    <span className={`${styles.container} ${className}`.trim()}>
+    <span ref={containerRef} className={`${styles.container} ${className}`.trim()}>
       {/* Accessible text for screen readers — read once, no infinite loop */}
       <span className={styles.srOnly} aria-live="polite">
         {clauses[0]}

@@ -393,11 +393,12 @@ export function CommandPalette({
               handleClose();
               sound.playTick();
             }}
-            aria-label="Close command palette (Esc)"
-            title="Close (Esc)"
+            aria-label="Close command palette"
+            title="Close"
             data-cursor="link"
           >
             <span className={styles.escKey}>ESC</span>
+            <span className={styles.touchCloseIcon} aria-hidden="true">&times;</span>
           </button>
         </div>
 

@@ -3,15 +3,18 @@ import gsap from "gsap";
 const FINE = "(hover: hover) and (pointer: fine)";
 const REDUCE = "(prefers-reduced-motion: reduce)";
 
+const COARSE = "(pointer: coarse)";
+
 export function initCursor() {
   if (typeof window === "undefined" || !window.matchMedia) return () => {};
 
   const fine = matchMedia(FINE);
+  const coarse = matchMedia(COARSE);
   const reduce = matchMedia(REDUCE);
   let stop = null;
 
   const sync = () => {
-    const on = fine.matches && !reduce.matches;
+    const on = fine.matches && !coarse.matches && !reduce.matches;
     if (on && !stop) stop = mount();
     if (!on && stop) {
       stop();
@@ -19,13 +22,24 @@ export function initCursor() {
     }
   };
 
+  const onTouch = () => {
+    if (stop) {
+      stop();
+      stop = null;
+    }
+  };
+
   fine.addEventListener("change", sync);
+  coarse.addEventListener("change", sync);
   reduce.addEventListener("change", sync);
+  window.addEventListener("touchstart", onTouch, { passive: true, capture: true });
   sync();
 
   return () => {
     fine.removeEventListener("change", sync);
+    coarse.removeEventListener("change", sync);
     reduce.removeEventListener("change", sync);
+    window.removeEventListener("touchstart", onTouch, { capture: true });
     stop?.();
     stop = null;
   };

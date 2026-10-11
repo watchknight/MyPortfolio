@@ -19,6 +19,7 @@
   width: 100%;
   max-width: 44rem;
   height: 100vh;
+  height: 100svh;
   background-color: var(--bg);
   border-left: 1px solid var(--line);
   display: flex;
@@ -36,7 +37,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 1.75rem 2rem 1rem 2rem;
+  padding: max(1.75rem, calc(1.75rem + env(safe-area-inset-top))) 2rem 1rem 2rem;
   border-bottom: 1px solid var(--color-border-hairline);
   background-color: var(--color-bg-elevated);
   gap: 1rem;
@@ -71,14 +72,16 @@
 }
 
 .closeBtn {
-  height: 34px;
-  padding: 0 0.65rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 0.75rem;
   border-radius: var(--radius-sm);
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border-hairline);
   color: var(--color-text-secondary);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   cursor: pointer;
   transition: all var(--duration-fast) ease;
@@ -92,6 +95,12 @@
   letter-spacing: 0.04em;
   color: var(--color-text-secondary);
   transition: color var(--duration-fast) ease;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .closeKbd {
+    display: none;
+  }
 }
 
 .closeBtn:hover {
@@ -118,7 +127,10 @@
   font-family: var(--font-body);
   font-size: var(--text-meta);
   font-weight: 500;
-  padding: 0.4rem 0.85rem;
+  padding: 0.5rem 0.85rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   border-radius: var(--radius-xs);
   background: transparent;
   border: none;
@@ -253,7 +265,7 @@
 }
 
 .footer {
-  padding: 1.25rem 2rem;
+  padding: 1.25rem 2rem max(1.25rem, calc(1.25rem + env(safe-area-inset-bottom))) 2rem;
   border-top: 1px solid var(--line);
   background-color: var(--surface);
   display: flex;
@@ -272,6 +284,7 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.65rem 1.15rem;
+  min-height: 44px;
   border-radius: var(--radius-pill);
   background-color: var(--surface);
   border: 1px solid var(--ok);
@@ -300,6 +313,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
+  min-height: 44px;
   border-radius: var(--radius-pill);
   background-color: var(--color-text-primary);
   color: var(--color-bg-base);
@@ -321,5 +335,13 @@
 
   .header, .tabBar, .contentBody, .footer {
     padding-inline: 1.25rem;
+  }
+}
+
+@media (max-width: 639px), (hover: none), (pointer: coarse) {
+  .backdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: color-mix(in srgb, var(--surface) 92%, var(--bg));
   }
 }

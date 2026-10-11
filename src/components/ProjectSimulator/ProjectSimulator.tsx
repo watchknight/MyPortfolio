@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { sound } from '../../utils/audio';
 import styles from './ProjectSimulator.module.css';
 
@@ -7,6 +7,28 @@ interface ProjectSimulatorProps {
 }
 
 export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
+  const [inView, setInView] = useState(false);
+  const simRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = simRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // PureFeed state
   const [pureFeedEnabled, setPureFeedEnabled] = useState(true);
 
@@ -45,6 +67,56 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
       prev.includes(item) ? prev.filter((p) => p !== item) : [...prev, item]
     );
   };
+
+  // Render lightweight reserved placeholder when not in view
+  if (!inView) {
+    return (
+      <div
+        ref={simRef}
+        className={styles.simWrapper}
+        onClick={() => setInView(true)}
+        style={{ cursor: 'pointer', minHeight: '220px', display: 'flex', flexDirection: 'column' }}
+      >
+        <div className={styles.simHeader}>
+          <div className={styles.macControls}>
+            <span className={`${styles.dot} ${styles.dotRed}`} />
+            <span className={`${styles.dot} ${styles.dotYellow}`} />
+            <span className={`${styles.dot} ${styles.dotGreen}`} />
+            <span className={styles.simUrl}>
+              {projectId === 'doclensbd'
+                ? 'doclensbd.onrender.com/virtual-tryon'
+                : projectId === 'purefeed'
+                ? 'youtube.com/watch?v=system_mesh'
+                : 'system.local/preview'}
+            </span>
+          </div>
+          <span className={styles.simTag}>
+            {projectId === 'doclensbd' ? 'MediaPipe 3D' : 'Interactive Mock'}
+          </span>
+        </div>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+            gap: '0.5rem',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '11px',
+            color: 'var(--muted)',
+            textAlign: 'center',
+          }}
+        >
+          <span>⚡ Simulation ready</span>
+          <span style={{ fontSize: '10px', color: 'var(--subtle)' }}>
+            Tap or scroll into view to load live runtime
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   // PureFeed Simulator
   if (projectId === 'purefeed') {
