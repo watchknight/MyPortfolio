@@ -263,17 +263,14 @@ html.has-cursor iframe[data-cursor="hide"] {
   opacity: 1;
 }
 
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+@media (max-width: 768px), (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .cursor-ring,
   .cursor-dot {
-    display: none;
+    display: none !important;
   }
 }
 
 /* ── Motion System: Initial State Gating & View Transitions ── */
-html.js-motion [data-hero-title],
-html.js-motion [data-hero-in],
-html.js-motion [data-tile] { opacity: 0; }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
 /* ── Micro-Interactions: Button Label Roll ── */

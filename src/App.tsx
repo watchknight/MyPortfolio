@@ -7,11 +7,12 @@ import { Nav } from './components/Nav/Nav';
 import { HomePage } from './pages/Home/HomePage';
 import { useScrollLock } from './utils/scrollLock';
 
-const LazyWorksPage = lazy(() => import('./pages/Works/WorksPage').then((m) => ({ default: m.WorksPage })));
-const LazyFoundationPage = lazy(() => import('./pages/Foundation/FoundationPage').then((m) => ({ default: m.FoundationPage })));
-const LazyResumePage = lazy(() => import('./pages/Resume/ResumePage').then((m) => ({ default: m.ResumePage })));
-const LazyContactPage = lazy(() => import('./pages/Contact/ContactPage').then((m) => ({ default: m.ContactPage })));
-const LazyNotFoundPage = lazy(() => import('./pages/NotFound/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
+import { WorksPage } from './pages/Works/WorksPage';
+import { FoundationPage } from './pages/Foundation/FoundationPage';
+import { ResumePage } from './pages/Resume/ResumePage';
+import { ContactPage } from './pages/Contact/ContactPage';
+import { NotFoundPage } from './pages/NotFound/NotFoundPage';
+
 const LazySysDiagnosticModal = lazy(() => import('./components/SysDiagnosticModal/SysDiagnosticModal').then((m) => ({ default: m.SysDiagnosticModal })));
 const LazyCaseStudyModal = lazy(() => import('./components/CaseStudyModal/CaseStudyModal').then((m) => ({ default: m.CaseStudyModal })));
 
@@ -118,11 +119,11 @@ export default function App({ initialPath, routes }: AppProps) {
     if (p) setSelectedProject(p);
   };
 
-  const Works = routes?.WorksPage || LazyWorksPage;
-  const Foundation = routes?.FoundationPage || LazyFoundationPage;
-  const Resume = routes?.ResumePage || LazyResumePage;
-  const Contact = routes?.ContactPage || LazyContactPage;
-  const NotFound = routes?.NotFoundPage || LazyNotFoundPage;
+  const Works = routes?.WorksPage || WorksPage;
+  const Foundation = routes?.FoundationPage || FoundationPage;
+  const Resume = routes?.ResumePage || ResumePage;
+  const Contact = routes?.ContactPage || ContactPage;
+  const NotFound = routes?.NotFoundPage || NotFoundPage;
 
   return (
     <>
@@ -140,18 +141,16 @@ export default function App({ initialPath, routes }: AppProps) {
         id="main-content"
         tabIndex={-1}
       >
-        <Suspense fallback={<div className="route-suspense-fallback" />}>
-          {displayPath === '/' && (
-            <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
-          )}
-          {displayPath === '/works' && (
-            <Works onSelectProject={handleSelectProjectById} />
-          )}
-          {displayPath === '/foundation' && <Foundation />}
-          {displayPath === '/resume' && <Resume />}
-          {displayPath === '/contact' && <Contact />}
-          {displayPath === '/404' && <NotFound onNavigate={navigate} />}
-        </Suspense>
+        {displayPath === '/' && (
+          <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
+        )}
+        {displayPath === '/works' && (
+          <Works onSelectProject={handleSelectProjectById} />
+        )}
+        {displayPath === '/foundation' && <Foundation />}
+        {displayPath === '/resume' && <Resume />}
+        {displayPath === '/contact' && <Contact />}
+        {displayPath === '/404' && <NotFound onNavigate={navigate} />}
       </main>
     </>
   );

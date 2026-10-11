@@ -145,19 +145,92 @@ try {
   })()`);
   assert('First tab stop is skip link', skipLinkCheck);
 
-  // Test Command Palette escape
+  // Test Command Palette focus trap & escape
   await evalJs(`window.dispatchEvent(new CustomEvent('toggle-command-palette'))`);
-  await new Promise((r) => setTimeout(r, 300));
+  await new Promise((r) => setTimeout(r, 350));
   const paletteOpen = await evalJs(`!!document.querySelector('[role="dialog"][aria-label="Command Deck"]')`);
   assert('Command palette opens', paletteOpen);
 
+  // Tab multiple times to verify focus remains trapped inside the palette
+  for (let i = 0; i < 3; i++) {
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab' });
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab' });
+  }
+  const focusTrappedInPalette = await evalJs(`(() => {
+    const dialog = document.querySelector('[role="dialog"][aria-label="Command Deck"]');
+    return dialog && dialog.contains(document.activeElement);
+  })()`);
+  assert('⌘K Command palette traps focus inside dialog', focusTrappedInPalette);
+
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' });
   await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape' });
-  await new Promise((r) => setTimeout(r, 300));
+  await new Promise((r) => setTimeout(r, 350));
   const paletteClosed = await evalJs(`!document.querySelector('[role="dialog"][aria-label="Command Deck"]')`);
   assert('Escape closes Command Palette', paletteClosed);
 
+  // Test Controls Popover keyboard open, focus trap, and Escape closure
+  await evalJs(`(() => {
+    const btn = document.querySelector('[aria-controls="controls-popover"]');
+    if (btn) btn.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 350));
+  const controlsOpened = await evalJs(`!!document.querySelector('#controls-popover')`);
+  assert('Controls popover opens on button click', controlsOpened);
+
+  const focusInControls = await evalJs(`(() => {
+    const popover = document.querySelector('#controls-popover');
+    return popover && popover.contains(document.activeElement);
+  })()`);
+  assert('Controls popover traps initial keyboard focus', focusInControls);
+
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape' });
+  await new Promise((r) => setTimeout(r, 350));
+  const controlsClosed = await evalJs(`!document.querySelector('#controls-popover')`);
+  assert('Escape closes Controls popover', controlsClosed);
+
+  // Test Mobile Sheet keyboard open, focus trap, and Escape closure
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 3,
+    mobile: true,
+  });
+  await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` });
+  await new Promise((r) => setTimeout(r, 800));
+
+  await evalJs(`(() => {
+    const burger = document.querySelector('button[aria-label*="navigation menu"]');
+    if (burger) burger.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 350));
+  const sheetOpened = await evalJs(`!!document.querySelector('[role="dialog"][aria-label="Navigation Menu"]')`);
+  assert('Mobile navigation sheet opens', sheetOpened);
+
+  const focusInSheet = await evalJs(`(() => {
+    const sheet = document.querySelector('[role="dialog"][aria-label="Navigation Menu"]');
+    return sheet && sheet.contains(document.activeElement);
+  })()`);
+  assert('Mobile navigation sheet traps keyboard focus', focusInSheet);
+
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape' });
+  await new Promise((r) => setTimeout(r, 350));
+  const sheetClosed = await evalJs(`!document.querySelector('[role="dialog"][aria-label="Navigation Menu"]')`);
+  assert('Escape closes Mobile navigation sheet', sheetClosed);
+
+  // Reset viewport to desktop
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
+
   console.log('\n--- 3. SEO METADATA & STRUCTURED DATA ---');
+  await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` });
+  await new Promise((r) => setTimeout(r, 600));
+
   const seoCheck = await evalJs(`(() => {
     const title = document.title;
     const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute('content');
@@ -181,7 +254,8 @@ try {
   assert('OG image points to production og-image.png', seoCheck.ogImage === 'https://watchknight-dev.onrender.com/og-image.png');
   assert('JSON-LD Person schema is valid', seoCheck.hasPersonSchema);
 
-  console.log('\n--- 4. REDUCED MOTION GATING ---');
+  console.log('\n--- 4. REDUCED MOTION, TOUCH EMULATION & NO-JS PASSES ---');
+  // Reduced Motion
   await send('Emulation.setEmulatedMedia', {
     media: 'screen',
     features: [{ name: 'prefers-reduced-motion', value: 'reduce' }],
@@ -193,6 +267,44 @@ try {
     return mainEl && getComputedStyle(mainEl).opacity === '1';
   })()`);
   assert('Main content is visible under prefers-reduced-motion', motionCheck);
+
+  // Touch Emulation (coarse pointer)
+  await send('Emulation.setEmulatedMedia', { media: 'screen', features: [] });
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 390,
+    height: 844,
+    deviceScaleFactor: 3,
+    mobile: true,
+  });
+  await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` });
+  await new Promise((r) => setTimeout(r, 600));
+
+  const touchCheck = await evalJs(`(() => {
+    const ring = document.querySelector('.cursor-ring');
+    const dot = document.querySelector('.cursor-dot');
+    const ringHidden = !ring || getComputedStyle(ring).display === 'none';
+    const dotHidden = !dot || getComputedStyle(dot).display === 'none';
+
+    // Verify touch target sizes
+    const interactive = Array.from(document.querySelectorAll('button, a[href]'));
+    const smallTargets = interactive.filter((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 && (rect.width < 40 || rect.height < 40);
+    });
+
+    return {
+      cursorHidden: ringHidden && dotHidden,
+      minTapTargetsMet: smallTargets.length === 0,
+      smallCount: smallTargets.length,
+    };
+  })()`);
+  assert('Custom cursor ring and dot hidden under touch emulation', touchCheck.cursorHidden);
+  assert('Touch interactive targets satisfy minimum hit dimensions', touchCheck.minTapTargetsMet, `small=${touchCheck.smallCount}`);
+
+  // No-JS static archive check
+  const noJsHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+  assert('Prerendered HTML contains noscript banner', noJsHtml.includes('⚡ JavaScript execution is disabled'));
+  assert('Prerendered HTML contains full hero and project markup', noJsHtml.includes('PureFeed') && noJsHtml.includes('FocusGuard') && noJsHtml.includes('DocLensBD'));
 
   console.log('\n=============================================');
   console.log(`TOTAL PHASE 7 TESTS: ${passes + fails} | PASSES: ${passes} | FAILS: ${fails}`);
