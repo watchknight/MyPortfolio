@@ -88,3 +88,15 @@ Concept: "Silence is the default; sound marks what matters." Same idea as the vi
 6. Quiet and safe: master limiter, fades on enable/disable (no pops), voice cap, rate limits. The audio context is suspended when the tab is hidden or sound is off. Hover sounds only for fine pointers. The ambient pad is off by default on touch devices and under prefers-reduced-motion.
 7. Never the only feedback: every sound has a visual twin, and sound state changes are announced via aria-live.
 8. Silence is design: no sound for page load, scrolling itself, keyboard focus, plain text hover, or typing in form fields outside the terminal.
+
+ATMOSPHERE CONTRACT (dark theme)
+Concept: "Blue hour." The page is a living blue field: ink-navy base, three slow pools of ultramarine, cobalt and azure light, fine grain. Amber is the only warm light.
+1. Blues only. Every background color sits between hue 205° and 240°. No purple, magenta, green-teal or neon cyan.
+2. Slow. Ambient motion cycles last 50 to 100 seconds. Nothing flickers or pulses quickly; only the pointer light reacts to the user.
+3. Cheap. Only transform and opacity animate. No blur filters, no backdrop-filter, no animated gradient stops. At most 3 large composited layers (2 on touch) plus the pointer light.
+4. Readable. Text on the bare atmosphere is --text or --muted only; --subtle is for tiles. scripts/check-atmosphere.mjs must pass.
+5. Honest about time. The palette follows Dhaka time (night, dawn, day, dusk). ?phase=… forces one for testing.
+6. Section-aware. The glow balance changes per section (hero, work, about, guestbook, contact) over 2.2 s.
+7. Respectful. prefers-reduced-motion gives a static composition. A Controls switch ("Atmosphere") turns the motion off. Animation pauses when the tab is hidden. Dark theme only; the light theme is untouched.
+8. Tiles stay opaque (--surface). Nothing over the atmosphere is translucent or blurred.
+9. Media is graded blue: blacks lifted to the page navy, highlights warm to bone (SVG filter classes, media only).

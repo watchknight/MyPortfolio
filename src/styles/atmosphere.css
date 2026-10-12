@@ -1,0 +1,35 @@
+@property --sky-top { syntax: "<color>"; inherits: true; initial-value: #0A1330; }
+@property --sky-mid { syntax: "<color>"; inherits: true; initial-value: #0E1A36; }
+@property --sky-bot { syntax: "<color>"; inherits: true; initial-value: #0F1D40; }
+@property --glow-a  { syntax: "<color>"; inherits: true; initial-value: #2A44E6; }
+@property --glow-b  { syntax: "<color>"; inherits: true; initial-value: #1D58F0; }
+@property --glow-c  { syntax: "<color>"; inherits: true; initial-value: #2F8CFF; }
+@property --alpha-a { syntax: "<number>"; inherits: true; initial-value: 0.60; }
+@property --alpha-b { syntax: "<number>"; inherits: true; initial-value: 0.44; }
+@property --alpha-c { syntax: "<number>"; inherits: true; initial-value: 0.26; }
+
+/* night (default) */
+:root {
+  --sky-top:#0A1330; --sky-mid:#0E1A36; --sky-bot:#0F1D40;
+  --glow-a:#2A44E6;  --glow-b:#1D58F0;  --glow-c:#2F8CFF;
+  --alpha-a:0.60;    --alpha-b:0.44;    --alpha-c:0.26;
+  --ice:127 168 255;
+  transition: --sky-top 5s ease, --sky-mid 5s ease, --sky-bot 5s ease,
+              --glow-a 5s ease, --glow-b 5s ease, --glow-c 5s ease,
+              --alpha-a 5s ease, --alpha-b 5s ease, --alpha-c 5s ease;
+}
+html[data-phase="dawn"] {
+  --sky-top:#0D1538; --sky-mid:#111B42; --sky-bot:#121F4A;
+  --glow-a:#4A50EE;  --glow-b:#2E62F0;  --glow-c:#4D9AFF;
+  --alpha-a:0.49;    --alpha-b:0.38;    --alpha-c:0.23;
+}
+html[data-phase="day"] {
+  --sky-top:#0B1B40; --sky-mid:#0F2250; --sky-bot:#112658;
+  --glow-a:#2E6CF5;  --glow-b:#2493F0;  --glow-c:#58B4FF;
+  --alpha-a:0.33;    --alpha-b:0.24;    --alpha-c:0.14;
+}
+html[data-phase="dusk"] {
+  --sky-top:#0D1236; --sky-mid:#121A42; --sky-bot:#141E4C;
+  --glow-a:#3C46F0;  --glow-b:#2A62F0;  --glow-c:#3F8CFF;
+  --alpha-a:0.53;    --alpha-b:0.38;    --alpha-c:0.21;
+}
