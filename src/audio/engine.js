@@ -38,6 +38,7 @@ export function createEngine(ctx, cfg = CONFIG) {
   let theme = "dark";
   let section = "hero";
   let voices = 0;
+  let introCalls = 0;
   let walk = 7;
   let lastPointer = -1;
   const last = {};
@@ -98,11 +99,12 @@ export function createEngine(ctx, cfg = CONFIG) {
       nodes.forEach((n) => {
         try { n.disconnect(); } catch {}
       });
+      src.onended = null;
     };
   };
 
   function noise(when, dur, o = {}) {
-    const { freq = 2000, to = null, q = 1, type = "bandpass", gain = 0.1, attack = 0.002, x = 0.5 } = o;
+    const { freq = 2000, to = null, q = 1, type = "bandpass", gain = 0.1, attack = 0.002, x = 0.5, trackVoice = true } = o;
     const s = ctx.createBufferSource();
     s.buffer = noiseBuf;
     s.loop = true;
@@ -120,7 +122,17 @@ export function createEngine(ctx, cfg = CONFIG) {
     p.connect(bus);
     s.start(when, Math.random() * 0.5);
     s.stop(when + attack + dur + 0.05);
-    own(s, [f, g, p]);
+    if (trackVoice) {
+      own(s, [f, g, p]);
+    } else {
+      s.onended = () => {
+        try { s.disconnect(); } catch {}
+        [f, g, p].forEach((n) => {
+          try { n.disconnect(); } catch {}
+        });
+        s.onended = null;
+      };
+    }
   }
 
   function pluck({ note = 62, when = now(), x = 0.5, vel = 1, dur = 1.1 } = {}) {
@@ -153,7 +165,7 @@ export function createEngine(ctx, cfg = CONFIG) {
     a.stop(when + dur + 0.08);
     b.stop(when + dur + 0.08);
     own(a, [b, g, bg, lp, p]);
-    noise(when, 0.025, { freq: 1100 * bright, q: 1.2, gain: 0.05 * vel, attack: 0.001, x });
+    noise(when, 0.025, { freq: 1100 * bright, q: 1.2, gain: 0.05 * vel, attack: 0.001, x, trackVoice: false });
   }
 
   function tick({ degree, when = now(), x = 0.5, vel = 1 } = {}) {
@@ -203,7 +215,7 @@ export function createEngine(ctx, cfg = CONFIG) {
   function key({ when = now(), x = 0.5, vel = 1 } = {}) {
     if (!allow("key", 0.035, when)) return;
     const r = 0.9 + Math.random() * 0.25;
-    noise(when, 0.03, { freq: 2400 * r, q: 3, gain: 0.07 * vel, attack: 0.001, x });
+    noise(when, 0.03, { freq: 2400 * r, q: 3, gain: 0.07 * vel, attack: 0.001, x, trackVoice: false });
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "triangle";
@@ -228,6 +240,7 @@ export function createEngine(ctx, cfg = CONFIG) {
   }
 
   function intro({ when = now() } = {}) {
+    introCalls++;
     [62, 69, 74].forEach((n, i) => pluck({ note: n, when: when + i * 0.11, vel: 0.8, dur: i === 2 ? 2 : 0.9 }));
     swish({ dir: 1, when, vel: 0.6 });
   }
@@ -264,7 +277,13 @@ export function createEngine(ctx, cfg = CONFIG) {
     ink = null;
     g.gain.setTargetAtTime(0, when, 0.08);
     o.stop(when + 0.6);
-    o.onended = () => [lp, g].forEach((n) => n.disconnect());
+    o.onended = () => {
+      try { o.disconnect(); } catch {}
+      [lp, g].forEach((n) => {
+        try { n.disconnect(); } catch {}
+      });
+      o.onended = null;
+    };
   }
 
   const pad = { started: false, oscs: [], filter: null, gain: null };
@@ -340,6 +359,7 @@ export function createEngine(ctx, cfg = CONFIG) {
 
   const bins = new Uint8Array(analyser.frequencyBinCount);
   function levels(n = 4) {
+    if (ctx.state === "suspended") return Array(n).fill(0);
     analyser.getByteFrequencyData(bins);
     const step = Math.floor(bins.length / n);
     return Array.from({ length: n }, (_, b) => {
@@ -349,5 +369,5 @@ export function createEngine(ctx, cfg = CONFIG) {
     });
   }
 
-  return { ctx, setMaster, setAmbient, setTheme, setSection, setPointer, levels, pluck, tick, thump, swish, key, chime, toggle, intro, inkStart, inkMove, inkEnd };
+  return { ctx, setMaster, setAmbient, setTheme, setSection, setPointer, levels, pluck, tick, thump, swish, key, chime, toggle, intro, inkStart, inkMove, inkEnd, voices: () => voices, introCount: () => introCalls };
 }

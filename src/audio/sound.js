@@ -25,6 +25,10 @@ function ensure() {
   const unlock = ctx.createBufferSource();
   unlock.buffer = ctx.createBuffer(1, 1, 22050);
   unlock.connect(ctx.destination);
+  unlock.onended = () => {
+    try { unlock.disconnect(); } catch {}
+    unlock.onended = null;
+  };
   unlock.start(0);
   engine = createEngine(ctx);
   engine.setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
@@ -220,6 +224,9 @@ export const sound = {
     },
   },
   levels: (n = 4) => (state.on && engine ? engine.levels(n) : null),
+  get voices() { return engine ? engine.voices() : 0; },
+  get introCount() { return engine ? engine.introCount() : 0; },
+  get ctx() { return engine ? engine.ctx : null; },
 };
 
 if (typeof window !== "undefined") {

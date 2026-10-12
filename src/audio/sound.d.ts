@@ -36,4 +36,7 @@ export declare const sound: {
     end(): void;
   };
   levels(n?: number): number[] | null;
+  readonly voices: number;
+  readonly introCount: number;
+  readonly ctx: AudioContext | null;
 };

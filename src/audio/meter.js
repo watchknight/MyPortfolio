@@ -5,17 +5,27 @@ export function initMeter(bars) {
   if (typeof window === "undefined" || typeof document === "undefined") return () => {};
   let last = 0;
   let running = false;
+  const lastVals = [];
 
   const frame = (time) => {
-    if (time - last < 1 / 30) return;
+    if (time - last < 1 / 20) return;
     last = time;
     const lv = sound.levels(bars.length);
     if (!lv) return;
     bars.forEach((b, i) => {
-      if (b) b.style.transform = `scaleY(${0.12 + 0.88 * Math.min(1, lv[i])})`;
+      if (b) {
+        const val = (0.12 + 0.88 * Math.min(1, lv[i])).toFixed(2);
+        if (lastVals[i] !== val) {
+          lastVals[i] = val;
+          b.style.transform = `scaleY(${val})`;
+        }
+      }
     });
   };
-  const rest = () => bars.forEach((b) => { if (b) b.style.transform = ""; });
+  const rest = () => {
+    lastVals.length = 0;
+    bars.forEach((b) => { if (b) b.style.transform = ""; });
+  };
 
   const sync = (s) => {
     const calm = typeof matchMedia !== "undefined" ? matchMedia("(prefers-reduced-motion: reduce)").matches : false;
