@@ -344,3 +344,13 @@ html.has-cursor iframe[data-cursor="hide"] {
   min-height: 80svh;
 }
 
+/* ── Audio Sound Meter & Controls (Phase S3) ── */
+.sound-meter { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.sound-meter i { width: 2px; height: 100%; border-radius: 1px; background: var(--control); transform: scaleY(.12); transform-origin: bottom; }
+[data-sound-toggle][aria-pressed="true"] .sound-meter i { background: var(--accent); }
+
+[data-sound-toggle]:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+

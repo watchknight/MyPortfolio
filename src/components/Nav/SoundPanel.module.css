@@ -1,0 +1,307 @@
+/* Sound Panel inside Controls Popover & Mobile Sheet (Phase S3) */
+
+.soundPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 38px;
+}
+
+.controlInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.controlLabel {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.controlShortcut {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--subtle);
+}
+
+.controlSubLabel {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+/* ── Master Volume Slider ── */
+.volumeRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.volumeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.volumePercent {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.volumeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  transition: opacity var(--duration-fast) ease;
+}
+
+.volumeSlider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--control);
+}
+
+.volumeSlider::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--control);
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  margin-top: -5px;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.volumeSlider::-webkit-slider-thumb:hover {
+  background: var(--accent-hover);
+  transform: scale(1.15);
+}
+
+.volumeSlider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.volumeSlider::-moz-range-thumb:hover {
+  background: var(--accent-hover);
+  transform: scale(1.15);
+}
+
+.volumeSlider:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ── Toggle Switch (standard tokenized) ── */
+.switchBtn {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  transition: all var(--duration-fast) ease;
+  min-height: 26px;
+}
+
+.switchBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.switchBtnActive {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switchKnob {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform var(--duration-fast) ease, background-color var(--duration-fast) ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.switchBtnActive .switchKnob {
+  transform: translateX(22px);
+  background: var(--on-accent);
+}
+
+.switchStateText {
+  position: absolute;
+  font-size: 0.625rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.switchBtnActive .switchStateText {
+  left: 6px;
+  color: var(--on-accent);
+}
+
+.switchBtn:not(.switchBtnActive) .switchStateText {
+  right: 6px;
+  color: var(--muted);
+}
+
+/* ── Preview Audio Chips ── */
+.chipsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.chipsLabel {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chipsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chipWrapper {
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--r-pill);
+}
+
+.chipWrapper:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.previewChip {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  min-height: 32px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 639px), (pointer: coarse) {
+  .previewChip {
+    min-height: 44px;
+    padding: 8px 14px;
+    font-size: 0.8125rem;
+  }
+}
+
+.previewChip:not(:disabled):hover {
+  background: var(--raised);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.previewChip:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+.previewChip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.previewChip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.chipTooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--raised);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: var(--r-md);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+  z-index: 1002;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.chipWrapper:hover .chipTooltip,
+.chipWrapper:focus-within .chipTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chipTooltip {
+    transition: none !important;
+    transform: translateX(-50%) !important;
+  }
+}

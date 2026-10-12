@@ -238,6 +238,170 @@
   border-color: var(--control);
 }
 
+/* ── Sound Nav Button & Hint (Phase S3) ── */
+.soundNavWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.soundNavBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 44px;
+  min-height: 44px;
+  height: 44px;
+  padding: 0 8px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--control);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--duration-fast) ease;
+}
+
+.soundNavBtn:hover {
+  background: var(--raised);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.soundNavBtn[aria-pressed="true"] {
+  background: var(--raised);
+  border-color: var(--line);
+  color: var(--accent);
+}
+
+.soundNavBtn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.speakerIcon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Tooltip text on hover and focus */
+.soundTooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--raised);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: var(--r-md);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.soundNavBtn:hover .soundTooltip,
+.soundNavBtn:focus-visible .soundTooltip,
+.soundNavBtn:focus .soundTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soundTooltip {
+    transition: none !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* First-visit hint */
+.soundHint {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--accent);
+  background: var(--raised);
+  border: 1px solid var(--accent);
+  padding: 4px 8px;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  animation: soundHintIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.soundHintFade {
+  animation: soundHintOut 0.4s ease forwards;
+}
+
+@keyframes soundHintIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes soundHintOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soundHint {
+    animation: soundHintInReduced 0.3s ease forwards;
+  }
+  .soundHintFade {
+    animation: soundHintOutReduced 0.4s ease forwards;
+  }
+}
+
+@keyframes soundHintInReduced {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes soundHintOutReduced {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Visually hidden live region */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .mobileMenuToggle {
   display: inline-flex;
   align-items: center;

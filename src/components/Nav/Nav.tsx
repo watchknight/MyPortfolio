@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
 import { sound } from '../../utils/audio';
+import { initMeter } from '../../audio/meter.js';
 import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
+import { SoundPanel } from './SoundPanel';
 import { gsap, toggleTheme as toggleThemeMotion } from '../../motion/index';
 import type { RoutePath } from '../../hooks/useRouter';
 import { useScrollLock } from '../../utils/scrollLock';
@@ -27,6 +29,14 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const [controlsOpen, setControlsOpen] = useState(false);
   const [controlsRendered, setControlsRendered] = useState(false);
   const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
+  const [showHint, setShowHint] = useState(false);
+  const [hintFading, setHintFading] = useState(false);
+  const [liveAnnouncement, setLiveAnnouncement] = useState('');
+  const soundPrevActiveRef = useRef<boolean | null>(null);
+  const meterContainerRef = useRef<HTMLDivElement>(null);
+  const soundBtnRef = useRef<HTMLButtonElement>(null);
+  const hintTimerRef = useRef<number | null>(null);
+  const hintFadeTimerRef = useRef<number | null>(null);
   const [grainActive, setGrainActive] = useState(() => {
     if (typeof window !== 'undefined') {
       const isTouch = window.matchMedia('(pointer: coarse)').matches;
@@ -165,11 +175,121 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
-  // Subscribe to sound engine state changes
+  const dismissHint = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('sound-hint', '1');
+      } catch {}
+    }
+    if (hintTimerRef.current) {
+      clearTimeout(hintTimerRef.current);
+      hintTimerRef.current = null;
+    }
+    if (hintFadeTimerRef.current) {
+      clearTimeout(hintFadeTimerRef.current);
+      hintFadeTimerRef.current = null;
+    }
+    setShowHint(false);
+    setHintFading(false);
+  }, []);
+
+  // Dismiss hint on any interaction with the sound button
+  useEffect(() => {
+    const el = soundBtnRef.current;
+    if (!el) return;
+    const events = ['mouseenter', 'mouseover', 'pointerenter', 'pointerover', 'pointerdown', 'click', 'focus'];
+    events.forEach((evt) => el.addEventListener(evt, dismissHint, { passive: true }));
+    return () => {
+      events.forEach((evt) => el.removeEventListener(evt, dismissHint));
+    };
+  }, [dismissHint]);
+
+  // 1. Subscribe to sound engine state changes & announce state
   useEffect(() => {
     return sound.subscribe((s) => {
-      setSoundActive(s.on || s.armed);
+      const active = s.on || s.armed;
+      setSoundActive(active);
+
+      if (active) {
+        dismissHint();
+      }
+
+      if (soundPrevActiveRef.current !== null) {
+        if (soundPrevActiveRef.current !== active) {
+          setLiveAnnouncement(active ? 'Sound on' : 'Sound off');
+        }
+      }
+      soundPrevActiveRef.current = active;
     });
+  }, [dismissHint]);
+
+  // 2. Initialize 4-bar Audio Meter on nav sound button
+  useEffect(() => {
+    if (!meterContainerRef.current) return;
+    const bars = Array.from(meterContainerRef.current.querySelectorAll('i'));
+    if (bars.length > 0) {
+      return initMeter(bars);
+    }
+  }, []);
+
+  // 3. First-visit hint logic: 1.5s after hero intro finishes, visible 5s, then fades
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      if (localStorage.getItem('sound-hint') === '1') return;
+      if (localStorage.getItem('sound') === 'on') return;
+    } catch {
+      return;
+    }
+    if (sound.state.on || sound.state.armed) return;
+
+    const triggerHint = () => {
+      if (hintTimerRef.current) return;
+      hintTimerRef.current = window.setTimeout(() => {
+        if (sound.state.on || sound.state.armed) return;
+        try {
+          if (localStorage.getItem('sound-hint') === '1') return;
+          localStorage.setItem('sound-hint', '1');
+        } catch {}
+
+        setShowHint(true);
+        setHintFading(false);
+
+        hintFadeTimerRef.current = window.setTimeout(() => {
+          setHintFading(true);
+          window.setTimeout(() => {
+            setShowHint(false);
+            setHintFading(false);
+          }, 450);
+        }, 5000);
+      }, 1500);
+    };
+
+    const heroSeen = sessionStorage.getItem('hero-seen') === '1';
+    const hasHero = !!document.querySelector('[data-hero-title]');
+
+    if (heroSeen || !hasHero) {
+      triggerHint();
+      return () => {
+        if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+        if (hintFadeTimerRef.current) clearTimeout(hintFadeTimerRef.current);
+      };
+    }
+
+    const handleHeroDone = () => {
+      triggerHint();
+    };
+
+    window.addEventListener('hero-intro-complete', handleHeroDone, { once: true });
+    const fallbackTimer = window.setTimeout(triggerHint, 3200);
+
+    return () => {
+      window.removeEventListener('hero-intro-complete', handleHeroDone);
+      clearTimeout(fallbackTimer);
+      if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+      if (hintFadeTimerRef.current) clearTimeout(hintFadeTimerRef.current);
+    };
   }, []);
 
   // Micro-interaction 7: Theme toggle with circular reveal and icon swap
@@ -208,8 +328,9 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   }, [theme]);
 
   const toggleSound = useCallback(() => {
+    dismissHint();
     sound.toggle();
-  }, []);
+  }, [dismissHint]);
 
   const toggleGrain = useCallback(() => {
     setGrainActive((prev) => {
@@ -406,6 +527,16 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   return (
     <>
       <header className={styles.navWrapper}>
+        {/* Visually hidden live region announcing sound state changes */}
+        <div
+          className={styles.srOnly}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {liveAnnouncement}
+        </div>
+
         <nav className={styles.pillContainer} aria-label="Primary navigation">
           {/* 1. Logo "Moayed" */}
           <Magnetic strength={0.3}>
@@ -550,6 +681,62 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
 
           <span className={`${styles.separatorDot} ${styles.desktopOnly}`} aria-hidden="true">·</span>
 
+          {/* Nav Sound Button (next to the theme toggle) */}
+          <div className={`${styles.desktopOnly} ${styles.soundNavWrap}`}>
+            <Magnetic strength={0.3}>
+              <button
+                ref={soundBtnRef}
+                type="button"
+                data-sound-toggle
+                data-magnetic="0.3"
+                aria-pressed={soundActive}
+                className={styles.soundNavBtn}
+                onClick={toggleSound}
+                onPointerDown={dismissHint}
+                onMouseEnter={dismissHint}
+                onFocus={dismissHint}
+                aria-label={soundActive ? 'Sound on · M' : 'Sound off · M'}
+                aria-describedby="sound-nav-tooltip"
+                data-cursor="link"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className={styles.speakerIcon}
+                >
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                </svg>
+                <div ref={meterContainerRef} className="sound-meter" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </div>
+                <span id="sound-nav-tooltip" className={styles.soundTooltip} role="tooltip">
+                  {soundActive ? 'Sound on · M' : 'Sound off · M'}
+                </span>
+              </button>
+            </Magnetic>
+            {showHint && (
+              <span
+                className={`${styles.soundHint} ${hintFading ? styles.soundHintFade : ''}`}
+                onClick={dismissHint}
+                role="status"
+              >
+                Sound?
+              </span>
+            )}
+          </div>
+
+          <span className={`${styles.separatorDot} ${styles.desktopOnly}`} aria-hidden="true">·</span>
+
           {/* 6. Controls (Gear) Button */}
           <div className={styles.desktopOnly}>
             <Magnetic strength={0.3}>
@@ -646,24 +833,8 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 </div>
               </div>
 
-              {/* Sound Toggle: On / Off */}
-              <div className={styles.controlRow}>
-                <div className={styles.controlInfo}>
-                  <span className={styles.controlLabel}>Sound</span>
-                  <span className={styles.controlShortcut}>M</span>
-                </div>
-                <button
-                  type="button"
-                  data-sound-toggle
-                  className={`${styles.switchBtn} ${soundActive ? styles.switchBtnActive : ''}`}
-                  onClick={toggleSound}
-                  aria-pressed={soundActive}
-                  data-cursor="link"
-                >
-                  <span className={styles.switchKnob} />
-                  <span className={styles.switchStateText}>{soundActive ? 'ON' : 'OFF'}</span>
-                </button>
-              </div>
+              {/* Sound Panel inside Controls Popover (replaces old Mute switch) */}
+              <SoundPanel isMobile={false} />
 
               {/* Grain Toggle: On / Off */}
               <div className={styles.controlRow}>
@@ -847,20 +1018,8 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 </div>
               </div>
 
-              {/* Sound Toggle */}
-              <div className={styles.mobileControlItem}>
-                <span className={styles.controlLabel}>Sound Effects</span>
-                <button
-                  type="button"
-                  data-sound-toggle
-                  className={`${styles.switchBtn} ${soundActive ? styles.switchBtnActive : ''}`}
-                  onClick={toggleSound}
-                  aria-pressed={soundActive}
-                >
-                  <span className={styles.switchKnob} />
-                  <span className={styles.switchStateText}>{soundActive ? 'ON' : 'OFF'}</span>
-                </button>
-              </div>
+              {/* Sound Panel in Mobile Sheet (replaces old Mute switch) */}
+              <SoundPanel isMobile={true} />
 
               {/* Grain Toggle */}
               <div className={styles.mobileControlItem}>

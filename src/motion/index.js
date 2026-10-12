@@ -36,7 +36,10 @@ export function initMotion() {
             return gsap.timeline({ defaults: { ease: "expo.out" } })
               .from(self.lines, { yPercent: 110, duration: 1, stagger: 0.09 })
               .to(heroIn, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, "-=0.65")
-              .add(() => sessionStorage.setItem("hero-seen", "1"));
+              .add(() => {
+                sessionStorage.setItem("hero-seen", "1");
+                window.dispatchEvent(new CustomEvent("hero-intro-complete"));
+              });
           },
         });
       } else {
@@ -44,10 +47,14 @@ export function initMotion() {
         gsap.timeline({ defaults: { ease: "expo.out" } })
           .from(title, { y: 10, duration: 0.6 })
           .to(heroIn, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 }, "-=0.4")
-          .add(() => sessionStorage.setItem("hero-seen", "1"));
+          .add(() => {
+            sessionStorage.setItem("hero-seen", "1");
+            window.dispatchEvent(new CustomEvent("hero-intro-complete"));
+          });
       }
-    } else if (title) {
-      gsap.set(title, { autoAlpha: 1 });
+    } else {
+      if (title) gsap.set(title, { autoAlpha: 1 });
+      window.dispatchEvent(new CustomEvent("hero-intro-complete"));
     }
 
     ScrollTrigger.batch(tiles, {
@@ -62,6 +69,7 @@ export function initMotion() {
 
   mm.add("(prefers-reduced-motion: reduce)", () => {
     html.classList.remove("js-motion");
+    window.dispatchEvent(new CustomEvent("hero-intro-complete"));
   });
 
   return () => mm.revert();
