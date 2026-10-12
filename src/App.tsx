@@ -3,6 +3,8 @@ import { useRouter } from './hooks/useRouter';
 import { projects, type ProjectData } from './data/projects';
 import { initCursor } from './motion/cursor';
 import { initMotion, ScrollTrigger, gsap } from './motion/index';
+import { initSound } from './audio/sound.js';
+import { migrateOldSoundStorage } from './utils/audio';
 import { Nav } from './components/Nav/Nav';
 import { HomePage } from './pages/Home/HomePage';
 import { useScrollLock } from './utils/scrollLock';
@@ -37,11 +39,20 @@ export default function App({ initialPath, routes }: AppProps) {
 
   const mainRef = useRef<HTMLElement>(null);
   const isFirstMount = useRef(true);
+  const audioInitializedRef = useRef(false);
 
   useScrollLock(Boolean(selectedProject) || sysCheckOpen);
 
   useEffect(() => {
     return initCursor();
+  }, []);
+
+  // Top-level audio system initialization (client-side only, runs once)
+  useEffect(() => {
+    if (audioInitializedRef.current) return;
+    audioInitializedRef.current = true;
+    migrateOldSoundStorage();
+    initSound();
   }, []);
 
   // Top-level motion system entry point (StrictMode safe)

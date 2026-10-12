@@ -165,6 +165,13 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
+  // Subscribe to sound engine state changes
+  useEffect(() => {
+    return sound.subscribe((s) => {
+      setSoundActive(s.on || s.armed);
+    });
+  }, []);
+
   // Micro-interaction 7: Theme toggle with circular reveal and icon swap
   const handleToggleTheme = useCallback((e?: React.MouseEvent<HTMLButtonElement>) => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -188,6 +195,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       setTheme(newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+      sound.theme(newTheme);
       const meta = document.querySelector('meta[name="theme-color"]:not([media])');
       const schemeMeta = document.querySelector(`meta[name="theme-color"][media*="${newTheme}"]`);
       if (meta && schemeMeta) {
@@ -200,9 +208,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   }, [theme]);
 
   const toggleSound = useCallback(() => {
-    const active = sound.toggle();
-    setSoundActive(active);
-    sound.playClick(active ? 820 : 420, 0.02, 0.06);
+    sound.toggle();
   }, []);
 
   const toggleGrain = useCallback(() => {
@@ -648,6 +654,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 </div>
                 <button
                   type="button"
+                  data-sound-toggle
                   className={`${styles.switchBtn} ${soundActive ? styles.switchBtnActive : ''}`}
                   onClick={toggleSound}
                   aria-pressed={soundActive}
@@ -845,6 +852,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 <span className={styles.controlLabel}>Sound Effects</span>
                 <button
                   type="button"
+                  data-sound-toggle
                   className={`${styles.switchBtn} ${soundActive ? styles.switchBtnActive : ''}`}
                   onClick={toggleSound}
                   aria-pressed={soundActive}

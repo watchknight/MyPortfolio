@@ -428,6 +428,7 @@ export function CommandPalette({
                   role="option"
                   aria-selected={isSelected}
                   data-cursor="link"
+                  data-sound-toggle={item.id === 'toggle-sound' ? '' : undefined}
                 >
                   <div className={styles.itemLeft}>
                     <span className={styles.itemTitle}>{item.title}</span>

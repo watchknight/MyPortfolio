@@ -77,3 +77,14 @@ QUALITY FLOOR
 - Lighthouse mobile: Performance ≥ 90; Accessibility, Best Practices, SEO ≥ 95 (aim for 100). LCP < 2.5s, CLS < 0.05, INP < 200ms. Initial JS ≤ ~200 KB gzip.
 - WCAG AA contrast, visible focus (2px --focus ring, 2px offset), full keyboard parity, tap targets ≥ 44px, no hover-only functionality.
 - Content is never hidden if JS fails. Animate transform and opacity only (exception: the desktop cursor ring).
+
+SOUND CONTRACT
+Concept: "Silence is the default; sound marks what matters." Same idea as the visuals: one signal, no noise.
+1. Opt-in. Sound is OFF on every first visit. Nothing plays and no AudioContext exists until the visitor turns sound on (click, tap or M). A saved "on" is only re-armed: audio resumes on the visitor's next click, tap or key, without the intro sound.
+2. Synthesized only. All audio comes from the Web Audio API in the files engine.js and sound.js. No audio files, no Howler, no Tone.js. Zero network cost, no licensing.
+3. One key. Every pitch comes from D F G A C (D minor pentatonic = F major pentatonic). Dark theme = tonal centre D, low and warm. Light theme = tonal centre F, brighter. Same notes in both, so nothing clashes and a theme switch changes mood, not harmony.
+4. Fixed vocabulary: tick, thump, pluck, swish, key, chime, ink, pad. No other sounds.
+5. Space: all sounds share one synthesized reverb and pan to the on-screen x-position of whatever triggered them.
+6. Quiet and safe: master limiter, fades on enable/disable (no pops), voice cap, rate limits. The audio context is suspended when the tab is hidden or sound is off. Hover sounds only for fine pointers. The ambient pad is off by default on touch devices and under prefers-reduced-motion.
+7. Never the only feedback: every sound has a visual twin, and sound state changes are announced via aria-live.
+8. Silence is design: no sound for page load, scrolling itself, keyboard focus, plain text hover, or typing in form fields outside the terminal.

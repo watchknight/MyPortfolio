@@ -1,143 +1,98 @@
-// Web Audio API Synthesizer for High-Craft Micro-Interactions
-// 0 external audio files, zero latency, ultra-lightweight.
+// Web Audio API Synthesizer - Refactored to Phase S2 Engine
+// Delegates to src/audio/sound.js (procedural D/F pentatonic synthesis)
+import { sound as engineSound, initSound as engineInitSound, type SoundState } from '../audio/sound.js';
 
-class SoundEngine {
-  private ctx: AudioContext | null = null;
-  private enabled: boolean = false;
+export { engineInitSound as initSound };
 
-  constructor() {
-    // Audio starts muted by default to respect user browsing conventions
-    this.enabled = typeof window !== 'undefined' && localStorage.getItem('sound_enabled') === 'true';
-  }
+export function migrateOldSoundStorage(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const keysToCheck = ['sound_enabled', 'mute', 'muted', 'sound_muted'];
+    let detectedMuted: boolean | null = null;
 
-  private initCtx() {
-    if (!this.ctx && typeof window !== 'undefined') {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioCtx) {
-        this.ctx = new AudioCtx();
+    for (const key of keysToCheck) {
+      const val = localStorage.getItem(key);
+      if (val !== null) {
+        if (key === 'sound_enabled') {
+          if (val === 'false' || val === '0' || val === 'muted') {
+            detectedMuted = true;
+          } else if (val === 'true' || val === '1') {
+            if (detectedMuted === null) detectedMuted = false;
+          }
+        } else {
+          // 'mute', 'muted', 'sound_muted'
+          if (val === 'true' || val === '1' || val === 'muted' || val === 'yes') {
+            detectedMuted = true;
+          } else if (val === 'false' || val === '0' || val === 'unmuted' || val === 'no') {
+            if (detectedMuted === null) detectedMuted = false;
+          }
+        }
+        localStorage.removeItem(key);
       }
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+
+    if (detectedMuted !== null && localStorage.getItem('sound') === null) {
+      localStorage.setItem('sound', detectedMuted ? 'off' : 'on');
     }
-  }
-
-  public isEnabled(): boolean {
-    return this.enabled;
-  }
-
-  public toggle(): boolean {
-    this.enabled = !this.enabled;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('sound_enabled', String(this.enabled));
-    }
-    if (this.enabled) {
-      this.initCtx();
-      this.playChirp(800, 1200, 0.04, 0.08);
-    }
-    return this.enabled;
-  }
-
-  // Ultra-crisp mechanical switch click (e.g. view toggle, filter pill)
-  public playClick(freq = 600, duration = 0.02, volume = 0.05) {
-    if (!this.enabled) return;
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(freq * 0.3, this.ctx.currentTime + duration);
-
-      gain.gain.setValueAtTime(volume, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start();
-      osc.stop(this.ctx.currentTime + duration);
-    } catch {
-      // AudioContext failure gracefully ignored
-    }
-  }
-
-  // Soft low-pass whoosh for drawer open / modal
-  public playDrawer() {
-    if (!this.enabled) return;
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(240, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(420, this.ctx.currentTime + 0.08);
-
-      gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.08);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.08);
-    } catch {}
-  }
-
-  // Subtle frequency chirp for affirmative actions
-  public playChirp(startFreq = 400, endFreq = 900, duration = 0.05, volume = 0.04) {
-    if (!this.enabled) return;
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(startFreq, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(endFreq, this.ctx.currentTime + duration);
-
-      gain.gain.setValueAtTime(volume, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start();
-      osc.stop(this.ctx.currentTime + duration);
-    } catch {}
-  }
-
-  // Micro-tick for hover events
-  public playTick() {
-    if (!this.enabled) return;
-    try {
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(1400, this.ctx.currentTime);
-
-      gain.gain.setValueAtTime(0.015, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.008);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.008);
-    } catch {}
+  } catch {
+    // Private mode protection
   }
 }
 
-export const sound = new SoundEngine();
+export const sound = {
+  get state(): SoundState {
+    return engineSound.state;
+  },
+  subscribe(fn: (state: SoundState) => void): () => void {
+    return engineSound.subscribe(fn);
+  },
+  toggle(): Promise<boolean> | false {
+    return engineSound.toggle();
+  },
+  enable(opts?: { quiet?: boolean }): Promise<boolean> {
+    return engineSound.enable(opts);
+  },
+  disable(): void {
+    return engineSound.disable();
+  },
+  setVolume(v: number): void {
+    engineSound.setVolume(v);
+  },
+  setAmbient(on: boolean): void {
+    engineSound.setAmbient(on);
+  },
+  play(name: 'pluck' | 'tick' | 'thump' | 'swish' | 'key' | 'chime' | 'toggle' | string, opts?: any): void {
+    engineSound.play(name, opts);
+  },
+  section(name: string): void {
+    engineSound.section(name);
+  },
+  theme(name: 'dark' | 'light'): void {
+    engineSound.theme(name);
+  },
+  pointer(x: number = 0.5): void {
+    engineSound.pointer(x);
+  },
+  ink: engineSound.ink,
+  levels(n?: number): number[] | null {
+    return engineSound.levels(n);
+  },
+
+  // Backward compatibility shims for existing call sites during migration
+  isEnabled(): boolean {
+    const s = engineSound.state;
+    return s.on || s.armed;
+  },
+  playClick(_freq?: number, _duration?: number, _volume?: number): void {
+    engineSound.play('tick');
+  },
+  playDrawer(): void {
+    engineSound.play('swish');
+  },
+  playChirp(_startFreq?: number, _endFreq?: number, _duration?: number, _volume?: number): void {
+    engineSound.play('chime');
+  },
+  playTick(): void {
+    engineSound.play('tick');
+  },
+};
