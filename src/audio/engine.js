@@ -93,8 +93,11 @@ export function createEngine(ctx, cfg = CONFIG) {
   const own = (src, nodes) => {
     voices++;
     src.onended = () => {
-      voices--;
-      nodes.forEach((n) => n.disconnect());
+      voices = Math.max(0, voices - 1);
+      try { src.disconnect(); } catch {}
+      nodes.forEach((n) => {
+        try { n.disconnect(); } catch {}
+      });
     };
   };
 
@@ -149,7 +152,7 @@ export function createEngine(ctx, cfg = CONFIG) {
     b.start(when);
     a.stop(when + dur + 0.08);
     b.stop(when + dur + 0.08);
-    own(a, [g, bg, lp, p]);
+    own(a, [b, g, bg, lp, p]);
     noise(when, 0.025, { freq: 1100 * bright, q: 1.2, gain: 0.05 * vel, attack: 0.001, x });
   }
 
@@ -327,6 +330,7 @@ export function createEngine(ctx, cfg = CONFIG) {
     pad.filter.frequency.setTargetAtTime(cfg.padCutoff[theme] * (0.75 + 0.7 * x), when, 0.25);
   }
   function setMaster(v, when = now(), tc = 0.08) {
+    master.gain.cancelScheduledValues(when);
     master.gain.setTargetAtTime(cfg.master * clamp(v, 0, 1), when, tc);
   }
   function setAmbient(on, when = now()) {

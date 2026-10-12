@@ -28,5 +28,5 @@ screenshots/
 /*.png
 .chrome-profile*
 .chrome-temp*
-lighthouse-report.json
+lighthouse-*.json
 

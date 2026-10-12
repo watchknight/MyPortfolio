@@ -12,6 +12,11 @@ const state = { on: false, armed: false, volume: 0.6, ambient: true };
 const listeners = new Set();
 const emit = () => listeners.forEach((fn) => fn({ ...state }));
 
+let armCleanup = null;
+let suspendTimer = null;
+let visTimer = null;
+let enabling = false;
+
 function ensure() {
   if (engine) return engine;
   const AC = window.AudioContext || window.webkitAudioContext;
@@ -28,9 +33,28 @@ function ensure() {
 }
 
 async function enable({ quiet = false } = {}) {
+  if (state.on) return true;
+  if (enabling) return false;
+  enabling = true;
   const e = ensure();
-  if (!e) return false;
-  try { await e.ctx.resume(); } catch { return false; }
+  if (!e) {
+    enabling = false;
+    return false;
+  }
+  try {
+    await e.ctx.resume();
+  } catch {
+    enabling = false;
+    return false;
+  }
+  if (!enabling) return false;
+  enabling = false;
+
+  if (suspendTimer) {
+    clearTimeout(suspendTimer);
+    suspendTimer = null;
+  }
+  armCleanup?.();
   state.on = true;
   state.armed = false;
   store.set("sound", "on");
@@ -42,27 +66,42 @@ async function enable({ quiet = false } = {}) {
 }
 
 function disable() {
+  enabling = false;
+  const wasOn = state.on;
   state.on = false;
   state.armed = false;
+  armCleanup?.();
   store.set("sound", "off");
-  if (engine) {
+  if (engine && wasOn) {
     const e = engine;
     const t = e.ctx.currentTime;
     e.toggle({ on: false });
     e.setMaster(0, t + 0.3, 0.12);
-    setTimeout(() => { if (!state.on) e.ctx.suspend(); }, 1000);
+    if (suspendTimer) clearTimeout(suspendTimer);
+    suspendTimer = setTimeout(() => {
+      if (!state.on && engine) engine.ctx.suspend();
+    }, 1000);
+  } else if (engine) {
+    const e = engine;
+    e.setMaster(0, e.ctx.currentTime, 0.05);
+    if (suspendTimer) clearTimeout(suspendTimer);
+    suspendTimer = setTimeout(() => {
+      if (!state.on && engine) engine.ctx.suspend();
+    }, 200);
   }
   emit();
 }
 
-const toggle = () => (state.on || state.armed ? (disable(), false) : enable());
+const toggle = () => (state.on || state.armed || enabling ? (disable(), false) : enable());
 
 function arm() {
   if (!state.armed) return;
   const cleanup = () => {
     removeEventListener("pointerdown", go, true);
     removeEventListener("keydown", go, true);
+    armCleanup = null;
   };
+  armCleanup = cleanup;
   const go = (ev) => {
     if (!state.armed) return cleanup();
     if (ev.target instanceof Element && ev.target.closest("[data-sound-toggle]")) return;
@@ -80,9 +119,18 @@ function watchVisibility() {
     const e = engine;
     if (document.hidden) {
       e.setMaster(0, e.ctx.currentTime, 0.05);
-      setTimeout(() => { if (document.hidden) e.ctx.suspend(); }, 250);
+      if (visTimer) clearTimeout(visTimer);
+      visTimer = setTimeout(() => {
+        if (document.hidden && state.on) e.ctx.suspend();
+      }, 250);
     } else {
-      e.ctx.resume().then(() => e.setMaster(state.volume, e.ctx.currentTime, 0.2));
+      if (visTimer) {
+        clearTimeout(visTimer);
+        visTimer = null;
+      }
+      e.ctx.resume().then(() => {
+        if (!document.hidden && state.on) e.setMaster(state.volume, e.ctx.currentTime, 0.2);
+      });
     }
   });
 }
