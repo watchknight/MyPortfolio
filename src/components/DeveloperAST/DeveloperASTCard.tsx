@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { SpotlightCard } from '../SpotlightCard/SpotlightCard';
-import { sound } from '../../utils/audio';
 import styles from './DeveloperASTCard.module.css';
 
 export function DeveloperASTCard() {
@@ -37,7 +36,6 @@ export interface SystemsArchitect {
   const handleCopy = () => {
     navigator.clipboard.writeText(rawSchema);
     setCopied(true);
-    sound.playClick(900, 0.03, 0.08);
     setTimeout(() => setCopied(false), 2200);
   };
 

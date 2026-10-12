@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ProjectData } from '../../data/projects';
-import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
 import styles from './CaseStudyModal.module.css';
@@ -30,7 +29,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        sound.playDrawer();
         onClose();
       }
     };
@@ -49,7 +47,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
     if (project.codeHighlight) {
       navigator.clipboard.writeText(project.codeHighlight.code);
       setCopied(true);
-      sound.playChirp(600, 1000, 0.05, 0.06);
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -59,7 +56,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
       className={styles.backdrop}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
-          sound.playDrawer();
           onClose();
         }
       }}
@@ -89,7 +85,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
             type="button"
             className={styles.closeBtn}
             onClick={() => {
-              sound.playDrawer();
               onClose();
             }}
             aria-label="Close case study (Esc)"
@@ -111,7 +106,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
             className={`${styles.tabBtn} ${activeTab === 'architecture' ? styles.tabBtnActive : ''}`}
             onClick={() => {
               setActiveTab('architecture');
-              sound.playClick(600, 0.02, 0.04);
             }}
             role="tab"
             aria-selected={activeTab === 'architecture'}
@@ -124,7 +118,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
             className={`${styles.tabBtn} ${activeTab === 'interventions' ? styles.tabBtnActive : ''}`}
             onClick={() => {
               setActiveTab('interventions');
-              sound.playClick(700, 0.02, 0.04);
             }}
             role="tab"
             aria-selected={activeTab === 'interventions'}
@@ -138,7 +131,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
               className={`${styles.tabBtn} ${activeTab === 'code' ? styles.tabBtnActive : ''}`}
               onClick={() => {
                 setActiveTab('code');
-                sound.playClick(800, 0.02, 0.04);
               }}
               role="tab"
               aria-selected={activeTab === 'code'}
@@ -251,7 +243,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.liveAction}
-                onClick={() => sound.playClick(850, 0.03, 0.08)}
                 data-cursor="link"
                 title={`Launch live deployment: ${project.liveUrl}`}
               >
@@ -270,7 +261,6 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.primaryAction}
-              onClick={() => sound.playTick()}
               data-cursor="link"
             >
               <span>GitHub Repo</span>

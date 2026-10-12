@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { gsap } from '../../motion/index';
-import { sound } from '../../utils/audio';
+import { sound } from '../../audio/sound.js';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
 import { profileData } from '../../data/profile';
@@ -203,7 +203,7 @@ export function CommandPalette({
       shortcut: 'C',
       action: () => {
         navigator.clipboard.writeText(profileData.contact.email);
-        sound.playChirp(700, 1100, 0.05, 0.06);
+        sound.play('chime');
       },
     },
     {
@@ -256,33 +256,23 @@ export function CommandPalette({
   useFocusTrap(paletteRef, isOpen, { initialFocusRef: inputRef });
 
   useEffect(() => {
-    if (isOpen) {
-      sound.playDrawer();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     if (!isOpen) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
         handleClose();
-        sound.playTick();
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         setSelectedIndex((prev) => (prev + 1) % (filteredCommands.length || 1));
-        sound.playClick(600, 0.015, 0.04);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         setSelectedIndex((prev) => (prev - 1 + filteredCommands.length) % (filteredCommands.length || 1));
-        sound.playClick(650, 0.015, 0.04);
       } else if (e.key === 'Enter') {
         e.preventDefault();
         if (filteredCommands[selectedIndex]) {
           filteredCommands[selectedIndex].action();
           handleClose();
-          sound.playClick(850, 0.03, 0.08);
         }
       }
     };
@@ -391,7 +381,6 @@ export function CommandPalette({
             onClick={(e) => {
               e.stopPropagation();
               handleClose();
-              sound.playTick();
             }}
             aria-label="Close command palette"
             title="Close"
@@ -423,7 +412,6 @@ export function CommandPalette({
                   onClick={() => {
                     item.action();
                     handleClose();
-                    sound.playClick(850, 0.03, 0.08);
                   }}
                   role="option"
                   aria-selected={isSelected}
@@ -456,7 +444,6 @@ export function CommandPalette({
               onClick={(e) => {
                 e.stopPropagation();
                 handleClose();
-                sound.playTick();
               }}
               title="Close command palette (Esc)"
               data-cursor="link"

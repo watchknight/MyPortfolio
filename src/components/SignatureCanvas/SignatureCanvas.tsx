@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { sound } from '../../utils/audio';
+import { sound } from '../../audio/sound.js';
+import { wireGuestbook } from '../../audio/wire.js';
 import { useScrollLock } from '../../utils/scrollLock';
 import styles from './SignatureCanvas.module.css';
 
@@ -95,6 +96,19 @@ export function SignatureCanvas() {
     return () => clearTimeout(timer);
   }, [drawSheetOpen, strokes, redrawCanvas]);
 
+  // Wire guestbook ink sound to canvases
+  useEffect(() => {
+    if (canvasRef.current) {
+      return wireGuestbook(canvasRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (drawSheetOpen && sheetCanvasRef.current) {
+      return wireGuestbook(sheetCanvasRef.current);
+    }
+  }, [drawSheetOpen]);
+
   const getCanvasCoords = (
     canvas: HTMLCanvasElement,
     clientX: number,
@@ -116,7 +130,6 @@ export function SignatureCanvas() {
     isDrawingRef.current = true;
     const pt = getCanvasCoords(canvas, clientX, clientY);
     currentPointsRef.current = [pt];
-    sound.playClick(600, 0.015, 0.03);
   };
 
   const handlePointerMove = (
@@ -170,7 +183,6 @@ export function SignatureCanvas() {
   const clearCanvas = () => {
     setStrokes([]);
     setStrokeCount(0);
-    sound.playTick();
   };
 
   const downloadSignature = () => {
@@ -180,17 +192,15 @@ export function SignatureCanvas() {
     link.download = `moayed-guest-signature-${Date.now().toString(36)}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    sound.playChirp(700, 1100, 0.05, 0.06);
+    sound.play('chime');
   };
 
   const openDrawSheet = () => {
     setDrawSheetOpen(true);
-    sound.playClick(750, 0.02, 0.05);
   };
 
   const closeDrawSheet = () => {
     setDrawSheetOpen(false);
-    sound.playClick(650, 0.02, 0.05);
   };
 
   const hasDrawn = strokes.length > 0;
@@ -229,7 +239,6 @@ export function SignatureCanvas() {
                 className={`${styles.colorBtn} ${activeToken === c.token ? styles.colorActive : ''}`}
                 onClick={() => {
                   setActiveToken(c.token);
-                  sound.playClick(800, 0.01, 0.03);
                 }}
                 aria-label={`Select ${c.label} color`}
                 data-cursor="link"
@@ -383,7 +392,6 @@ export function SignatureCanvas() {
                   className={`${styles.colorBtn} ${activeToken === c.token ? styles.colorActive : ''}`}
                   onClick={() => {
                     setActiveToken(c.token);
-                    sound.playClick(800, 0.01, 0.03);
                   }}
                   aria-label={`Select ${c.label} color`}
                 >

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
-import { sound } from '../../utils/audio';
+import { sound } from '../../audio/sound.js';
 import { initMeter } from '../../audio/meter.js';
+import { wireTheme } from '../../audio/wire.js';
 import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
 import { SoundPanel } from './SoundPanel';
 import { gsap, toggleTheme as toggleThemeMotion } from '../../motion/index';
+
 import type { RoutePath } from '../../hooks/useRouter';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
@@ -28,7 +30,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const [commandOpen, setCommandOpen] = useState(false);
   const [controlsOpen, setControlsOpen] = useState(false);
   const [controlsRendered, setControlsRendered] = useState(false);
-  const [soundActive, setSoundActive] = useState(() => sound.isEnabled());
+  const [soundActive, setSoundActive] = useState(() => sound.state.on || sound.state.armed);
   const [showHint, setShowHint] = useState(false);
   const [hintFading, setHintFading] = useState(false);
   const [liveAnnouncement, setLiveAnnouncement] = useState('');
@@ -68,10 +70,14 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const controlsExitTweenRef = useRef<gsap.core.Tween | null>(null);
   const mobileExitTweenRef = useRef<gsap.core.Tween | null>(null);
+  const isFirstCommandMount = useRef(true);
+  const isFirstControlsMount = useRef(true);
+  const isFirstMobileMount = useRef(true);
 
   useScrollLock(mobileMenuOpen);
   useFocusTrap(mobileMenuRef, mobileMenuOpen);
   useFocusTrap(controlsRef, controlsOpen);
+
 
   // Nav active pill gliding refs
   const navLinksRef = useRef<HTMLDivElement>(null);
@@ -292,6 +298,45 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     };
   }, []);
 
+  // ⌘K opens / closes: chime / pluck note 62, vel 0.6
+  useEffect(() => {
+    if (isFirstCommandMount.current) {
+      isFirstCommandMount.current = false;
+      return;
+    }
+    if (commandOpen) {
+      sound.play('chime');
+    } else {
+      sound.play('pluck', { note: 62, vel: 0.6 });
+    }
+  }, [commandOpen]);
+
+  // Controls popover opens / closes: pluck note 67, vel 0.6 / note 62, vel 0.5
+  useEffect(() => {
+    if (isFirstControlsMount.current) {
+      isFirstControlsMount.current = false;
+      return;
+    }
+    if (controlsOpen) {
+      sound.play('pluck', { note: 67, vel: 0.6 });
+    } else {
+      sound.play('pluck', { note: 62, vel: 0.5 });
+    }
+  }, [controlsOpen]);
+
+  // Mobile menu opens / closes: pluck note 67, vel 0.6 / note 62, vel 0.5
+  useEffect(() => {
+    if (isFirstMobileMount.current) {
+      isFirstMobileMount.current = false;
+      return;
+    }
+    if (mobileMenuOpen) {
+      sound.play('pluck', { note: 67, vel: 0.6 });
+    } else {
+      sound.play('pluck', { note: 62, vel: 0.5 });
+    }
+  }, [mobileMenuOpen]);
+
   // Micro-interaction 7: Theme toggle with circular reveal and icon swap
   const handleToggleTheme = useCallback((e?: React.MouseEvent<HTMLButtonElement>) => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -315,7 +360,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       setTheme(newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      sound.theme(newTheme);
+      wireTheme(newTheme);
       const meta = document.querySelector('meta[name="theme-color"]:not([media])');
       const schemeMeta = document.querySelector(`meta[name="theme-color"][media*="${newTheme}"]`);
       if (meta && schemeMeta) {
@@ -323,8 +368,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
         if (color) meta.setAttribute('content', color);
       }
     });
-
-    sound.playClick(900, 0.03, 0.06);
   }, [theme]);
 
   const toggleSound = useCallback(() => {
@@ -337,21 +380,24 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       const next = !prev;
       document.documentElement.setAttribute('data-grain', next ? 'true' : 'false');
       localStorage.setItem('grain', next ? 'true' : 'false');
-      sound.playChirp(600, 300, 0.03, 0.05);
+      sound.play('toggle', { on: next });
       return next;
     });
   }, []);
 
   const changeViewMode = useCallback((mode: 'grid' | 'table') => {
-    setViewMode(mode);
+    setViewMode((prev) => {
+      if (prev !== mode) {
+        sound.play('swish', { vel: 0.5 });
+      }
+      return mode;
+    });
     localStorage.setItem('view_mode', mode);
     window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
-    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
   }, []);
 
   const openSysDiagnostic = useCallback(() => {
     window.dispatchEvent(new CustomEvent('open-sys-diagnostic'));
-    sound.playChirp(500, 900, 0.04, 0.06);
     setControlsOpen(false);
   }, []);
 
@@ -365,7 +411,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setCommandOpen((prev) => !prev);
-        sound.playDrawer();
         return;
       }
 
@@ -546,7 +591,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               onClick={(e) => {
                 e.preventDefault();
                 onNavigate('/');
-                sound.playTick();
                 setMobileMenuOpen(false);
               }}
               data-cursor="link"
@@ -570,7 +614,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
               data-nav-pill
               aria-hidden="true"
             />
-            {navItems.map((item, idx) => {
+            {navItems.map((item) => {
               const isActive = currentPath === item.path;
 
               return (
@@ -584,12 +628,10 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                     onClick={(e) => {
                       e.preventDefault();
                       onNavigate(item.path);
-                      sound.playTick();
                       setMobileMenuOpen(false);
                     }}
                     onMouseEnter={() => {
                       handleNavHover(item.path);
-                      sound.playClick(900 + idx * 75, 0.015, 0.03);
                     }}
                     data-cursor="link"
                     data-magnetic="0.3"
@@ -623,7 +665,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 className={styles.cmdKButton}
                 onClick={() => {
                   setCommandOpen(true);
-                  sound.playDrawer();
                 }}
                 aria-label="Open command palette (⌘K)"
                 title="Search and commands [⌘K]"
@@ -746,7 +787,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 className={`${styles.iconBtn} ${controlsOpen ? styles.iconBtnActive : ''}`}
                 onClick={() => {
                   setControlsOpen((prev) => !prev);
-                  sound.playClick(750, 0.02, 0.05);
                 }}
                 aria-label="Controls and layout options"
                 aria-expanded={controlsOpen}
@@ -890,7 +930,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 onClick={(e) => {
                   e.preventDefault();
                   onNavigate('/');
-                  sound.playTick();
                   setMobileMenuOpen(false);
                 }}
               >
@@ -921,7 +960,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                     onClick={(e) => {
                       e.preventDefault();
                       onNavigate(item.path);
-                      sound.playTick();
                       setMobileMenuOpen(false);
                     }}
                   >
@@ -978,7 +1016,6 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setCommandOpen(true);
-                  sound.playDrawer();
                 }}
                 aria-label="Open Command Palette"
               >

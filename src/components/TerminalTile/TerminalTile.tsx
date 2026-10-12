@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { sound } from '../../utils/audio';
+import { useState, useRef, useEffect } from 'react';
+import { wireTerminal } from '../../audio/wire.js';
 import { projects } from '../../data/projects';
 import { profileData } from '../../data/profile';
 import styles from './TerminalTile.module.css';
@@ -17,17 +17,23 @@ interface TerminalTileProps {
 export function TerminalTile({ onNavigate }: TerminalTileProps) {
   const [inputVal, setInputVal] = useState('');
   const outputContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [logs, setLogs] = useState<TerminalLog[]>([
     { id: '1', type: 'info', text: 'DHAKA_SENTINEL_NODE // v2.4.0-PROD INITIALIZED' },
     { id: '2', type: 'output', text: 'Type a command or click a quick action below:' },
   ]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      return wireTerminal(inputRef.current);
+    }
+  }, []);
+
   const handleRunCommand = (cmd: string) => {
     const clean = cmd.trim().toLowerCase();
     if (!clean) return;
 
-    sound.playClick(750, 0.02, 0.05);
 
     const now = Date.now().toString();
     const newLogs: TerminalLog[] = [
@@ -239,6 +245,7 @@ export function TerminalTile({ onNavigate }: TerminalTileProps) {
         >
           <span className={styles.promptArrow}>$&nbsp;</span>
           <input
+            ref={inputRef}
             type="text"
             className={styles.cmdInput}
             value={inputVal}

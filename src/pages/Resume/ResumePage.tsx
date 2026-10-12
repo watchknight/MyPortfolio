@@ -1,12 +1,10 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { RollText } from '../../components/RollText/RollText';
-import { sound } from '../../utils/audio';
 import { profileData } from '../../data/profile';
 import styles from './ResumePage.module.css';
 
 export function ResumePage() {
   const handlePrint = () => {
-    sound.playClick();
     window.print();
   };
 
@@ -27,7 +25,6 @@ export function ResumePage() {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.primaryAction}
-            onClick={() => sound.playTick()}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

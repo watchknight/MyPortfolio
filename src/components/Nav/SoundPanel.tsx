@@ -27,8 +27,11 @@ export function SoundPanel({ isMobile = false }: SoundPanelProps) {
   };
 
   const handleToggleAmbient = () => {
-    sound.setAmbient(!soundState.ambient);
+    const next = !soundState.ambient;
+    sound.setAmbient(next);
+    sound.play('toggle', { on: next });
   };
+
 
   const handlePlayVoice = (voice: string) => {
     if (!soundState.on) return;

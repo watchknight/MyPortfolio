@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { sound } from '../../utils/audio';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
 import styles from './SysDiagnosticModal.module.css';
@@ -100,7 +99,6 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
   const runAllDiagnostics = useCallback(async () => {
     setIsRunning(true);
     resetTests();
-    sound.playClick(600, 0.03, 0.08);
 
     // Step 1: Web Audio DSP
     setSteps((prev) =>
@@ -108,7 +106,6 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
     );
     await new Promise((r) => setTimeout(r, 350));
     try {
-      sound.playChirp(440, 880, 0.06, 0.05);
       const sampleRate = (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext) ? '48kHz' : 'Active';
       setSteps((prev) =>
         prev.map((s) =>
@@ -220,7 +217,6 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
     const hash = `SYS-AUTH//DHAKA-NODE[23.8103N,90.4125E]//RTT${rtt}MS//FPS60//SIG_${timestamp}`;
     setCertToken(hash);
     setIsRunning(false);
-    sound.playChirp(800, 1200, 0.08, 0.06);
   }, [resetTests]);
 
   // Trigger on open
@@ -247,7 +243,6 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
     if (!certToken) return;
     navigator.clipboard.writeText(certToken);
     setCopied(true);
-    sound.playClick(900, 0.03, 0.07);
     setTimeout(() => setCopied(false), 2500);
   };
 

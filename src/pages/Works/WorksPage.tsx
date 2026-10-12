@@ -64,16 +64,16 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
   }, [activeFilter]);
 
   const handleFilterClick = (filter: 'all' | 'Web App' | 'Tool' | 'Commercial') => {
-    sound.playTick();
     setActiveFilter(filter);
   };
 
   const handleToggleView = (mode: 'grid' | 'table') => {
     if (mode === viewMode) return;
-    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
+    sound.play('swish', { vel: 0.5 });
     applyViewMode(mode);
     window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
   };
+
 
   return (
     <div className={styles.pageContainer}>
@@ -164,13 +164,14 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
         </div>
       ) : (
         <div className={styles.projectsGrid}>
-        {filteredProjects.map((p) => {
+        {filteredProjects.map((p, i) => {
           return (
             <SpotlightCard
               key={p.id}
               as="article"
               data-tile
               data-cursor="inspect"
+              data-degree={5 + (i % 7)}
               data-cursor-label="View project"
               className={styles.projectCard}
               contentClassName={styles.projectCardContent}
@@ -218,7 +219,6 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.primaryActionBtn}
-                    onClick={() => sound.playTick()}
                     data-cursor="link"
                   >
                     <RollText>Visit Live Site</RollText>
@@ -230,7 +230,8 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                   type="button"
                   className={p.liveUrl ? styles.secondaryActionBtn : styles.primaryActionBtn}
                   onClick={() => {
-                    sound.playClick();
+                    sound.play('pluck', { note: 69 });
+                    sound.play('swish', { dir: 1 });
                     onSelectProject?.(p.id);
                   }}
                   data-cursor="link"
@@ -245,7 +246,6 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.secondaryActionBtn}
-                    onClick={() => sound.playTick()}
                     data-cursor="link"
                     title="View Source on GitHub"
                   >

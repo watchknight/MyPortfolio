@@ -1,5 +1,4 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { sound } from '../../utils/audio';
 import { DeveloperASTCard } from '../../components/DeveloperAST/DeveloperASTCard';
 import styles from './FoundationPage.module.css';
 
@@ -121,7 +120,6 @@ export function FoundationPage() {
               <div
                 key={m.year}
                 className={styles.timelineItem}
-                onMouseEnter={() => sound.playTick()}
               >
                 <span className={`${styles.timelineDot} ${m.active ? styles.timelineDotActive : ''}`} />
 
@@ -160,7 +158,6 @@ export function FoundationPage() {
               className={styles.skillCategory}
               contentClassName={styles.skillCategoryContent}
               tiltIntensity={6}
-              onMouseEnter={() => sound.playTick()}
             >
               <h2 className={styles.catTitle}>{cat.title}</h2>
               <div className={styles.skillPills}>

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { RollText } from '../../components/RollText/RollText';
-import { sound } from '../../utils/audio';
 import styles from './NotFoundPage.module.css';
 
 interface NotFoundPageProps {
@@ -25,7 +24,6 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
 
       if (e.key === 'h' || e.key === 'H') {
         e.preventDefault();
-        sound.playTick();
         if (onNavigate) {
           onNavigate('/');
         } else if (typeof window !== 'undefined') {
@@ -39,7 +37,6 @@ export function NotFoundPage({ onNavigate }: NotFoundPageProps) {
   }, [onNavigate]);
 
   const handleRoute = (target: string) => {
-    sound.playTick();
     if (onNavigate) {
       onNavigate(target);
     } else if (typeof window !== 'undefined') {

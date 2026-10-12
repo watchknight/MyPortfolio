@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import type { ProjectData } from '../../data/projects';
 import { MechanicalCounter } from '../MechanicalCounter/MechanicalCounter';
-import { sound } from '../../utils/audio';
+import { sound } from '../../audio/sound.js';
 import styles from './ProjectLedger.module.css';
 
 interface ProjectLedgerProps {
@@ -232,9 +232,8 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
 
     localStorage.setItem(`likes_${id}`, next.toString());
     localStorage.setItem(`has_liked_${id}`, String(!hasLiked));
-
-    sound.playClick(hasLiked ? 450 : 850, 0.03, 0.08);
   };
+
 
   const [sortField, setSortField] = useState<'title' | 'category' | 'likes'>('likes');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -246,7 +245,6 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
       setSortField(field);
       setSortDirection('desc');
     }
-    sound.playClick(720, 0.02, 0.05);
   };
 
   const sortedProjects = useMemo(() => {
@@ -405,14 +403,15 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
   const handleRowClick = (project: ProjectData) => {
     if (isTouchDevice) {
       if (activeTouchProjectId === project.id) {
-        sound.playDrawer();
+        sound.play('pluck', { note: 69 });
+        sound.play('swish', { dir: 1 });
         onSelectProject(project);
       } else {
-        sound.playClick(650, 0.02, 0.06);
         setActiveTouchProjectId(project.id);
       }
     } else {
-      sound.playDrawer();
+      sound.play('pluck', { note: 69 });
+      sound.play('swish', { dir: 1 });
       onSelectProject(project);
     }
   };
@@ -476,7 +475,7 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
         <div role="columnheader">Action</div>
       </div>
 
-      {sortedProjects.map((project: ProjectData) => {
+      {sortedProjects.map((project: ProjectData, i: number) => {
         const isHovered = hoveredProject?.id === project.id;
         const isTouchActive = isTouchDevice && activeTouchProjectId === project.id;
 
@@ -492,13 +491,16 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  sound.playDrawer();
+                  sound.play('pluck', { note: 69 });
+                  sound.play('swish', { dir: 1 });
                   onSelectProject(project);
                 }
               }}
               data-cursor="inspect"
+              data-degree={5 + (i % 7)}
               data-cursor-label="View project"
             >
+
               {/* Column 1: Name & Domain */}
               <div className={styles.nameCol} role="cell">
                 <div className={styles.projectIcon}>
@@ -560,7 +562,8 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
                   className={styles.actionBtn}
                   onClick={(e) => {
                     e.stopPropagation();
-                    sound.playDrawer();
+                    sound.play('pluck', { note: 69 });
+                    sound.play('swish', { dir: 1 });
                     onSelectProject(project);
                   }}
                   data-cursor="link"
@@ -597,7 +600,8 @@ export function ProjectLedger({ projects, onSelectProject }: ProjectLedgerProps)
                     className={styles.touchInspectBtn}
                     onClick={(e) => {
                       e.stopPropagation();
-                      sound.playDrawer();
+                      sound.play('pluck', { note: 69 });
+                      sound.play('swish', { dir: 1 });
                       onSelectProject(project);
                     }}
                   >

@@ -3,7 +3,8 @@ import { useRouter } from './hooks/useRouter';
 import { projects, type ProjectData } from './data/projects';
 import { initCursor } from './motion/cursor';
 import { initMotion, ScrollTrigger, gsap } from './motion/index';
-import { initSound } from './audio/sound.js';
+import { sound, initSound } from './audio/sound.js';
+import { initSoundHooks, initSections } from './audio/hooks.js';
 import { migrateOldSoundStorage } from './utils/audio';
 import { Nav } from './components/Nav/Nav';
 import { HomePage } from './pages/Home/HomePage';
@@ -39,6 +40,7 @@ export default function App({ initialPath, routes }: AppProps) {
 
   const mainRef = useRef<HTMLElement>(null);
   const isFirstMount = useRef(true);
+  const isFirstSysMount = useRef(true);
   const audioInitializedRef = useRef(false);
 
   useScrollLock(Boolean(selectedProject) || sysCheckOpen);
@@ -53,7 +55,18 @@ export default function App({ initialPath, routes }: AppProps) {
     audioInitializedRef.current = true;
     migrateOldSoundStorage();
     initSound();
+    initSoundHooks();
+    initSections();
   }, []);
+
+  // Sys switch open / close sound
+  useEffect(() => {
+    if (isFirstSysMount.current) {
+      isFirstSysMount.current = false;
+      return;
+    }
+    sound.play('toggle', { on: sysCheckOpen });
+  }, [sysCheckOpen]);
 
   // Top-level motion system entry point (StrictMode safe)
   useEffect(() => {
@@ -70,6 +83,9 @@ export default function App({ initialPath, routes }: AppProps) {
     }
     if (prevPathRef.current === currentPath) return;
     prevPathRef.current = currentPath;
+
+    sound.play('swish', { dir: 1, vel: 0.6 });
+
 
     const mainEl = mainRef.current;
     const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;

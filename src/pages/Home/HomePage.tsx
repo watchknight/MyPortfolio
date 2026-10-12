@@ -52,17 +52,14 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
   const scrollToSelectedWork = useCallback(() => {
     document.getElementById('selected-work')?.scrollIntoView({ behavior: 'smooth' });
-    sound.playTick();
   }, []);
 
   const scrollToContact = useCallback(() => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-    sound.playTick();
   }, []);
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    sound.playTick();
   }, []);
 
   const applyViewMode = useCallback((mode: 'grid' | 'table') => {
@@ -103,10 +100,11 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
   const changeViewMode = useCallback((mode: 'grid' | 'table') => {
     if (mode === viewMode) return;
-    sound.playClick(mode === 'grid' ? 650 : 720, 0.02, 0.06);
+    sound.play('swish', { vel: 0.5 });
     applyViewMode(mode);
     window.dispatchEvent(new CustomEvent('set-view-mode', { detail: mode }));
   }, [viewMode, applyViewMode]);
+
 
   const telemetryRef = useRef<HTMLElement>(null);
   const [isTelemetryVisible, setIsTelemetryVisible] = useState(false);
@@ -186,7 +184,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       // ignore clipboard error in headless/restricted environments
     }
     setCopiedEmail(true);
-    sound.playClick(900, 0.03, 0.06);
+    sound.play('chime');
     if (copyTimeoutRef.current) {
       clearTimeout(copyTimeoutRef.current);
     }
@@ -216,7 +214,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
   return (
     <div className={styles.homeContainer}>
       {/* ── 2. HERO (min-height 100svh, content bottom-aligned, left-aligned) ── */}
-      <section className={styles.heroSection} aria-label="Introduction">
+      <section className={styles.heroSection} data-section="hero" aria-label="Introduction">
         <div className={styles.heroGrid}>
           {/* Cols 1–8: Headline, typewriter, CTAs */}
           <div className={styles.heroContent}>
@@ -261,7 +259,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.heroTextLink}
-                  onClick={() => sound.playTick()}
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
@@ -334,7 +331,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       </section>
 
       {/* ── 3. SELECTED WORK (bento) ── */}
-      <section id="selected-work" className={styles.section} aria-label="Selected Work">
+      <section id="selected-work" data-section="work" className={styles.section} aria-label="Selected Work">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
             <span className={styles.sectionEyebrow}>Selected projects</span>
@@ -394,16 +391,19 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 className={`${styles.bentoTile} ${styles.featureTilePurefeed}`}
                 data-tile="feature"
                 data-cursor="inspect"
+                data-degree="5"
                 data-cursor-label="View project"
                 tabIndex={0}
                 onClick={() => {
-                  sound.playClick();
+                  sound.play('pluck', { note: 69 });
+                  sound.play('swish', { dir: 1 });
                   onSelectProject?.(purefeed.id);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    sound.playClick();
+                    sound.play('pluck', { note: 69 });
+                    sound.play('swish', { dir: 1 });
                     onSelectProject?.(purefeed.id);
                   }
                 }}
@@ -442,7 +442,8 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                     className={styles.tilePrimaryBtn}
                     onClick={(e) => {
                       e.stopPropagation();
-                      sound.playClick();
+                      sound.play('pluck', { note: 69 });
+                      sound.play('swish', { dir: 1 });
                       onSelectProject?.(purefeed.id);
                     }}
                     data-cursor="link"
@@ -458,10 +459,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.tileSecondaryBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        sound.playTick();
-                      }}
                       data-cursor="link"
                       data-magnetic="0.3"
                     >
@@ -481,16 +478,19 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 className={`${styles.bentoTile} ${styles.featureTileDoclens}`}
                 data-tile="feature"
                 data-cursor="inspect"
+                data-degree="6"
                 data-cursor-label="View project"
                 tabIndex={0}
                 onClick={() => {
-                  sound.playClick();
+                  sound.play('pluck', { note: 69 });
+                  sound.play('swish', { dir: 1 });
                   onSelectProject?.(doclensbd.id);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    sound.playClick();
+                    sound.play('pluck', { note: 69 });
+                    sound.play('swish', { dir: 1 });
                     onSelectProject?.(doclensbd.id);
                   }
                 }}
@@ -530,10 +530,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.tilePrimaryBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        sound.playTick();
-                      }}
                       data-cursor="link"
                       data-magnetic="0.3"
                     >
@@ -548,10 +544,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.tileSecondaryBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        sound.playTick();
-                      }}
                       data-cursor="link"
                       data-magnetic="0.3"
                     >
@@ -566,22 +558,25 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             )}
 
             {/* Row 2: Standard Tiles (4×3 each: FocusGuard, Rannabanna, POSHRA) */}
-            {otherProjects.map((p) => (
+            {otherProjects.map((p, idx) => (
               <article
                 key={p.id}
                 className={`${styles.bentoTile} ${styles.standardWorkTile}`}
                 data-tile="standard"
                 data-cursor="inspect"
+                data-degree={5 + ((idx + 2) % 7)}
                 data-cursor-label="View project"
                 tabIndex={0}
                 onClick={() => {
-                  sound.playClick();
+                  sound.play('pluck', { note: 69 });
+                  sound.play('swish', { dir: 1 });
                   onSelectProject?.(p.id);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    sound.playClick();
+                    sound.play('pluck', { note: 69 });
+                    sound.play('swish', { dir: 1 });
                     onSelectProject?.(p.id);
                   }
                 }}
@@ -619,10 +614,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.tilePrimaryBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        sound.playTick();
-                      }}
                       data-cursor="link"
                       data-magnetic="0.3"
                     >
@@ -635,7 +626,8 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       className={styles.tilePrimaryBtn}
                       onClick={(e) => {
                         e.stopPropagation();
-                        sound.playClick();
+                        sound.play('pluck', { note: 69 });
+                        sound.play('swish', { dir: 1 });
                         onSelectProject?.(p.id);
                       }}
                       data-cursor="link"
@@ -652,10 +644,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.tileSecondaryBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        sound.playTick();
-                      }}
                       data-cursor="link"
                       data-magnetic="0.3"
                     >
@@ -666,18 +654,17 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               </article>
             ))}
 
+
             {/* Row 3: Full-Width INVERTED Tile (12×1): View all N projects */}
             <div
               className={styles.invertedViewAllTile}
               data-tile="inverted"
               onClick={() => {
-                sound.playTick();
                 onNavigate('/works');
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  sound.playTick();
                   onNavigate('/works');
                 }
               }}
@@ -706,7 +693,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       </section>
 
       {/* ── 4. ABOUT AND TOOLS (bento) ── */}
-      <section id="about" className={styles.section} aria-label="About & Tools">
+      <section id="about" data-section="about" className={styles.section} aria-label="About & Tools">
         <header className={styles.sectionHeader}>
           <div className={styles.sectionTitleGroup}>
             <span className={styles.sectionEyebrow}>Background and capabilities</span>
@@ -736,7 +723,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   className={styles.tilePrimaryBtn}
                   onClick={(e) => {
                     e.preventDefault();
-                    sound.playClick();
                     onNavigate('/resume');
                   }}
                   data-cursor="link"
@@ -808,7 +794,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   className={styles.inlineTimelineLink}
                   onClick={(e) => {
                     e.preventDefault();
-                    sound.playTick();
                     onNavigate('/foundation');
                   }}
                   data-cursor="link"
@@ -865,7 +850,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.invertedIconLink}
-                  onClick={() => sound.playTick()}
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
@@ -879,7 +863,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.invertedIconLink}
-                  onClick={() => sound.playTick()}
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
@@ -907,14 +890,14 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
       </section>
 
       {/* ── 5. GUESTBOOK BAND (one full-width surface tile, radius --r-xl) ── */}
-      <section id="guestbook" className={styles.section} aria-label="Digital Guestbook">
+      <section id="guestbook" data-section="guestbook" className={styles.section} aria-label="Digital Guestbook">
         <div className={styles.guestbookTileContainer} data-tile="surface">
           <SignatureCanvas />
         </div>
       </section>
 
       {/* ── 6. CONTACT AND FOOTER ── */}
-      <section id="contact" className={styles.section} aria-label="Contact and Footer">
+      <section id="contact" data-section="contact" className={styles.section} aria-label="Contact and Footer">
         <div className={styles.contactCard} data-tile="surface">
           <h2 className={styles.contactHeading}>Interested in working together?</h2>
           <p className={styles.contactSubtext}>
@@ -928,7 +911,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 type="button"
                 className={styles.primaryPillBtn}
                 onClick={() => {
-                  sound.playClick();
                   onNavigate('/contact');
                 }}
                 data-cursor="link"
@@ -959,7 +941,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                onClick={() => sound.playTick()}
                 data-cursor="link"
                 data-magnetic="0.3"
               >
@@ -972,7 +953,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                onClick={() => sound.playTick()}
                 data-cursor="link"
                 data-magnetic="0.3"
               >
@@ -985,7 +965,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                onClick={() => sound.playTick()}
                 data-cursor="link"
                 data-magnetic="0.3"
               >
@@ -1022,3 +1001,4 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     </div>
   );
 }
+

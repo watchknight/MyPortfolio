@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { RollText } from '../../components/RollText/RollText';
-import { sound } from '../../utils/audio';
+import { sound } from '../../audio/sound.js';
 import { profileData } from '../../data/profile';
 import styles from './ContactPage.module.css';
 
@@ -106,7 +106,7 @@ export function ContactPage() {
       // ignore
     }
     setCopied(true);
-    sound.playClick(900, 0.03, 0.08);
+    sound.play('chime');
     if (copyTimeoutRef.current) {
       clearTimeout(copyTimeoutRef.current);
     }
@@ -126,7 +126,6 @@ export function ContactPage() {
       // ignore
     }
     setDraftCopied(true);
-    sound.playClick(900, 0.03, 0.08);
     setTimeout(() => setDraftCopied(false), 3000);
   };
 
@@ -138,13 +137,11 @@ export function ContactPage() {
 
     if (Object.keys(currentErrors).length > 0) {
       setSubmitError('Transmission blocked: Please review and resolve the highlighted errors below.');
-      sound.playClick(320, 0.04, 0.08);
       return;
     }
 
     setSubmitError(null);
     setIsSubmitting(true);
-    sound.playChirp(600, 1100, 0.06, 0.08);
 
     // Visible processing state before opening default mail client
     await new Promise((resolve) => setTimeout(resolve, 450));
@@ -260,7 +257,6 @@ export function ContactPage() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialBtn}
-              onClick={() => sound.playTick()}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
@@ -273,7 +269,6 @@ export function ContactPage() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialBtn}
-              onClick={() => sound.playTick()}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

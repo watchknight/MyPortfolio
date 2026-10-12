@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { sound } from '../../utils/audio';
+import { sound } from '../../audio/sound.js';
 import styles from './ProjectSimulator.module.css';
 
 interface ProjectSimulatorProps {
@@ -57,12 +57,10 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
   ];
 
   const handleTestDomain = (domain: string) => {
-    sound.playClick(800, 0.02, 0.05);
     setTestedDomain(domain);
   };
 
   const togglePantry = (item: string) => {
-    sound.playClick(650, 0.02, 0.04);
     setSelectedPantry((prev) =>
       prev.includes(item) ? prev.filter((p) => p !== item) : [...prev, item]
     );
@@ -137,7 +135,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
               onClick={() => {
                 const next = !pureFeedEnabled;
                 setPureFeedEnabled(next);
-                sound.playClick(next ? 850 : 450, 0.03, 0.06);
+                sound.play('toggle', { on: next });
               }}
               aria-label="Toggle PureFeed Countermeasure"
               data-cursor="link"
@@ -284,7 +282,6 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
                 className={`${styles.dlBtn} ${selectedFrame === 'wayfarer' ? styles.dlBtnActive : ''}`}
                 onClick={() => {
                   setSelectedFrame('wayfarer');
-                  sound.playClick(600, 0.02, 0.04);
                 }}
                 data-cursor="link"
               >
@@ -295,7 +292,6 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
                 className={`${styles.dlBtn} ${selectedFrame === 'aviator' ? styles.dlBtnActive : ''}`}
                 onClick={() => {
                   setSelectedFrame('aviator');
-                  sound.playClick(700, 0.02, 0.04);
                 }}
                 data-cursor="link"
               >
@@ -306,7 +302,6 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
                 className={`${styles.dlBtn} ${selectedFrame === 'titanium' ? styles.dlBtnActive : ''}`}
                 onClick={() => {
                   setSelectedFrame('titanium');
-                  sound.playClick(800, 0.02, 0.04);
                 }}
                 data-cursor="link"
               >
@@ -446,7 +441,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
           <div className={styles.dspHeader}>
             <span>Interactive Frequency Synthesizer Pads:</span>
             <span className={styles.dspStatus}>
-              {sound.isEnabled() ? '● Audio Online' : '○ Click to Test Audio'}
+              {sound.state.on ? '● Audio Online' : '○ Sound Muted (Turn on via M)'}
             </span>
           </div>
 
@@ -455,59 +450,55 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
               type="button"
               className={styles.dspPadBtn}
               onClick={() => {
-                if (!sound.isEnabled()) sound.toggle();
-                sound.playClick(850, 0.02, 0.08);
+                sound.play('toggle', { on: true });
               }}
               data-cursor="link"
             >
-              <span className={styles.dspFreq}>850 Hz</span>
-              <span className={styles.dspName}>Switch Click</span>
+              <span className={styles.dspFreq}>Voice</span>
+              <span className={styles.dspName}>Toggle</span>
             </button>
 
             <button
               type="button"
               className={styles.dspPadBtn}
               onClick={() => {
-                if (!sound.isEnabled()) sound.toggle();
-                sound.playChirp(400, 1100, 0.06, 0.08);
+                sound.play('chime');
               }}
               data-cursor="link"
             >
-              <span className={styles.dspFreq}>400&rarr;1.1k Hz</span>
-              <span className={styles.dspName}>Chirp Ramp</span>
+              <span className={styles.dspFreq}>Voice</span>
+              <span className={styles.dspName}>Chime</span>
             </button>
 
             <button
               type="button"
               className={styles.dspPadBtn}
               onClick={() => {
-                if (!sound.isEnabled()) sound.toggle();
-                sound.playDrawer();
+                sound.play('swish', { dir: 1 });
               }}
               data-cursor="link"
             >
-              <span className={styles.dspFreq}>240&rarr;420 Hz</span>
-              <span className={styles.dspName}>Drawer Whoosh</span>
+              <span className={styles.dspFreq}>Voice</span>
+              <span className={styles.dspName}>Swish</span>
             </button>
 
             <button
               type="button"
               className={styles.dspPadBtn}
               onClick={() => {
-                if (!sound.isEnabled()) sound.toggle();
-                sound.playTick();
+                sound.play('tick');
               }}
               data-cursor="link"
             >
-              <span className={styles.dspFreq}>1.2 kHz</span>
-              <span className={styles.dspName}>Subtle Tick</span>
+              <span className={styles.dspFreq}>Voice</span>
+              <span className={styles.dspName}>Tick</span>
             </button>
           </div>
 
           <div className={styles.dspTelemetry}>
             <span className={styles.dspBadge}>DSP HARDWARE SYNTHESIS</span>
             <span className={styles.dspDesc}>
-              Pure Web Audio triangle and sine oscillators with exponential decay. Zero external audio downloads.
+              Pure Web Audio pentatonic synthesis oscillators with dynamic filters. Zero external audio downloads.
             </span>
           </div>
         </div>
