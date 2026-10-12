@@ -43,7 +43,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     if (typeof window !== 'undefined') {
       const isTouch = window.matchMedia('(pointer: coarse)').matches;
       const savedGrain = localStorage.getItem('grain');
-      return (savedGrain === 'true' || (savedGrain === null && !isTouch)) && !isTouch;
+      return savedGrain === 'true' || (savedGrain === null && !isTouch);
     }
     return false;
   });
@@ -158,10 +158,11 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     movePillToTarget(activeEl || null, true);
   };
 
-  // Sync grain attribute to document
+  // Sync grain attribute and grain-on class to document
   useEffect(() => {
     if (typeof window === 'undefined') return;
     document.documentElement.setAttribute('data-grain', grainActive ? 'true' : 'false');
+    document.documentElement.classList.toggle('grain-on', grainActive);
   }, [grainActive]);
 
   // Listen for view-mode change events dispatched elsewhere
@@ -379,6 +380,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     setGrainActive((prev) => {
       const next = !prev;
       document.documentElement.setAttribute('data-grain', next ? 'true' : 'false');
+      document.documentElement.classList.toggle('grain-on', next);
       localStorage.setItem('grain', next ? 'true' : 'false');
       sound.play('toggle', { on: next });
       return next;

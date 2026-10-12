@@ -17,7 +17,7 @@ const vars = (body) =>
 
 const phases = {};
 for (const [, sel, body] of atmoCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-  if (sel.trim().startsWith("@") || !body.includes("--sky-bot")) continue;
+  if (sel.trim().startsWith("@") || !/--sky-bot\s*:/.test(body)) continue;
   const m = sel.match(/data-phase="(\w+)"/);
   phases[m ? m[1] : "night"] = { ...(m ? phases.night : {}), ...vars(body) };
 }

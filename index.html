@@ -29,6 +29,10 @@
           var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
           if (savedGrain === 'true' || (savedGrain === null && !isTouch)) {
             document.documentElement.setAttribute('data-grain', 'true');
+            document.documentElement.classList.add('grain-on');
+          } else {
+            document.documentElement.setAttribute('data-grain', 'false');
+            document.documentElement.classList.remove('grain-on');
           }
         } catch (e) {}
       })();

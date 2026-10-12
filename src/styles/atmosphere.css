@@ -33,3 +33,73 @@ html[data-phase="dusk"] {
   --glow-a:#3C46F0;  --glow-b:#2A62F0;  --glow-c:#3F8CFF;
   --alpha-a:0.53;    --alpha-b:0.38;    --alpha-c:0.21;
 }
+
+/* html carries the fallback so first paint and iOS overscroll match; body MUST be transparent */
+html { background: var(--sky-mid); }
+html[data-theme="light"] { background: var(--bg); }
+body, #root { background: transparent; }
+
+.atmo {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; isolation: isolate;
+  pointer-events: none; contain: strict;
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bot) 100%);
+}
+[data-theme="light"] .atmo { display: none; }
+
+/* three glows: outer = ambient CSS motion (transform + opacity only), inner = section balance (GSAP opacity) */
+.atmo__blob { position: absolute; will-change: transform, opacity; }
+.atmo__layer { position: absolute; inset: 0; }
+.atmo__blob--a { width: 95vmax; height: 95vmax; left: 52%;  top: -30%; animation: drift-a 74s ease-in-out infinite alternate, pulse-a 52s ease-in-out infinite alternate; }
+.atmo__blob--b { width: 85vmax; height: 85vmax; left: -25%; top: 40%;  animation: drift-b 88s ease-in-out infinite alternate, pulse-b 61s ease-in-out infinite alternate; }
+.atmo__blob--c { width: 70vmax; height: 70vmax; left: 20%;  top: 10%;  animation: drift-c 102s ease-in-out infinite alternate, pulse-c 74s ease-in-out infinite alternate; }
+.atmo__blob--a .atmo__layer { background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--glow-a) calc(var(--alpha-a) * 100%), transparent) 0%,
+      color-mix(in srgb, var(--glow-a) calc(var(--alpha-a) * 55%), transparent) 35%,
+      color-mix(in srgb, var(--glow-a) calc(var(--alpha-a) * 16%), transparent) 70%,
+      transparent 100%); }
+.atmo__blob--b .atmo__layer { background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--glow-b) calc(var(--alpha-b) * 100%), transparent) 0%,
+      color-mix(in srgb, var(--glow-b) calc(var(--alpha-b) * 55%), transparent) 35%,
+      color-mix(in srgb, var(--glow-b) calc(var(--alpha-b) * 16%), transparent) 70%,
+      transparent 100%); }
+.atmo__blob--c .atmo__layer { background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--glow-c) calc(var(--alpha-c) * 100%), transparent) 0%,
+      color-mix(in srgb, var(--glow-c) calc(var(--alpha-c) * 55%), transparent) 35%,
+      color-mix(in srgb, var(--glow-c) calc(var(--alpha-c) * 16%), transparent) 70%,
+      transparent 100%); }
+
+@keyframes drift-a { from { transform: translate3d(-8%, -6%, 0) scale(1); } to { transform: translate3d(10%, 8%, 0) scale(1.18); } }
+@keyframes drift-b { from { transform: translate3d(7%, 5%, 0) scale(1); }   to { transform: translate3d(-5%, -6%, 0) scale(1.18); } }
+@keyframes drift-c { from { transform: translate3d(-5%, 6%, 0) scale(1); }  to { transform: translate3d(8%, -5%, 0) scale(1.18); } }
+@keyframes pulse-a { from { opacity: .55; } to { opacity: 1; } }
+@keyframes pulse-b { from { opacity: 1; }   to { opacity: .5; } }
+@keyframes pulse-c { from { opacity: .2; }  to { opacity: .9; } }
+
+/* soft light that follows the pointer (desktop only), kept at or below .08 alpha so text contrast holds */
+.atmo__pointer {
+  position: absolute; left: 0; top: 0; width: 60vmin; height: 60vmin; margin: -30vmin 0 0 -30vmin;
+  opacity: 0; transition: opacity .8s ease; will-change: transform;
+  background: radial-gradient(closest-side, rgb(var(--ice) / .08), rgb(var(--ice) / .03) 55%, transparent 100%);
+}
+.atmo__pointer.is-on { opacity: 1; }
+
+/* grain dithers the gradients (kills banding); overlay inside the isolated .atmo group, so only the background is blended */
+.atmo__grain {
+  position: absolute; inset: 0; opacity: .08; mix-blend-mode: overlay; background-size: 220px 220px;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='220'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='.9'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url%28%23n%29'/%3E%3C/svg%3E");
+}
+html:not(.grain-on) .atmo__grain { display: none; }
+
+html.atmo-off .atmo__blob { animation: none; }
+html.atmo-off .atmo__pointer { display: none; }
+html.atmo-paused .atmo__blob { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { transition: none; }
+  .atmo__blob { animation: none; }
+  .atmo__pointer { display: none; }
+}
+@media (hover: none), (pointer: coarse) {
+  .atmo__pointer, .atmo__blob--c { display: none; }
+  .atmo__grain { mix-blend-mode: normal; opacity: .035; }
+}

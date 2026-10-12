@@ -154,6 +154,13 @@ export default function App({ initialPath, routes }: AppProps) {
 
   return (
     <>
+      <div className="atmo" aria-hidden="true">
+        <div className="atmo__blob atmo__blob--a"><div className="atmo__layer" /></div>
+        <div className="atmo__blob atmo__blob--b"><div className="atmo__layer" /></div>
+        <div className="atmo__blob atmo__blob--c"><div className="atmo__layer" /></div>
+        <div className="atmo__pointer" />
+        <div className="atmo__grain" />
+      </div>
       <a href="#main-content" className="skipLink">
         Skip to main content
       </a>
