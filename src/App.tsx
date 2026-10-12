@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useRouter } from './hooks/useRouter';
 import { projects, type ProjectData } from './data/projects';
 import { initCursor } from './motion/cursor';
+import { initAtmosphere } from './motion/atmosphere.js';
 import { initMotion, ScrollTrigger, gsap } from './motion/index';
 import { sound, initSound } from './audio/sound.js';
 import { initSoundHooks, initSections } from './audio/hooks.js';
@@ -47,6 +48,10 @@ export default function App({ initialPath, routes }: AppProps) {
 
   useEffect(() => {
     return initCursor();
+  }, []);
+
+  useEffect(() => {
+    return initAtmosphere();
   }, []);
 
   // Top-level audio system initialization (client-side only, runs once)

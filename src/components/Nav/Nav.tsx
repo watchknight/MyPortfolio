@@ -6,6 +6,7 @@ import { CommandPalette } from '../CommandPalette/CommandPalette';
 import { Magnetic } from '../Magnetic/Magnetic';
 import { SoundPanel } from './SoundPanel';
 import { gsap, toggleTheme as toggleThemeMotion } from '../../motion/index';
+import { setLive } from '../../motion/atmosphere.js';
 
 import type { RoutePath } from '../../hooks/useRouter';
 import { useScrollLock } from '../../utils/scrollLock';
@@ -46,6 +47,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       return savedGrain === 'true' || (savedGrain === null && !isTouch);
     }
     return false;
+  });
+  const [atmoActive, setAtmoActive] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return !document.documentElement.classList.contains('atmo-off');
+    }
+    return true;
   });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>(() => {
     if (typeof window !== 'undefined') {
@@ -385,6 +392,26 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
       sound.play('toggle', { on: next });
       return next;
     });
+  }, []);
+
+  // Sync atmoActive with html.atmo-off attribute
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const syncAtmo = () => {
+      setAtmoActive(!document.documentElement.classList.contains('atmo-off'));
+    };
+    syncAtmo();
+    const observer = new MutationObserver(syncAtmo);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleAtmosphere = useCallback(() => {
+    const isCurrentlyOff = typeof document !== 'undefined' && document.documentElement.classList.contains('atmo-off');
+    const next = isCurrentlyOff;
+    setLive(next);
+    setAtmoActive(next);
+    sound.play('toggle', { on: next });
   }, []);
 
   const changeViewMode = useCallback((mode: 'grid' | 'table') => {
@@ -896,6 +923,24 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 </button>
               </div>
 
+              {/* Atmosphere Toggle: On / Off */}
+              <div className={styles.controlRow}>
+                <div className={styles.controlInfo}>
+                  <span className={styles.controlLabel}>Atmosphere</span>
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.switchBtn} ${atmoActive ? styles.switchBtnActive : ''}`}
+                  onClick={toggleAtmosphere}
+                  aria-pressed={atmoActive}
+                  aria-label="Toggle live atmosphere"
+                  data-cursor="link"
+                >
+                  <span className={styles.switchKnob} />
+                  <span className={styles.switchStateText}>{atmoActive ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+
               {/* System Diagnostics */}
               <div className={styles.controlRow}>
                 <div className={styles.controlInfo}>
@@ -1071,6 +1116,21 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 >
                   <span className={styles.switchKnob} />
                   <span className={styles.switchStateText}>{grainActive ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+
+              {/* Atmosphere Toggle */}
+              <div className={styles.mobileControlItem}>
+                <span className={styles.controlLabel}>Atmosphere</span>
+                <button
+                  type="button"
+                  className={`${styles.switchBtn} ${atmoActive ? styles.switchBtnActive : ''}`}
+                  onClick={toggleAtmosphere}
+                  aria-pressed={atmoActive}
+                  aria-label="Toggle live atmosphere"
+                >
+                  <span className={styles.switchKnob} />
+                  <span className={styles.switchStateText}>{atmoActive ? 'ON' : 'OFF'}</span>
                 </button>
               </div>
 

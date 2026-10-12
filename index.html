@@ -38,6 +38,22 @@
       })();
     </script>
 
+    <!-- Zero-Flash Atmosphere Boot Script: runs before first paint -->
+    <script>
+      (function () {
+        try {
+          var q = new URLSearchParams(location.search);
+          var h = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Dhaka" }).format(new Date()));
+          var p = h >= 21 || h < 4 ? "night" : h < 8 ? "dawn" : h < 17 ? "day" : "dusk";
+          var root = document.documentElement;
+          root.dataset.phase = q.get("phase") || p;
+          var s = null;
+          try { s = localStorage.getItem("atmo"); } catch (e) {}
+          if (q.get("atmo") === "off" || (q.get("atmo") === null && s === "off")) root.classList.add("atmo-off");
+        } catch (e) {}
+      })();
+    </script>
+
 
     <!-- Primary Meta Tags -->
     <title>Abdur Rahman Moayed — Software Engineer &amp; Systems Architect</title>
