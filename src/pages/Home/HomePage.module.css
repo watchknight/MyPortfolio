@@ -613,7 +613,6 @@
 .featureMediaInset {
   border-radius: var(--r-md);
   overflow: hidden;
-  border: 1px solid var(--line);
   aspect-ratio: 16 / 10;
   min-height: 240px;
 }
@@ -621,7 +620,6 @@
 .standardMediaInset {
   border-radius: var(--r-md);
   overflow: hidden;
-  border: 1px solid var(--line);
   aspect-ratio: 16 / 10;
   min-height: 240px;
 }

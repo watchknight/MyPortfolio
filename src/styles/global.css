@@ -354,3 +354,30 @@ html.has-cursor iframe[data-cursor="hide"] {
   outline-offset: 2px;
 }
 
+/* ── Phase B5: Blue Grade for Media ── */
+.grade      { filter: url(#grade); }
+.grade-soft { filter: url(#grade-soft); }
+.grade-hard { filter: url(#grade-hard); }
+.grade-lite { filter: contrast(1.1) saturate(.8) brightness(.96); }
+
+/* touch devices: cheap filter instead of SVG filters */
+@media (hover: none), (pointer: coarse) {
+  .grade, .grade-soft, .grade-hard { filter: contrast(1.1) saturate(.8) brightness(.96); }
+}
+/* A/B switch: Controls "Grade" switch and ?grade=off both add html.grade-off */
+html.grade-off .grade, html.grade-off .grade-soft, html.grade-off .grade-hard, html.grade-off .grade-lite { filter: none; }
+
+/* media wrapper: .grade goes on the INNER element, never on .media itself */
+.media { position: relative; overflow: hidden; isolation: isolate; border-radius: var(--r-md); background: var(--bg); }
+.media::before { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px rgb(150 180 255 / .10); }
+.media::after  { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; background: radial-gradient(120% 100% at 50% 35%, transparent 55%, rgb(6 12 32 / .5)); }
+
+.media > .grade,
+.media > .grade-soft,
+.media > .grade-hard,
+.media > .grade-lite {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+

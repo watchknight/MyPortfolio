@@ -54,6 +54,12 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     }
     return true;
   });
+  const [gradeActive, setGradeActive] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return !document.documentElement.classList.contains('grade-off');
+    }
+    return true;
+  });
   const [viewMode, setViewMode] = useState<'grid' | 'table'>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('view_mode') as 'grid' | 'table') || 'grid';
@@ -411,6 +417,34 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
     const next = isCurrentlyOff;
     setLive(next);
     setAtmoActive(next);
+    sound.play('toggle', { on: next });
+  }, []);
+
+  // Sync gradeActive with html.grade-off attribute
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const syncGrade = () => {
+      setGradeActive(!document.documentElement.classList.contains('grade-off'));
+    };
+    syncGrade();
+    const observer = new MutationObserver(syncGrade);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleGrade = useCallback(() => {
+    const isCurrentlyOff = typeof document !== 'undefined' && document.documentElement.classList.contains('grade-off');
+    const next = isCurrentlyOff;
+    if (typeof document !== 'undefined') {
+      if (next) {
+        document.documentElement.classList.remove('grade-off');
+        try { localStorage.setItem('grade', 'on'); } catch {}
+      } else {
+        document.documentElement.classList.add('grade-off');
+        try { localStorage.setItem('grade', 'off'); } catch {}
+      }
+    }
+    setGradeActive(next);
     sound.play('toggle', { on: next });
   }, []);
 
@@ -941,6 +975,24 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 </button>
               </div>
 
+              {/* Grade Toggle: On / Off */}
+              <div className={styles.controlRow}>
+                <div className={styles.controlInfo}>
+                  <span className={styles.controlLabel}>Grade</span>
+                </div>
+                <button
+                  type="button"
+                  className={`${styles.switchBtn} ${gradeActive ? styles.switchBtnActive : ''}`}
+                  onClick={toggleGrade}
+                  aria-pressed={gradeActive}
+                  aria-label="Toggle media grade"
+                  data-cursor="link"
+                >
+                  <span className={styles.switchKnob} />
+                  <span className={styles.switchStateText}>{gradeActive ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+
               {/* System Diagnostics */}
               <div className={styles.controlRow}>
                 <div className={styles.controlInfo}>
@@ -1131,6 +1183,21 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 >
                   <span className={styles.switchKnob} />
                   <span className={styles.switchStateText}>{atmoActive ? 'ON' : 'OFF'}</span>
+                </button>
+              </div>
+
+              {/* Grade Toggle */}
+              <div className={styles.mobileControlItem}>
+                <span className={styles.controlLabel}>Grade</span>
+                <button
+                  type="button"
+                  className={`${styles.switchBtn} ${gradeActive ? styles.switchBtnActive : ''}`}
+                  onClick={toggleGrade}
+                  aria-pressed={gradeActive}
+                  aria-label="Toggle media grade"
+                >
+                  <span className={styles.switchKnob} />
+                  <span className={styles.switchStateText}>{gradeActive ? 'ON' : 'OFF'}</span>
                 </button>
               </div>
 

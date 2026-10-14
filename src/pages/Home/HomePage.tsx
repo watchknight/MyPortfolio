@@ -429,11 +429,13 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 </div>
 
                 <div
-                  className={styles.featureMediaInset}
+                  className={`${styles.featureMediaInset} media`}
                   data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ProjectSimulator projectId="purefeed" />
+                  <div className="grade-hard">
+                    <ProjectSimulator projectId="purefeed" />
+                  </div>
                 </div>
 
                 <div className={styles.tileActionsRow}>
@@ -516,11 +518,13 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 </div>
 
                 <div
-                  className={styles.featureMediaInset}
+                  className={`${styles.featureMediaInset} media`}
                   data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ProjectSimulator projectId="doclensbd" />
+                  <div className="grade-lite">
+                    <ProjectSimulator projectId="doclensbd" />
+                  </div>
                 </div>
 
                 <div className={styles.tileActionsRow}>
@@ -600,11 +604,13 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                 </div>
 
                 <div
-                  className={styles.standardMediaInset}
+                  className={`${styles.standardMediaInset} media`}
                   data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ProjectSimulator projectId={p.id} />
+                  <div className="grade">
+                    <ProjectSimulator projectId={p.id} />
+                  </div>
                 </div>
 
                 <div className={styles.tileActionsRow}>

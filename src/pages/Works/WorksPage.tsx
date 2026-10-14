@@ -208,8 +208,10 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
                 </div>
               </div>
 
-              <div className={styles.simulatorDeck}>
-                <ProjectSimulator projectId={p.id} />
+              <div className={`${styles.simulatorDeck} media`}>
+                <div className={p.id === 'doclensbd' ? 'grade-lite' : p.id === 'purefeed' ? 'grade-hard' : 'grade'}>
+                  <ProjectSimulator projectId={p.id} />
+                </div>
               </div>
 
               <div className={styles.cardActions}>
