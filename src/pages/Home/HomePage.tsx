@@ -608,7 +608,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="grade">
+                  <div className="grade-lite">
                     <ProjectSimulator projectId={p.id} />
                   </div>
                 </div>

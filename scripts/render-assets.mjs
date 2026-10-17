@@ -8,21 +8,9 @@ const edgePath = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.
 async function render() {
   mkdirSync('public', { recursive: true });
 
-  const ogPath = resolve('scripts/og-template.html');
-  const ogUrl = pathToFileURL(ogPath).href;
-  const ogOut = resolve('public/og-image.png');
-
-  console.log('Rendering Open Graph image to', ogOut);
-  const edgeOg = spawn(edgePath, [
-    '--headless=new',
-    '--disable-gpu',
-    `--screenshot=${ogOut}`,
-    '--window-size=1200,630',
-    '--hide-scrollbars',
-    ogUrl
-  ]);
-
-  await new Promise((res) => edgeOg.on('close', res));
+  console.log('Rendering Open Graph image...');
+  const genOg = spawn(process.execPath, [resolve('scripts/generate-og-image.mjs')], { stdio: 'inherit' });
+  await new Promise((res) => genOg.on('close', res));
   console.log('Open Graph image rendered successfully.');
 
   // Also copy resume.html to public

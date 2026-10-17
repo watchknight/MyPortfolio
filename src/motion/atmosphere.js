@@ -43,7 +43,8 @@ export function initAtmosphere() {
   const balance = (name, instant = false) => {
     const to = SECTION[name];
     if (!to) return;
-    gsap.to(layers, { opacity: (i) => to[i], duration: instant || calm.matches ? 0 : 2.2, ease: "power2.inOut", overwrite: true });
+    const isMotionOff = instant || calm.matches || root.classList.contains("atmo-off");
+    gsap.to(layers, { opacity: (i) => to[i], duration: isMotionOff ? 0 : 2.2, ease: "power2.inOut", overwrite: true });
   };
   balance("hero", true);
   const io = new IntersectionObserver(
@@ -56,7 +57,12 @@ export function initAtmosphere() {
   if (pointer && fine.matches && !calm.matches) {
     const px = gsap.quickTo(pointer, "x", { duration: 0.9, ease: "power3" });
     const py = gsap.quickTo(pointer, "y", { duration: 0.9, ease: "power3" });
-    const move = (e) => { pointer.classList.add("is-on"); px(e.clientX); py(e.clientY); };
+    const move = (e) => {
+      if (root.classList.contains("atmo-off") || root.classList.contains("atmo-paused")) return;
+      pointer.classList.add("is-on");
+      px(e.clientX);
+      py(e.clientY);
+    };
     addEventListener("pointermove", move, { passive: true });
     off.push(() => removeEventListener("pointermove", move));
   }

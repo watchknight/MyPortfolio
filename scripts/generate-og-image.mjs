@@ -7,18 +7,29 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-const fontPath = path.join(rootDir, 'public', 'fonts', 'bricolage-grotesque-latin-wght-normal.woff2');
-const fontBase64 = fs.readFileSync(fontPath).toString('base64');
+const fontSansPath = path.join(rootDir, 'public', 'fonts', 'bricolage-grotesque-latin-wght-normal.woff2');
+const fontMonoPath = path.join(rootDir, 'public', 'fonts', 'jetbrains-mono-latin-wght-normal.woff2');
+
+const fontSansBase64 = fs.existsSync(fontSansPath) ? fs.readFileSync(fontSansPath).toString('base64') : '';
+const fontMonoBase64 = fs.existsSync(fontMonoPath) ? fs.readFileSync(fontMonoPath).toString('base64') : '';
 
 const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>OpenGraph Image Template</title>
   <style>
     @font-face {
       font-family: 'Bricolage Grotesque';
-      src: url('data:font/woff2;base64,${fontBase64}') format('woff2');
+      src: url('data:font/woff2;base64,${fontSansBase64}') format('woff2');
       font-weight: 200 800;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src: url('data:font/woff2;base64,${fontMonoBase64}') format('woff2');
+      font-weight: 400 700;
       font-style: normal;
       font-display: block;
     }
@@ -34,169 +45,493 @@ const htmlContent = `<!DOCTYPE html>
       background: #0E1A36;
       font-family: 'Bricolage Grotesque', system-ui, sans-serif;
       color: #F1EDE4;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 72px 80px;
       position: relative;
     }
-    .background-grid {
+
+    /* Night Atmosphere Base */
+    .atmo-bg {
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(38, 58, 106, 0.25) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(38, 58, 106, 0.25) 1px, transparent 1px);
-      background-size: 48px 48px;
+      background: linear-gradient(180deg, #0A1330 0%, #0E1A36 55%, #0F1D40 100%);
       z-index: 0;
+    }
+    .atmo-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(0px); /* Contract: no blur filter on composited layers */
       pointer-events: none;
     }
-    .content-wrap {
-      position: relative;
+    /* Glow A (ultramarine #2A44E6, alpha .60) */
+    .atmo-glow-a {
+      width: 900px;
+      height: 900px;
+      right: -150px;
+      top: -250px;
+      background: radial-gradient(closest-side,
+        rgba(42, 68, 230, 0.60) 0%,
+        rgba(42, 68, 230, 0.33) 35%,
+        rgba(42, 68, 230, 0.10) 70%,
+        transparent 100%);
+    }
+    /* Glow B (cobalt #1D58F0, alpha .44) */
+    .atmo-glow-b {
+      width: 800px;
+      height: 800px;
+      left: -200px;
+      bottom: -200px;
+      background: radial-gradient(closest-side,
+        rgba(29, 88, 240, 0.44) 0%,
+        rgba(29, 88, 240, 0.24) 35%,
+        rgba(29, 88, 240, 0.07) 70%,
+        transparent 100%);
+    }
+    /* Glow C (azure #2F8CFF, alpha .26) */
+    .atmo-glow-c {
+      width: 650px;
+      height: 650px;
+      right: 250px;
+      bottom: -100px;
+      background: radial-gradient(closest-side,
+        rgba(47, 140, 255, 0.26) 0%,
+        rgba(47, 140, 255, 0.14) 35%,
+        rgba(47, 140, 255, 0.04) 70%,
+        transparent 100%);
+    }
+
+    /* Grain Overlay */
+    .atmo-grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+      mix-blend-mode: overlay;
+      background-size: 220px 220px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Layout Frame */
+    .layout-frame {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      padding: 64px 72px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    /* Left Column: Identity & Typography */
+    .info-col {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       height: 100%;
-      justify-content: space-between;
     }
-    .top-bar {
+
+    .top-meta {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 16px;
     }
-    .top-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: #A9B4CC;
-    }
-    .signal-pill {
+    .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: #14244A;
       border: 1px solid #263A6A;
-      padding: 6px 16px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #A9B4CC;
+    }
+    .status-dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5BD6A0;
+      box-shadow: 0 0 8px #5BD6A0;
+    }
+    .handle-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: #5F78B2;
+    }
+
+    .middle-identity {
+      margin-top: auto;
+      margin-bottom: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    /* Bone name in display font */
+    .bone-name {
+      font-size: 60px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.0;
+      color: #F1EDE4; /* Bone */
+    }
+    .lead-role {
+      font-size: 22px;
+      font-weight: 500;
+      color: #A9B4CC;
+      line-height: 1.35;
+      max-width: 540px;
+    }
+
+    /* Amber Availability Line */
+    .amber-availability-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #14244A;
+      border: 1px solid rgba(255, 178, 36, 0.45);
+      box-shadow: 0 0 20px rgba(255, 178, 36, 0.08);
+      padding: 8px 18px;
       border-radius: 999px;
       font-size: 15px;
       font-weight: 600;
       color: #F1EDE4;
+      align-self: flex-start;
+      margin-top: 4px;
     }
-    .signal-dot {
-      width: 8px;
-      height: 8px;
+    .amber-dot {
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: #5BD6A0;
-      box-shadow: 0 0 10px #5BD6A0;
+      background: #FFB224;
+      box-shadow: 0 0 10px #FFB224;
+      flex-shrink: 0;
     }
-    .handle {
-      font-size: 18px;
-      color: #A9B4CC;
-      font-weight: 500;
+
+    .bottom-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #5F78B2;
+      border-top: 1px solid #263A6A;
+      padding-top: 18px;
     }
-    .main-body {
+    .bottom-meta strong {
+      color: #F1EDE4;
+      font-weight: 600;
+    }
+
+    /* Right Column: grade-hard Project Preview */
+    .preview-col {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      justify-content: center;
+      height: 100%;
     }
-    .hero-title {
-      font-size: 68px;
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.035em;
-      color: #F1EDE4;
-    }
-    .hero-sub {
-      font-size: 26px;
-      font-weight: 500;
-      color: #A9B4CC;
-      line-height: 1.4;
-      max-width: 960px;
-    }
-    .chips-row {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 8px;
-    }
-    .project-chip {
-      background: #14244A;
+
+    /* Media Chassis */
+    .media {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      border-radius: 20px;
+      background: #0E1A36;
       border: 1px solid #263A6A;
-      padding: 8px 18px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #F1EDE4;
+      box-shadow: 0 24px 48px -12px rgba(6, 12, 32, 0.7);
+    }
+    .media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border-radius: inherit;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(150, 180, 255, 0.12);
+    }
+    .media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(120% 100% at 50% 35%, transparent 55%, rgba(6, 12, 32, 0.5));
+    }
+
+    /* grade-hard SVG filter class */
+    .grade-hard {
+      filter: url(#grade-hard);
+      display: block;
+      width: 100%;
+    }
+
+    /* PureFeed Simulator UI inside preview */
+    .sim-card {
+      background: #14244A;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .chip-accent {
-      color: #FFB224;
-      font-weight: 700;
-    }
-    .bottom-bar {
+    .sim-header {
+      background: #1B2F5E;
+      border-bottom: 1px solid #263A6A;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid #263A6A;
-      padding-top: 24px;
     }
-    .credentials {
-      font-size: 17px;
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-r { background: #FF5F56; }
+    .dot-y { background: #FFBD2E; }
+    .dot-g { background: #27C93F; }
+
+    .window-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
       color: #A9B4CC;
+      background: #14244A;
+      padding: 3px 12px;
+      border-radius: 6px;
+      border: 1px solid #263A6A;
     }
-    .credentials strong {
-      color: #F1EDE4;
+    .sim-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: rgba(91, 214, 160, 0.15);
+      color: #5BD6A0;
+      border: 1px solid rgba(91, 214, 160, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
       font-weight: 600;
     }
-    .internship-badge {
-      display: inline-flex;
+
+    .sim-screen {
+      height: 250px;
+      background: #0E1A36;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+    }
+    .player-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.12;
+      font-size: 64px;
+      color: #F1EDE4;
+    }
+    .player-hud {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .hud-chip {
+      background: rgba(20, 36, 74, 0.85);
+      border: 1px solid #263A6A;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #5BD6A0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hud-meta {
+      background: rgba(20, 36, 74, 0.85);
+      border: 1px solid #263A6A;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #A9B4CC;
+    }
+
+    .player-center {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 8px;
-      background: #FFB224;
-      color: #0E1A36;
-      padding: 10px 22px;
-      border-radius: 999px;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
+    }
+    .play-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 178, 36, 0.15);
+      border: 1.5px solid #FFB224;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFB224;
+      font-size: 18px;
+      padding-left: 3px;
+    }
+    .center-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #F1EDE4;
+    }
+
+    .player-footer {
+      position: relative;
+      z-index: 3;
+      background: #14244A;
+      border: 1px solid #263A6A;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .status-ok {
+      color: #5BD6A0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-counter {
+      color: #A9B4CC;
+    }
+    .preview-caption {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #A9B4CC;
+      padding: 0 4px;
+    }
+    .preview-caption strong {
+      color: #F1EDE4;
+    }
+    .grade-tag {
+      font-size: 10px;
+      color: #5F78B2;
+      border: 1px solid #263A6A;
+      padding: 2px 6px;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <div class="background-grid"></div>
-  <div class="content-wrap">
-    <div class="top-bar">
-      <div class="signal-pill">
-        <span class="signal-dot"></span>
-        <span>Dhaka, Bangladesh · UTC+6</span>
+  <!-- SVG Grade Filters Definition -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="grade-hard" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0.62"/>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.055 0.068 0.087 0.12 0.168 0.235 0.319 0.415 0.517 0.62 0.716 0.8 0.867 0.915 0.948 0.967 0.98"/>
+          <feFuncG type="table" tableValues="0.102 0.114 0.132 0.162 0.207 0.269 0.346 0.436 0.531 0.626 0.715 0.793 0.855 0.9 0.93 0.948 0.96"/>
+          <feFuncB type="table" tableValues="0.237 0.247 0.261 0.285 0.321 0.37 0.432 0.503 0.579 0.655 0.725 0.787 0.836 0.872 0.896 0.911 0.92"/>
+        </feComponentTransfer>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Night Atmosphere Layers -->
+  <div class="atmo-bg"></div>
+  <div class="atmo-glow atmo-glow-a"></div>
+  <div class="atmo-glow atmo-glow-b"></div>
+  <div class="atmo-glow atmo-glow-c"></div>
+  <div class="atmo-grain"></div>
+
+  <!-- Content Layout -->
+  <div class="layout-frame">
+    <!-- Left Column: Identity & Bone Display Typography -->
+    <div class="info-col">
+      <div class="top-meta">
+        <div class="status-pill">
+          <span class="status-dot-green"></span>
+          <span>Dhaka, BD · UTC+6</span>
+        </div>
+        <span class="handle-tag">github.com/watchknight</span>
       </div>
-      <div class="handle">github.com/watchknight</div>
+
+      <div class="middle-identity">
+        <!-- Bone Name in Display Font -->
+        <h1 class="bone-name">Abdur Rahman Moayed</h1>
+        <p class="lead-role">
+          Software engineer specializing in browser internals, systems-level security, and high-performance web architecture.
+        </p>
+
+        <!-- Amber Availability Line -->
+        <div class="amber-availability-line">
+          <span class="amber-dot"></span>
+          <span>Available for Remote Internships</span>
+        </div>
+      </div>
+
+      <div class="bottom-meta">
+        <span><strong>East West University</strong> · B.Sc. CSE · Board Merit Scholar</span>
+      </div>
     </div>
 
-    <div class="main-body">
-      <h1 class="hero-title">Abdur Rahman Moayed</h1>
-      <p class="hero-sub">
-        Software engineer specializing in browser internals, systems-level security, and high-performance web architecture.
-      </p>
-      <div class="chips-row">
-        <div class="project-chip"><span class="chip-accent">PureFeed</span> · MV3 Adblock Countermeasures</div>
-        <div class="project-chip"><span class="chip-accent">FocusGuard</span> · OS Network Policy Firewall</div>
-        <div class="project-chip"><span class="chip-accent">DocLensBD</span> · 60 FPS 3D Computer Vision</div>
-        <div class="project-chip"><span class="chip-accent">POSHRA</span> · Commerce Engine</div>
-      </div>
-    </div>
+    <!-- Right Column: grade-hard Project Preview -->
+    <div class="preview-col">
+      <div class="media">
+        <div class="grade-hard">
+          <div class="sim-card">
+            <div class="sim-header">
+              <div class="window-dots">
+                <span class="dot dot-r"></span>
+                <span class="dot dot-y"></span>
+                <span class="dot dot-g"></span>
+              </div>
+              <span class="window-url">youtube.com/watch?v=system_mesh</span>
+              <span class="sim-badge">MV3 MAIN-WORLD</span>
+            </div>
 
-    <div class="bottom-bar">
-      <div class="credentials">
-        <strong>East West University</strong> · B.Sc. CSE · Board General Merit Scholar
+            <div class="sim-screen">
+              <div class="player-watermark">▶</div>
+
+              <div class="player-hud">
+                <div class="hud-chip">
+                  <span>✓</span>
+                  <span>STREAM LIVE — 0 ADS</span>
+                </div>
+                <div class="hud-meta">LATENCY 11.4ms</div>
+              </div>
+
+              <div class="player-center">
+                <div class="play-btn">▶</div>
+                <span class="center-label">PureFeed Anti-Detection Active</span>
+              </div>
+
+              <div class="player-footer">
+                <span class="status-ok">✓ YouTube Adblock Detection Bypassed</span>
+                <span class="status-counter">0 Mutation Warnings</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="internship-badge">
-        Available for Remote Internships
+
+      <div class="preview-caption">
+        <span>Preview: <strong>PureFeed Architecture</strong></span>
+        <span class="grade-tag">filter: url(#grade-hard)</span>
       </div>
     </div>
   </div>
@@ -207,10 +542,12 @@ const tempHtmlPath = path.join(rootDir, 'og-image-temp.html');
 fs.writeFileSync(tempHtmlPath, htmlContent, 'utf-8');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const edgePath = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const browserPath = fs.existsSync(chromePath) ? chromePath : (fs.existsSync(edgePath) ? edgePath : 'chrome');
 const tempProfile = path.join(rootDir, '.chrome-temp-og-' + Date.now());
-const CDP_PORT = 9347;
+const CDP_PORT = 9349;
 
-const chromeProcess = spawn(chromePath, [
+const chromeProcess = spawn(browserPath, [
   '--headless=new',
   `--remote-debugging-port=${CDP_PORT}`,
   '--disable-gpu',
@@ -223,37 +560,37 @@ const chromeProcess = spawn(chromePath, [
 
 await new Promise((r) => setTimeout(r, 2000));
 
-const versionRes = await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`);
-const targets = await versionRes.json();
-const pageTarget = targets.find((t) => t.type === 'page') || targets[0];
-
-const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
-await new Promise((resolve, reject) => {
-  ws.onopen = resolve;
-  ws.onerror = reject;
-});
-
-let msgId = 1;
-const pending = new Map();
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  if (data.id && pending.has(data.id)) {
-    const { resolve, reject } = pending.get(data.id);
-    pending.delete(data.id);
-    if (data.error) reject(data.error);
-    else resolve(data.result);
-  }
-};
-
-function send(method, params = {}) {
-  const id = msgId++;
-  return new Promise((resolve, reject) => {
-    pending.set(id, { resolve, reject });
-    ws.send(JSON.stringify({ id, method, params }));
-  });
-}
-
 try {
+  const versionRes = await fetch(`http://127.0.0.1:${CDP_PORT}/json/list`);
+  const targets = await versionRes.json();
+  const pageTarget = targets.find((t) => t.type === 'page') || targets[0];
+
+  const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
+  await new Promise((resolve, reject) => {
+    ws.onopen = resolve;
+    ws.onerror = reject;
+  });
+
+  let msgId = 1;
+  const pending = new Map();
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.id && pending.has(data.id)) {
+      const { resolve, reject } = pending.get(data.id);
+      pending.delete(data.id);
+      if (data.error) reject(data.error);
+      else resolve(data.result);
+    }
+  };
+
+  function send(method, params = {}) {
+    const id = msgId++;
+    return new Promise((resolve, reject) => {
+      pending.set(id, { resolve, reject });
+      ws.send(JSON.stringify({ id, method, params }));
+    });
+  }
+
   await send('Page.enable');
   await send('Emulation.setDeviceMetricsOverride', {
     width: 1200,
@@ -261,21 +598,29 @@ try {
     deviceScaleFactor: 1,
     mobile: false,
   });
-  await new Promise((r) => setTimeout(r, 800));
+  await new Promise((r) => setTimeout(r, 1200));
 
   const screenshot = await send('Page.captureScreenshot', {
     format: 'png',
     clip: { x: 0, y: 0, width: 1200, height: 630, scale: 1 },
   });
 
-  const outImagePath = path.join(rootDir, 'public', 'og-image.png');
-  fs.writeFileSync(outImagePath, Buffer.from(screenshot.data, 'base64'));
-  console.log('✓ Successfully regenerated 1200x630 og-image.png in new palette:', outImagePath);
+  const publicOut = path.join(rootDir, 'public', 'og-image.png');
+  const distOut = path.join(rootDir, 'dist', 'og-image.png');
+  const buf = Buffer.from(screenshot.data, 'base64');
+  fs.writeFileSync(publicOut, buf);
+  if (fs.existsSync(path.join(rootDir, 'dist'))) {
+    fs.writeFileSync(distOut, buf);
+  }
+  console.log(`✓ Successfully regenerated 1200x630 og-image.png:`);
+  console.log(`  - public: ${publicOut} (${buf.length} bytes)`);
+  console.log(`  - dist:   ${distOut} (${buf.length} bytes)`);
 
+  ws.close();
 } catch (err) {
   console.error('OG image generation error:', err);
+  process.exitCode = 1;
 } finally {
-  ws.close();
   chromeProcess.kill();
   try { fs.rmSync(tempProfile, { recursive: true, force: true }); } catch {}
   try { fs.unlinkSync(tempHtmlPath); } catch {}
