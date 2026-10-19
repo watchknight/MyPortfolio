@@ -30,6 +30,13 @@ export function SignatureCanvas() {
 
   useScrollLock(drawSheetOpen);
 
+  const hasDrawn = strokes.length > 0;
+  const maxStrokeY = strokes.reduce((max, stroke) => {
+    return stroke.points.reduce((m, pt) => Math.max(m, pt.y), max);
+  }, 0);
+  const containerHeight =
+    hasDrawn && maxStrokeY > 184 ? Math.ceil(maxStrokeY + 36) : undefined;
+
   const colors = [
     { label: 'Text', token: '--text' },
     { label: 'Accent', token: '--accent' },
@@ -73,10 +80,16 @@ export function SignatureCanvas() {
     ctx.restore();
   }, []);
 
-  // Redraw inline canvas when strokes change
+  // Redraw inline canvas when strokes, sheet state, or container height changes
   useEffect(() => {
-    redrawCanvas(canvasRef.current, strokes);
-  }, [strokes, redrawCanvas]);
+    if (!drawSheetOpen) {
+      redrawCanvas(canvasRef.current, strokes);
+      const raf = requestAnimationFrame(() => {
+        redrawCanvas(canvasRef.current, strokes);
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [strokes, drawSheetOpen, containerHeight, redrawCanvas]);
 
   // Window resize handler for inline canvas
   useEffect(() => {
@@ -188,6 +201,7 @@ export function SignatureCanvas() {
   const downloadSignature = () => {
     const canvas = canvasRef.current;
     if (!canvas || strokes.length === 0) return;
+    redrawCanvas(canvas, strokes);
     const link = document.createElement('a');
     link.download = `moayed-guest-signature-${Date.now().toString(36)}.png`;
     link.href = canvas.toDataURL('image/png');
@@ -202,8 +216,6 @@ export function SignatureCanvas() {
   const closeDrawSheet = () => {
     setDrawSheetOpen(false);
   };
-
-  const hasDrawn = strokes.length > 0;
 
   return (
     <div className={styles.guestbookWrapper}>
@@ -316,7 +328,10 @@ export function SignatureCanvas() {
       </div>
 
       {/* Inline Canvas (Default touch-action: pan-y to NOT trap scrolling) */}
-      <div className={styles.canvasContainer}>
+      <div
+        className={styles.canvasContainer}
+        style={containerHeight ? { height: `${containerHeight}px` } : undefined}
+      >
         <canvas
           ref={canvasRef}
           className={styles.canvas}
