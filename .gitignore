@@ -28,5 +28,8 @@ screenshots/
 /*.png
 .chrome-profile*
 .chrome-temp*
+.edge-profile*
+edge-profile*
 lighthouse-*.json
+desktop.ini
 

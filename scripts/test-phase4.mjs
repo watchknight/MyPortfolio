@@ -1,5 +1,6 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -45,13 +46,14 @@ await new Promise((resolve) => server.listen(4567, '127.0.0.1', resolve));
 console.log('HTTP test server listening on http://127.0.0.1:4567');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const tempProfile = path.join(os.tmpdir(), '.chrome-temp-p4-' + Date.now());
 const chromeProcess = spawn(chromePath, [
   '--headless=new',
   '--remote-debugging-port=9333',
   '--disable-gpu',
   '--no-first-run',
   '--no-default-browser-check',
-  '--user-data-dir=' + path.join(rootDir, '.chrome-temp-' + Date.now()),
+  '--user-data-dir=' + tempProfile,
   'http://127.0.0.1:4567/',
 ]);
 
@@ -311,7 +313,7 @@ try {
     console.log('Inspector active state:', inspectActive);
 
     const inspectShot = await send('Page.captureScreenshot', { format: 'png' });
-    fs.writeFileSync(path.join(rootDir, 'inspect-tile.png'), Buffer.from(inspectShot.data, 'base64'));
+    fs.writeFileSync(path.join(os.tmpdir(), 'inspect-tile.png'), Buffer.from(inspectShot.data, 'base64'));
     console.log('Saved inspect-tile.png');
 
     // Test mouse down while snapped
@@ -418,7 +420,7 @@ try {
   await evalJs(`window.scrollTo(0, 0)`);
   await new Promise((r) => setTimeout(r, 400));
   const desktopShot = await send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(rootDir, 'desktop-1440px.png'), Buffer.from(desktopShot.data, 'base64'));
+  fs.writeFileSync(path.join(os.tmpdir(), 'desktop-1440px.png'), Buffer.from(desktopShot.data, 'base64'));
   console.log('Saved desktop-1440px.png');
 
   // Test Touch Emulation
@@ -451,7 +453,7 @@ try {
   console.log('Touch device state:', touchCheck);
 
   const mobileShot = await send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(rootDir, 'mobile-390px.png'), Buffer.from(mobileShot.data, 'base64'));
+  fs.writeFileSync(path.join(os.tmpdir(), 'mobile-390px.png'), Buffer.from(mobileShot.data, 'base64'));
   console.log('Saved mobile-390px.png');
 
   // Test Reduced Motion Emulation
@@ -538,7 +540,8 @@ try {
   console.error('Test error:', err);
   process.exitCode = 1;
 } finally {
-  ws.close();
-  chromeProcess.kill();
-  server.close();
+  try { ws.close(); } catch {}
+  try { chromeProcess.kill(); } catch {}
+  try { server.close(); } catch {}
+  try { fs.rmSync(tempProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 }

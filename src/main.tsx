@@ -6,6 +6,7 @@ import './styles/global.css';
 import App from './App';
 import { initSound } from './audio/sound.js';
 import { initSoundHooks, initSections } from './audio/hooks.js';
+import { refreshSections } from './lib/sections.js';
 import { migrateOldSoundStorage } from './utils/audio';
 
 const container = document.getElementById('root')!;
@@ -30,6 +31,7 @@ if (typeof window !== 'undefined') {
   initSound();
   initSoundHooks();
   initSections();
+  refreshSections();
 }
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {

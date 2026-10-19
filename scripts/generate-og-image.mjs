@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -538,13 +539,13 @@ const htmlContent = `<!DOCTYPE html>
 </body>
 </html>`;
 
-const tempHtmlPath = path.join(rootDir, 'og-image-temp.html');
+const tempHtmlPath = path.join(os.tmpdir(), 'og-image-temp.html');
 fs.writeFileSync(tempHtmlPath, htmlContent, 'utf-8');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const edgePath = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 const browserPath = fs.existsSync(chromePath) ? chromePath : (fs.existsSync(edgePath) ? edgePath : 'chrome');
-const tempProfile = path.join(rootDir, '.chrome-temp-og-' + Date.now());
+const tempProfile = path.join(os.tmpdir(), '.chrome-temp-og-' + Date.now());
 const CDP_PORT = 9349;
 
 const chromeProcess = spawn(browserPath, [
@@ -621,7 +622,7 @@ try {
   console.error('OG image generation error:', err);
   process.exitCode = 1;
 } finally {
-  chromeProcess.kill();
-  try { fs.rmSync(tempProfile, { recursive: true, force: true }); } catch {}
+  try { chromeProcess.kill(); } catch {}
+  try { fs.rmSync(tempProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
   try { fs.unlinkSync(tempHtmlPath); } catch {}
 }

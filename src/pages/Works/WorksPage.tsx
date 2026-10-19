@@ -4,6 +4,7 @@ import { RollText } from '../../components/RollText/RollText';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { ProjectSimulator } from '../../components/ProjectSimulator/ProjectSimulator';
 import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { projects } from '../../data/projects';
 import { sound } from '../../utils/audio';
 import styles from './WorksPage.module.css';
@@ -76,17 +77,11 @@ export function WorksPage({ onSelectProject }: WorksPageProps) {
 
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Header */}
-      <header className={styles.header}>
-        <span className={styles.eyebrow}>Portfolio &amp; case studies</span>
-        <h1 className={styles.title}>
-          Selected Works
-        </h1>
-        <p className={styles.subtitle}>
-          A showcase of real web applications, browser extensions, and practical desktop tools I have engineered.
-        </p>
-      </header>
+    <div className={`page ${styles.pageContainer}`}>
+      <PageHeader
+        title="Selected Works"
+        intro="A showcase of real web applications, browser extensions, and practical desktop tools I have engineered."
+      />
 
       {/* Controls Bar: Filter Pills + Grid/Table Toggle */}
       <div className={styles.controlsBar}>

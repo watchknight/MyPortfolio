@@ -100,3 +100,16 @@ Concept: "Blue hour." The page is a living blue field: ink-navy base, three slow
 7. Respectful. prefers-reduced-motion gives a static composition. A Controls switch ("Atmosphere") turns the motion off. Animation pauses when the tab is hidden. Dark theme only; the light theme is untouched.
 8. Tiles stay opaque (--surface). Nothing over the atmosphere is translucent or blurred.
 9. Media is graded blue: blacks lifted to the page navy, highlights warm to bone (SVG filter classes, media only).
+
+PAGES CONTRACT (/works, /foundation, /resume, /contact)
+Concept: "Same room, different corridors." Every inner page is built from the home page's parts. No page invents its own look.
+1. One shell. All routes render inside the same layout: nav pill, atmosphere (mounted once, never restarted on navigation), <main data-section="…">, footer CTA band.
+2. One header pattern: H1 at --fs-h1, weight 700, one color; a one-line intro (existing text); optional action row. Eyebrow labels above headings ("Portfolio & case studies", "Education & credentials", "Verified credentials", "Direct communication") are removed from the UI; the information stays in <title> and meta.
+3. Bento everywhere: 12 cols ≥ 1024px, 6 cols 640–1023px, 1 col below; gap 16 (12 on mobile). Four tile materials (surface, inverted, accent — max one per viewport — media). Four radii. Hairlines, not shadows. One exception: the résumé sheet (a fixed bone "paper" tile with a soft shadow).
+4. One signature moment per page and nothing else new: /works poster-first previews (one live at a time) plus Flip on filter and view change; /foundation a timeline line that draws with scroll; /resume the paper sheet and a perfect print; /contact copy-email feedback and form focus states.
+5. Same behaviors as home: `data-tile` reveal (once), `data-magnetic` on buttons and links, `data-cursor="inspect"` on clickable tiles, sound hooks (copy and form success = chime, route change = swish, tile hover = tick with data-degree), grade classes on media.
+6. Atmosphere by route through data-section on <main>: /works → work, /foundation → about, /resume → hero, /contact → contact.
+7. Content survives. Removed as template chrome: eyebrow labels, the fake "system.local/preview" URL bars, and the repeated "Interactive Mock / Simulation ready / Tap or scroll…" lines. One dedup on /resume (JSC and PSC stay under Honors only). Nothing else is rewritten.
+8. Print is a first-class output: /resume prints as clean black-on-white A4 with no site chrome.
+9. Dark and light themes both work. No new dependencies unless a prompt names one.
+

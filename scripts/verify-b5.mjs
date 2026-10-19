@@ -1,5 +1,6 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -45,7 +46,7 @@ await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 console.log(`[QA SERVER] Serving on http://127.0.0.1:${PORT}`);
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const tempProfile = path.join(rootDir, '.chrome-temp-b5-' + Date.now());
+const tempProfile = path.join(os.tmpdir(), '.chrome-temp-b5-' + Date.now());
 const CDP_PORT = 9388;
 const chromeProcess = spawn(chromePath, [
   '--headless=new',
@@ -449,14 +450,14 @@ try {
   // Desktop (1440px)
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
   const dShot = await send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(rootDir, 'desktop-1440px.png'), Buffer.from(dShot.data, 'base64'));
+  fs.writeFileSync(path.join(os.tmpdir(), 'desktop-1440px.png'), Buffer.from(dShot.data, 'base64'));
   console.log('✓ Saved desktop-1440px.png');
 
   // Scroll to selected work and capture
   await evalCode(`document.getElementById('selected-work').scrollIntoView()`);
   await new Promise((r) => setTimeout(r, 600));
   const projShot = await send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(rootDir, 'inspect-tile.png'), Buffer.from(projShot.data, 'base64'));
+  fs.writeFileSync(path.join(os.tmpdir(), 'inspect-tile.png'), Buffer.from(projShot.data, 'base64'));
   console.log('✓ Saved inspect-tile.png');
 
   // Mobile (390px)
@@ -464,7 +465,7 @@ try {
   await evalCode(`document.getElementById('selected-work').scrollIntoView()`);
   await new Promise((r) => setTimeout(r, 600));
   const mShot = await send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(rootDir, 'mobile-390px.png'), Buffer.from(mShot.data, 'base64'));
+  fs.writeFileSync(path.join(os.tmpdir(), 'mobile-390px.png'), Buffer.from(mShot.data, 'base64'));
   console.log('✓ Saved mobile-390px.png');
 
   console.log('\n=======================================');
@@ -478,10 +479,10 @@ try {
   console.error('Error during verification:', err);
   process.exitCode = 1;
 } finally {
-  ws.close();
-  chromeProcess.kill();
-  server.close();
+  try { ws.close(); } catch {}
+  try { chromeProcess.kill(); } catch {}
+  try { server.close(); } catch {}
   try {
-    fs.rmSync(tempProfile, { recursive: true, force: true });
+    fs.rmSync(tempProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
   } catch {}
 }

@@ -1,12 +1,7 @@
 .pageContainer {
   display: flex;
   flex-direction: column;
-  gap: 3.5rem;
-  padding-top: calc(var(--nav-height) + 2rem);
-  padding-bottom: 5rem;
-  max-width: 960px;
-  margin: 0 auto;
-  padding-inline: var(--space-gutter);
+  gap: 2.5rem;
 }
 
 .header {

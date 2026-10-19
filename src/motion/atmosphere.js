@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { onSection } from "../lib/sections.js";
 
 const SECTION = {
   hero: [1, 0.8, 0.6],
@@ -47,12 +48,7 @@ export function initAtmosphere() {
     gsap.to(layers, { opacity: (i) => to[i], duration: isMotionOff ? 0 : 2.2, ease: "power2.inOut", overwrite: true });
   };
   balance("hero", true);
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach((en) => { if (en.isIntersecting) balance(en.target.dataset.section); }),
-    { rootMargin: "-45% 0px -45% 0px" }
-  );
-  document.querySelectorAll("[data-section]").forEach((el) => io.observe(el));
-  off.push(() => io.disconnect());
+  off.push(onSection((name) => balance(name)));
 
   if (pointer && fine.matches && !calm.matches) {
     const px = gsap.quickTo(pointer, "x", { duration: 0.9, ease: "power3" });

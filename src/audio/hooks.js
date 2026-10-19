@@ -1,4 +1,5 @@
 import { sound } from "./sound.js";
+import { onSection } from "../lib/sections.js";
 
 const FINE = "(hover: hover) and (pointer: fine)";
 const xOf = (el) => {
@@ -62,34 +63,6 @@ export function initSoundHooks() {
   };
 }
 
-let sectionsInitialized = false;
-
 export function initSections() {
-  if (typeof IntersectionObserver === "undefined" || typeof document === "undefined") return () => {};
-  if (sectionsInitialized) return () => {};
-  sectionsInitialized = true;
-
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach((en) => {
-      const name = en.target instanceof HTMLElement ? en.target.dataset.section : null;
-      if (en.isIntersecting && name) sound.section(name);
-    }),
-    { rootMargin: "-45% 0px -45% 0px" }
-  );
-
-  const observeAll = () => {
-    document.querySelectorAll("[data-section]").forEach((el) => io.observe(el));
-  };
-  observeAll();
-
-  const mo = typeof MutationObserver !== "undefined" ? new MutationObserver(observeAll) : null;
-  if (mo && document.body) {
-    mo.observe(document.body, { childList: true, subtree: true });
-  }
-
-  return () => {
-    io.disconnect();
-    mo?.disconnect();
-    sectionsInitialized = false;
-  };
+  return onSection((name) => sound.section(name));
 }

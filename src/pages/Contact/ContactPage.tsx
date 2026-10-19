@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { RollText } from '../../components/RollText/RollText';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { sound } from '../../audio/sound.js';
 import { profileData } from '../../data/profile';
 import styles from './ContactPage.module.css';
@@ -171,18 +172,11 @@ export function ContactPage() {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Header */}
-      <header className={styles.header}>
-        <span className={styles.eyebrow}>Direct communication</span>
-        <h1 className={styles.title}>
-          Get in Touch
-        </h1>
-        <p className={styles.subtitle}>
-          Have a software project, an internship opportunity, or want to connect?
-          Feel free to send me a message or email me directly.
-        </p>
-      </header>
+    <div className={`page ${styles.pageContainer}`}>
+      <PageHeader
+        title="Get in Touch"
+        intro="Have a software project, an internship opportunity, or want to connect? Feel free to send me a message or email me directly."
+      />
 
       {/* Contact Layout */}
       <div className={styles.contactLayout}>
@@ -289,7 +283,7 @@ export function ContactPage() {
           tiltIntensity={4}
           onSubmit={handleSubmit}
         >
-          <h2 className={styles.formTitle}>Send a Message</h2>
+          <h2 className={styles.formTitle}>Send a message</h2>
 
           {submitError && (
             <div className={styles.errorBanner} role="alert">

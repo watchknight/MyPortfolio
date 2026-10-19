@@ -1,5 +1,6 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -47,7 +48,7 @@ const PORT = 4710;
 await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const tempProfile = path.join(rootDir, '.chrome-temp-p7-' + Date.now());
+const tempProfile = path.join(os.tmpdir(), '.chrome-temp-p7-' + Date.now());
 const CDP_PORT = 9355;
 const chromeProcess = spawn(chromePath, [
   '--headless=new',
@@ -316,8 +317,8 @@ try {
   console.error('Test Error:', err);
   process.exitCode = 1;
 } finally {
-  ws.close();
-  chromeProcess.kill();
-  server.close();
-  try { fs.rmSync(tempProfile, { recursive: true, force: true }); } catch {}
+  try { ws.close(); } catch {}
+  try { chromeProcess.kill(); } catch {}
+  try { server.close(); } catch {}
+  try { fs.rmSync(tempProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 }

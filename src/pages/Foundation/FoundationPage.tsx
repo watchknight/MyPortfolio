@@ -1,5 +1,6 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { DeveloperASTCard } from '../../components/DeveloperAST/DeveloperASTCard';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import styles from './FoundationPage.module.css';
 
 interface Milestone {
@@ -61,19 +62,19 @@ const academicMilestones: Milestone[] = [
 
 const skillCategories = [
   {
-    title: 'Programming Languages',
+    title: 'Programming languages',
     skills: ['JavaScript (ES6+)', 'TypeScript', 'Python', 'C / C++', 'HTML5 / CSS3', 'SQL'],
   },
   {
-    title: 'Frontend & UI Engineering',
+    title: 'Frontend & UI engineering',
     skills: ['React', 'Next.js', 'CSS Modules', 'Tailwind CSS', 'Responsive Layouts', 'State Management'],
   },
   {
-    title: 'Backend & Data',
+    title: 'Backend & data',
     skills: ['Node.js', 'Express', 'PostgreSQL', 'SQLite', 'RESTful APIs', 'Authentication'],
   },
   {
-    title: 'Tools & Practices',
+    title: 'Tools & practices',
     skills: ['Git & GitHub', 'Linux / Bash', 'Browser Extensions', 'Web Performance', 'Clean Code'],
   },
 ];
@@ -91,17 +92,11 @@ const coursework = [
 
 export function FoundationPage() {
   return (
-    <div className={styles.pageContainer}>
-      {/* Header */}
-      <header className={styles.header}>
-        <span className={styles.eyebrow}>Education &amp; credentials</span>
-        <h1 className={styles.title}>
-          Background &amp; Skills
-        </h1>
-        <p className={styles.subtitle}>
-          My academic foundation at East West University, national board scholarship distinctions, and technical skills.
-        </p>
-      </header>
+    <div className={`page ${styles.pageContainer}`}>
+      <PageHeader
+        title="Background & Skills"
+        intro="My academic foundation at East West University, national board scholarship distinctions, and technical skills."
+      />
 
       {/* Two Column Layout */}
       <div className={styles.twoColumns}>
@@ -113,7 +108,7 @@ export function FoundationPage() {
           tiltIntensity={4}
           aria-label="Academic Timeline"
         >
-          <h2 className={styles.cardTitle}>Academic Timeline</h2>
+          <h2 className={styles.cardTitle}>Academic timeline</h2>
 
           <div className={styles.timeline}>
             {academicMilestones.map((m) => (
@@ -175,8 +170,7 @@ export function FoundationPage() {
       {/* Developer AST Schema */}
       <section className={styles.schemaSection} aria-label="Developer Schema">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          <span className={styles.eyebrow}>Developer profile manifest</span>
-          <h2 className={styles.title} style={{ fontSize: '1.4rem' }}>TypeScript Schema</h2>
+          <h2 className={styles.title} style={{ fontSize: '1.4rem' }}>TypeScript schema</h2>
         </div>
         <DeveloperASTCard />
       </section>

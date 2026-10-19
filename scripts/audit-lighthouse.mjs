@@ -1,5 +1,6 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
@@ -96,8 +97,9 @@ try {
     await runLh(r, 'desktop');
     await runLh(r, 'mobile');
   }
-  fs.writeFileSync(path.join(rootDir, 'lighthouse-full-results.json'), JSON.stringify(results, null, 2));
-  console.log('\nAll audits finished! Saved lighthouse-full-results.json');
+  const outPath = process.env.LIGHTHOUSE_OUT || path.join(os.tmpdir(), 'lighthouse-full-results.json');
+  fs.writeFileSync(outPath, JSON.stringify(results, null, 2));
+  console.log(`\nAll audits finished! Saved ${outPath}`);
 } catch (e) {
   console.error(e);
 } finally {

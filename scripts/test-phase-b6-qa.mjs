@@ -1,5 +1,6 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
-const outDir = path.join(rootDir, 'screenshots', 'phase_b6');
+const outDir = process.env.SCREENSHOTS_DIR || path.join(os.tmpdir(), 'screenshots', 'phase_b6');
 fs.mkdirSync(outDir, { recursive: true });
 
 const MIME_TYPES = {
@@ -55,7 +56,7 @@ await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 console.log(`[QA SERVER] Serving dist on http://127.0.0.1:${PORT}`);
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const tempProfile = path.join(rootDir, '.chrome-temp-b6-' + Date.now());
+const tempProfile = path.join(os.tmpdir(), '.chrome-temp-b6-' + Date.now());
 const CDP_PORT = 9390;
 
 const chromeProcess = spawn(chromePath, [
@@ -560,8 +561,8 @@ try {
   console.error('QA script execution failed:', err);
   process.exitCode = 1;
 } finally {
-  ws.close();
-  chromeProcess.kill();
-  server.close();
-  try { fs.rmSync(tempProfile, { recursive: true, force: true }); } catch {}
+  try { ws.close(); } catch {}
+  try { chromeProcess.kill(); } catch {}
+  try { server.close(); } catch {}
+  try { fs.rmSync(tempProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 }

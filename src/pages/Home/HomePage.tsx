@@ -58,10 +58,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
   const applyViewMode = useCallback((mode: 'grid' | 'table') => {
     const container = viewContainerRef.current;
     const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -608,7 +604,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-tile="media"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="grade-lite">
+                  <div className="grade">
                     <ProjectSimulator projectId={p.id} />
                   </div>
                 </div>
@@ -900,109 +896,6 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
         <div className={styles.guestbookTileContainer} data-tile="surface">
           <SignatureCanvas />
         </div>
-      </section>
-
-      {/* ── 6. CONTACT AND FOOTER ── */}
-      <section id="contact" data-section="contact" className={styles.section} aria-label="Contact and Footer">
-        <div className={styles.contactCard} data-tile="surface">
-          <h2 className={styles.contactHeading}>Interested in working together?</h2>
-          <p className={styles.contactSubtext}>
-            I&apos;m currently open for software engineering internships and freelance web projects.
-            Feel free to reach out anytime.
-          </p>
-
-          <div className={styles.contactActions}>
-            <Magnetic strength={0.3}>
-              <button
-                type="button"
-                className={styles.primaryPillBtn}
-                onClick={() => {
-                  onNavigate('/contact');
-                }}
-                data-cursor="link"
-                data-magnetic="0.3"
-              >
-                <RollText>Send me a message</RollText>
-              </button>
-            </Magnetic>
-
-            <Magnetic strength={0.3}>
-              <button
-                type="button"
-                className={`${styles.secondaryPillBtn} ${copiedEmail ? 'btn-copied' : ''}`}
-                onClick={handleCopyEmail}
-                aria-live="polite"
-                data-cursor="link"
-                data-magnetic="0.3"
-              >
-                <RollText>{copiedEmail ? 'Copied' : 'Copy email'}</RollText>
-              </button>
-            </Magnetic>
-          </div>
-
-          <div className={styles.socialLinksRow}>
-            <Magnetic strength={0.3}>
-              <a
-                href="https://github.com/watchknight"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                data-cursor="link"
-                data-magnetic="0.3"
-              >
-                GitHub
-              </a>
-            </Magnetic>
-            <Magnetic strength={0.3}>
-              <a
-                href="https://linkedin.com/in/abdur-rahman-moayed-9225b5389"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                data-cursor="link"
-                data-magnetic="0.3"
-              >
-                LinkedIn
-              </a>
-            </Magnetic>
-            <Magnetic strength={0.3}>
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                data-cursor="link"
-                data-magnetic="0.3"
-              >
-                Résumé (PDF)
-              </a>
-            </Magnetic>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <footer className={styles.footer}>
-          <div className={styles.footerInner}>
-            <span className={styles.footerCopyright}>
-              &copy; {new Date().getFullYear()} Abdur Rahman Moayed
-            </span>
-            <span className={styles.footerLocation}>
-              Dhaka, Bangladesh ({dhakaTime || '14:32'} UTC+6)
-            </span>
-            <Magnetic strength={0.3}>
-              <button
-                type="button"
-                className={styles.backToTopBtn}
-                onClick={scrollToTop}
-                aria-label="Scroll back to top"
-                data-cursor="link"
-                data-magnetic="0.3"
-              >
-                Back to top &uarr;
-              </button>
-            </Magnetic>
-          </div>
-        </footer>
       </section>
     </div>
   );

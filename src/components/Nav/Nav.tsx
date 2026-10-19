@@ -651,6 +651,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
             <a
               href="/"
               className={styles.brandLogo}
+              aria-current={currentPath === '/' ? 'page' : undefined}
               onClick={(e) => {
                 e.preventDefault();
                 onNavigate('/');
@@ -688,6 +689,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                     }}
                     href={item.path}
                     className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
                     onClick={(e) => {
                       e.preventDefault();
                       onNavigate(item.path);
@@ -699,7 +701,10 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                     data-cursor="link"
                     data-magnetic="0.3"
                   >
-                    <span className={styles.navLinkLabel}>{item.label}</span>
+                    <span className={styles.navLinkLabel}>
+                      {item.label}
+                      {isActive && <span className={styles.activeDot} aria-hidden="true" />}
+                    </span>
                   </a>
                 </Magnetic>
               );
@@ -729,7 +734,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                 onClick={() => {
                   setCommandOpen(true);
                 }}
-                aria-label="Open command palette (⌘K)"
+                aria-label="Command ⌘K — Open command palette"
                 title="Search and commands [⌘K]"
                 data-cursor="link"
                 data-magnetic="0.3"
@@ -1056,6 +1061,7 @@ export function Nav({ currentPath, onNavigate }: NavProps) {
                     key={item.path}
                     href={item.path}
                     className={`${styles.mobileNavLinkItem} ${isActive ? styles.mobileNavLinkItemActive : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
                     onClick={(e) => {
                       e.preventDefault();
                       onNavigate(item.path);

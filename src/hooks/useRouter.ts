@@ -24,7 +24,9 @@ export function useRouter(initialPath?: string) {
   useEffect(() => {
     const onPopState = () => {
       setCurrentPath(normalizePath(window.location.pathname));
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      if (typeof window !== 'undefined' && !window.location.hash) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
     };
 
     window.addEventListener('popstate', onPopState);
@@ -33,14 +35,14 @@ export function useRouter(initialPath?: string) {
 
   const navigate = useCallback((to: string) => {
     const normalized = normalizePath(to);
-    const targetUrl = normalized === '/404' ? to : normalized;
-    if (window.location.pathname !== targetUrl) {
-      window.history.pushState(null, '', targetUrl);
-      setCurrentPath(normalized);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      setCurrentPath(normalized);
+    const targetUrl = to;
+    if (typeof window !== 'undefined') {
+      const currentUrl = window.location.pathname + window.location.search + window.location.hash;
+      if (currentUrl !== targetUrl) {
+        window.history.pushState(null, '', targetUrl);
+      }
     }
+    setCurrentPath(normalized);
   }, []);
 
   return { currentPath, navigate };

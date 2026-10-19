@@ -1,5 +1,7 @@
 import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
 import { RollText } from '../../components/RollText/RollText';
+import { Magnetic } from '../../components/Magnetic/Magnetic';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { profileData } from '../../data/profile';
 import styles from './ResumePage.module.css';
 
@@ -9,45 +11,49 @@ export function ResumePage() {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Top Action Bar */}
-      <div className={styles.topBar}>
-        <div className={styles.headerText}>
-          <span className={styles.eyebrow}>Verified credentials</span>
-          <h1 className={styles.pageTitle}>
-            Curriculum Vitae
-          </h1>
-        </div>
+    <div className={`page ${styles.pageContainer}`}>
+      <PageHeader
+        title="Curriculum Vitae"
+        intro="Verified engineering credentials, academic honors at East West University, production software projects, and technical skills."
+        actions={
+          <>
+            <Magnetic strength={0.3}>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.primaryAction}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <RollText>Download PDF</RollText>
+              </a>
+            </Magnetic>
 
-        <div className={styles.actionGroup}>
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.primaryAction}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <RollText>Download PDF</RollText>
-          </a>
-
-          <button
-            type="button"
-            className={styles.secondaryAction}
-            onClick={handlePrint}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 6 2 18 2 18 9" />
-              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-              <rect x="6" y="14" width="12" height="8" />
-            </svg>
-            <RollText>Print Résumé</RollText>
-          </button>
-        </div>
-      </div>
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={styles.secondaryAction}
+                onClick={handlePrint}
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>
+                <RollText>Print Résumé</RollText>
+              </button>
+            </Magnetic>
+          </>
+        }
+      />
 
       {/* Digital Résumé Paper Sheet */}
       <SpotlightCard
@@ -124,34 +130,12 @@ export function ResumePage() {
                 <li>Awarded National Board General Merit Scholarship for academic excellence.</li>
               </ul>
             </div>
-
-            <div className={styles.entryItem}>
-              <div className={styles.entryHead}>
-                <span className={styles.entryRole}>Junior School Certificate (JSC / Class 8) &mdash; GPA 5.0</span>
-                <span className={styles.entryDate}>2018</span>
-              </div>
-              <span className={styles.entryOrg}>National Board of Education, Bangladesh</span>
-              <ul className={styles.bulletList}>
-                <li>Awarded National Board General Merit Scholarship.</li>
-              </ul>
-            </div>
-
-            <div className={styles.entryItem}>
-              <div className={styles.entryHead}>
-                <span className={styles.entryRole}>Primary School Certificate (PSC / Class 5) &mdash; GPA 5.0</span>
-                <span className={styles.entryDate}>2015</span>
-              </div>
-              <span className={styles.entryOrg}>National Board of Education, Bangladesh</span>
-              <ul className={styles.bulletList}>
-                <li>Achieved perfect GPA 5.0 with verified National Board Distinction.</li>
-              </ul>
-            </div>
           </div>
         </section>
 
         {/* Key Projects */}
         <section className={styles.resumeSection}>
-          <h3 className={styles.sectionTitle}>Featured Projects</h3>
+          <h3 className={styles.sectionTitle}>Featured projects</h3>
           <div className={styles.entryList}>
             <div className={styles.entryItem}>
               <div className={styles.entryHead}>
@@ -200,7 +184,7 @@ export function ResumePage() {
 
         {/* Technical Skills */}
         <section className={styles.resumeSection}>
-          <h3 className={styles.sectionTitle}>Technical Skills</h3>
+          <h3 className={styles.sectionTitle}>Technical skills</h3>
           <div className={styles.skillsTable}>
             <div className={styles.skillRow}>
               <span className={styles.skillCategoryName}>Languages:</span>
@@ -223,7 +207,7 @@ export function ResumePage() {
 
         {/* Distinctions */}
         <section className={styles.resumeSection}>
-          <h3 className={styles.sectionTitle}>Honors &amp; Awards</h3>
+          <h3 className={styles.sectionTitle}>Honors &amp; awards</h3>
           <ul className={styles.bulletList}>
             <li><strong>National Board General Merit Scholarship</strong> &mdash; SSC Class 10 (2021)</li>
             <li><strong>National Board General Merit Scholarship</strong> &mdash; JSC Class 8 (2018)</li>

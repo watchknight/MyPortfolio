@@ -6,8 +6,10 @@ import { initAtmosphere } from './motion/atmosphere.js';
 import { initMotion, ScrollTrigger, gsap } from './motion/index';
 import { sound, initSound } from './audio/sound.js';
 import { initSoundHooks, initSections } from './audio/hooks.js';
+import { refreshSections } from './lib/sections.js';
 import { migrateOldSoundStorage } from './utils/audio';
 import { Nav } from './components/Nav/Nav';
+import { FooterBand } from './components/FooterBand/FooterBand';
 import { HomePage } from './pages/Home/HomePage';
 import { useScrollLock } from './utils/scrollLock';
 
@@ -31,6 +33,39 @@ export interface AppRoutesOverride {
 interface AppProps {
   initialPath?: string;
   routes?: AppRoutesOverride;
+}
+
+const ROUTE_TITLES: Record<string, string> = {
+  '/': 'Abdur Rahman Moayed — Software Engineer & Systems Architect',
+  '/works': 'Selected Works & Engineering Systems — Abdur Rahman Moayed',
+  '/foundation': 'Academic Background & Technical Skills — Abdur Rahman Moayed',
+  '/resume': 'Curriculum Vitae (Résumé) — Abdur Rahman Moayed',
+  '/contact': 'Get in Touch & Direct Contact — Abdur Rahman Moayed',
+  '/404': 'Signal Void // 404 — Abdur Rahman Moayed',
+};
+
+function updateDocumentTitle(path: string) {
+  if (typeof document !== 'undefined') {
+    const title = ROUTE_TITLES[path] || ROUTE_TITLES['/404'];
+    if (title && document.title !== title) {
+      document.title = title;
+    }
+  }
+}
+
+function getSectionForPath(path: string): string | undefined {
+  switch (path) {
+    case '/works':
+      return 'work';
+    case '/foundation':
+      return 'about';
+    case '/resume':
+      return 'hero';
+    case '/contact':
+      return 'contact';
+    default:
+      return undefined;
+  }
 }
 
 export default function App({ initialPath, routes }: AppProps) {
@@ -73,9 +108,29 @@ export default function App({ initialPath, routes }: AppProps) {
     sound.play('toggle', { on: sysCheckOpen });
   }, [sysCheckOpen]);
 
-  // Top-level motion system entry point (StrictMode safe)
+  // Top-level motion system entry point (runs once)
   useEffect(() => {
     return initMotion();
+  }, []);
+
+  // Close any open modals on route change
+  useEffect(() => {
+    setSelectedProject(null);
+    setSysCheckOpen(false);
+  }, [currentPath]);
+
+  // Effect on displayPath: refresh sections after the new route DOM exists
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      try {
+        const el = document.querySelector(window.location.hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'instant' });
+        }
+      } catch {}
+    }
+    refreshSections();
+    ScrollTrigger.refresh();
   }, [displayPath]);
 
   const prevPathRef = useRef(currentPath);
@@ -84,6 +139,7 @@ export default function App({ initialPath, routes }: AppProps) {
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
+      updateDocumentTitle(currentPath);
       return;
     }
     if (prevPathRef.current === currentPath) return;
@@ -91,14 +147,18 @@ export default function App({ initialPath, routes }: AppProps) {
 
     sound.play('swish', { dir: 1, vel: 0.6 });
 
-
     const mainEl = mainRef.current;
     const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
     if (!mainEl || reduce) {
       setDisplayPath(currentPath);
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      if (typeof window !== 'undefined' && !window.location.hash) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+      updateDocumentTitle(currentPath);
+      mainEl?.focus({ preventScroll: true });
       ScrollTrigger.refresh();
+      refreshSections();
       return;
     }
 
@@ -111,7 +171,11 @@ export default function App({ initialPath, routes }: AppProps) {
       overwrite: true,
       onComplete: () => {
         setDisplayPath(currentPath);
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        if (typeof window !== 'undefined' && !window.location.hash) {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+        updateDocumentTitle(currentPath);
+        mainEl.focus({ preventScroll: true });
         gsap.fromTo(
           mainEl,
           { opacity: 0 },
@@ -122,11 +186,16 @@ export default function App({ initialPath, routes }: AppProps) {
             overwrite: true,
             onComplete: () => {
               ScrollTrigger.refresh();
+              refreshSections();
             },
           }
         );
       },
     });
+
+    return () => {
+      if (mainEl) gsap.killTweensOf(mainEl);
+    };
   }, [currentPath]);
 
   useEffect(() => {
@@ -179,6 +248,7 @@ export default function App({ initialPath, routes }: AppProps) {
         ref={mainRef}
         id="main-content"
         tabIndex={-1}
+        data-section={getSectionForPath(displayPath)}
       >
         {displayPath === '/' && (
           <HomePage onNavigate={navigate} onSelectProject={handleSelectProjectById} />
@@ -191,6 +261,11 @@ export default function App({ initialPath, routes }: AppProps) {
         {displayPath === '/contact' && <Contact />}
         {displayPath === '/404' && <NotFound onNavigate={navigate} />}
       </main>
+
+      <FooterBand
+        showCta={displayPath !== '/contact' && displayPath !== '/404'}
+        onNavigate={navigate}
+      />
     </>
   );
 }

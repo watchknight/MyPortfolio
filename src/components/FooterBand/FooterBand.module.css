@@ -1,0 +1,204 @@
+.footerSection {
+  width: min(100% - 2 * clamp(16px, 4vw, 48px), 1280px);
+  margin-inline: auto;
+  margin-top: clamp(3.5rem, 6vw, 6rem);
+  scroll-margin-top: calc(var(--nav-height) + 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.footerSectionOnly {
+  width: min(100% - 2 * clamp(16px, 4vw, 48px), 1280px);
+  margin-inline: auto;
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.contactCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.contactHeading {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: var(--text);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.contactSubtext {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 540px;
+  margin: 0;
+}
+
+.contactActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+}
+
+.primaryPillBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.6rem;
+  min-height: 44px;
+  border-radius: var(--r-pill);
+  background-color: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) ease, transform var(--duration-fast) ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.primaryPillBtn:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.secondaryPillBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  min-height: 44px;
+  border-radius: var(--r-pill);
+  background-color: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--duration-fast) ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.secondaryPillBtn:hover {
+  border-color: var(--control);
+  background-color: var(--raised);
+  transform: translateY(-1px);
+}
+
+.socialLinksRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+  width: 100%;
+  max-width: 480px;
+}
+
+.socialLink,
+.socialLink:link,
+.socialLink:visited {
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--muted) !important;
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  transition: color var(--duration-fast) ease;
+}
+
+.socialLink:hover {
+  color: var(--text);
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  padding-top: 1.5rem;
+  padding-bottom: max(2.5rem, calc(2.5rem + env(safe-area-inset-bottom)));
+  border-top: 1px solid var(--line);
+  margin-top: 1.5rem;
+}
+
+.footerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.footerCopyright {
+  color: var(--muted);
+}
+
+.footerLocation {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--subtle);
+}
+
+.backToTopBtn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 0.5rem 1rem;
+  border-radius: var(--r-pill);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) ease;
+}
+
+.backToTopBtn:hover {
+  color: var(--text);
+  border-color: var(--control);
+  background: var(--raised);
+}
+
+@media (max-width: 639px) {
+  .contactCard {
+    padding: 2rem 1.25rem;
+  }
+
+  .footerInner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}

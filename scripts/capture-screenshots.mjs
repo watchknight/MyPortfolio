@@ -1,5 +1,6 @@
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -46,7 +47,7 @@ const PORT = 4755;
 await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const tempProfile = path.join(rootDir, '.chrome-temp-ss-' + Date.now());
+const tempProfile = path.join(os.tmpdir(), '.chrome-temp-ss-' + Date.now());
 const CDP_PORT = 9489;
 const chromeProcess = spawn(chromePath, [
   '--headless=new',
@@ -125,8 +126,8 @@ try {
   await capture('mobile_light_390.png', 390, 844, 'light', 3, true);
   console.log('All screenshots captured successfully!');
 } finally {
-  ws.close();
+  try { ws.close(); } catch {}
   try { chromeProcess.kill(); } catch {}
-  server.close();
-  try { fs.rmSync(tempProfile, { recursive: true, force: true }); } catch {}
+  try { server.close(); } catch {}
+  try { fs.rmSync(tempProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 }

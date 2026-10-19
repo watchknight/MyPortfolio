@@ -110,6 +110,16 @@
   font-weight: 600;
 }
 
+.activeDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
 .navActivePill {
   position: absolute;
   top: 0;

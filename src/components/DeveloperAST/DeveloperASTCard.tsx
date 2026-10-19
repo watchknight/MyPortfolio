@@ -61,7 +61,7 @@ export interface SystemsArchitect {
           type="button"
           className={styles.copyButton}
           onClick={handleCopy}
-          aria-label="Copy TypeScript Schema to Clipboard"
+          aria-label={copied ? 'Copied to clipboard' : 'COPY .TS — Copy TypeScript Schema to Clipboard'}
         >
           {copied ? '✓ COPIED' : 'COPY .TS'}
         </button>
