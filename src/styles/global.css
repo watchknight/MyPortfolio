@@ -424,6 +424,15 @@ html.grade-off .grade, html.grade-off .grade-soft, html.grade-off .grade-hard, h
   [data-timeline-item]::before { background: var(--accent) !important; border-color: var(--accent) !important; transition: none !important; }
 }
 
+/* ── Phase P6: Contact Form Fields ── */
+.field { display: grid; gap: 6px; }
+.field label { font-size: var(--fs-small); color: var(--muted); }
+.field :is(input, textarea) { font: inherit; font-size: max(16px, 1rem); color: var(--text); background: var(--bg); border: 1px solid var(--control); border-radius: var(--r-md); padding: 12px 14px; min-height: 48px; caret-color: var(--accent); transition: border-color .2s; }
+.field textarea { min-height: 160px; resize: vertical; }
+.field :is(input, textarea):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-color: var(--text); }
+.field [aria-invalid="true"] { border-color: var(--danger, #FF5A4D); }
+.field .error { color: var(--danger, #FF5A4D); font-size: var(--fs-small); }
+
 /* ── Pristine A4 Print Suppression (Phase P5) ── */
 @media print {
   @page {

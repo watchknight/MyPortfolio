@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SpotlightCard } from '../../components/SpotlightCard/SpotlightCard';
-import { RollText } from '../../components/RollText/RollText';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
+import { RollText } from '../../components/RollText/RollText';
+import { Magnetic } from '../../components/Magnetic/Magnetic';
 import { sound } from '../../audio/sound.js';
 import { profileData } from '../../data/profile';
 import styles from './ContactPage.module.css';
 
 export function ContactPage() {
   const [copied, setCopied] = useState(false);
-  const [dispatched, setDispatched] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [draftCopied, setDraftCopied] = useState(false);
@@ -30,22 +30,44 @@ export function ContactPage() {
     message?: string;
   }>({});
 
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const draftTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const successHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Live Dhaka Clock (updates periodically, shows UTC+6)
   useEffect(() => {
     const updateTime = () => {
       const formatted = new Intl.DateTimeFormat('en-GB', {
         timeZone: 'Asia/Dhaka',
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
         hour12: false,
       }).format(new Date());
       setDhakaTime(formatted);
     };
 
     updateTime();
-    const interval = setInterval(updateTime, 1000);
+    const interval = setInterval(updateTime, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+      if (draftTimeoutRef.current) {
+        clearTimeout(draftTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (submitted && successHeadingRef.current) {
+      successHeadingRef.current.focus();
+    }
+  }, [submitted]);
 
   const validate = (data: typeof formData) => {
     const errs: { name?: string; email?: string; message?: string } = {};
@@ -88,24 +110,39 @@ export function ContactPage() {
     }
   };
 
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (copyTimeoutRef.current) {
-        clearTimeout(copyTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleCopyEmail = () => {
+  const copyToClipboard = (text: string) => {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(profileData.contact.email).catch(() => {});
+        navigator.clipboard.writeText(text).catch(() => {
+          fallbackClipboardCopy(text);
+        });
+        return;
       }
+    } catch {
+      // fallback
+    }
+    fallbackClipboardCopy(text);
+  };
+
+  const fallbackClipboardCopy = (text: string) => {
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
     } catch {
       // ignore
     }
+  };
+
+  const handleCopyEmail = () => {
+    copyToClipboard(profileData.contact.email);
     setCopied(true);
     sound.play('chime');
     if (copyTimeoutRef.current) {
@@ -118,16 +155,17 @@ export function ContactPage() {
   };
 
   const handleCopyDraft = () => {
-    try {
-      const draft = `To: ${profileData.contact.email}\nSubject: ${formData.subject || 'Project Inquiry'}\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(draft).catch(() => {});
-      }
-    } catch {
-      // ignore
-    }
+    const draft = `To: ${profileData.contact.email}\r\nSubject: ${formData.subject || 'Project Inquiry'}\r\n\r\nName: ${formData.name}\r\nEmail: ${formData.email}\r\n\r\nMessage:\r\n${formData.message}`;
+    copyToClipboard(draft);
     setDraftCopied(true);
-    setTimeout(() => setDraftCopied(false), 3000);
+    sound.play('chime');
+    if (draftTimeoutRef.current) {
+      clearTimeout(draftTimeoutRef.current);
+    }
+    draftTimeoutRef.current = setTimeout(() => {
+      setDraftCopied(false);
+      draftTimeoutRef.current = null;
+    }, 3000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -137,7 +175,8 @@ export function ContactPage() {
     setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length > 0) {
-      setSubmitError('Transmission blocked: Please review and resolve the highlighted errors below.');
+      setSubmitError('Please review and resolve the highlighted errors below.');
+      // Errors never play sound!
       return;
     }
 
@@ -151,10 +190,10 @@ export function ContactPage() {
       formData.subject || `Inquiry from ${formData.name || 'Portfolio Visitor'}`
     );
     const bodyContent = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+      `Name: ${formData.name}\r\nEmail: ${formData.email}\r\n\r\nMessage:\r\n${formData.message}`
     );
 
-    const mailtoUrl = `mailto:armabdur.rahman04@gmail.com?subject=${subjectLine}&body=${bodyContent}`;
+    const mailtoUrl = `mailto:${profileData.contact.email}?subject=${subjectLine}&body=${bodyContent}`;
     try {
       const link = document.createElement('a');
       link.href = mailtoUrl;
@@ -168,7 +207,29 @@ export function ContactPage() {
     }
 
     setIsSubmitting(false);
-    setDispatched(true);
+    setSubmitted(true);
+    sound.play('chime');
+  };
+
+  const handleSendAnother = () => {
+    setSubmitted(false);
+    setFormData({
+      name: '',
+      email: '',
+      subject: '',
+      message: '',
+    });
+    setTouched({});
+    setErrors({});
+    setSubmitError(null);
+    setDraftCopied(false);
+    if (draftTimeoutRef.current) {
+      clearTimeout(draftTimeoutRef.current);
+      draftTimeoutRef.current = null;
+    }
+    setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 50);
   };
 
   return (
@@ -178,264 +239,325 @@ export function ContactPage() {
         intro="Have a software project, an internship opportunity, or want to connect? Feel free to send me a message or email me directly."
       />
 
-      {/* Contact Layout */}
-      <div className={styles.contactLayout}>
-        {/* Left Column: Direct Info */}
-        <div className={styles.infoColumn}>
-          {/* Email Card */}
-          <SpotlightCard
-            className={styles.infoCard}
-            contentClassName={styles.infoCardContent}
-            tiltIntensity={5}
+      <section className={`bento ${styles.contactGrid}`} aria-label="Contact options and message form">
+        {/* 1. Availability Tile (ACCENT, span-5 rows-3) */}
+        <div
+          className={`${styles.tile} ${styles.availabilityTile} span-5 rows-3`}
+          data-tile="accent"
+          aria-label="Availability Status"
+        >
+          <div className={styles.availabilityHeader}>
+            <span className={styles.availabilityDot} aria-hidden="true" />
+          </div>
+          <h2 className={styles.availabilityTitle}>
+            Open for Internships &amp; Freelance Projects
+          </h2>
+          <p className={styles.availabilityDesc}>
+            Typically respond within 24 hours.
+          </p>
+        </div>
+
+        {/* 2. Direct Email Tile (surface, span-5 rows-2) */}
+        <div
+          className={`${styles.tile} ${styles.emailTile} span-5 rows-2`}
+          data-tile="surface"
+          aria-label="Direct Email"
+        >
+          <a
+            href={`mailto:${profileData.contact.email}`}
+            className={styles.emailAddress}
+            data-cursor="link"
           >
-            <span className={styles.infoLabel}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                <polyline points="22,6 12,13 2,6" />
-              </svg>
-              Direct Email
-            </span>
-            <span className={styles.infoValue}>{profileData.contact.email}</span>
-            <button
-              type="button"
-              className={`${styles.copyBtn} ${copied ? 'btn-copied' : ''}`}
-              onClick={handleCopyEmail}
-            >
-              <RollText>{copied ? 'Copied' : 'Copy email'}</RollText>
-            </button>
-          </SpotlightCard>
-
-          {/* Location & Time Card */}
-          <SpotlightCard
-            className={styles.infoCard}
-            contentClassName={styles.infoCardContent}
-            tiltIntensity={5}
-          >
-            <span className={styles.infoLabel}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              Location &amp; Local Time
-            </span>
-            <span className={styles.infoValue}>Dhaka, Bangladesh (UTC+6)</span>
-            {dhakaTime && (
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-                Current time: {dhakaTime}
-              </span>
-            )}
-          </SpotlightCard>
-
-          {/* Availability Status */}
-          <SpotlightCard
-            className={styles.infoCard}
-            contentClassName={styles.infoCardContent}
-            tiltIntensity={5}
-          >
-            <span className={styles.infoLabel}>
-              <span className={styles.availDot} />
-              Availability Status
-            </span>
-            <span className={styles.infoValue} style={{ fontSize: '0.95rem' }}>
-              Open for Internships &amp; Freelance Projects
-            </span>
-            <span style={{ fontSize: '0.82rem', color: 'var(--color-text-tertiary)', lineHeight: '1.4' }}>
-              Typically respond within 24 hours.
-            </span>
-          </SpotlightCard>
-
-          {/* Social Profiles */}
-          <div className={styles.socialRow}>
-            <a
-              href="https://github.com/watchknight"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialBtn}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-              </svg>
-              <span>GitHub</span>
-            </a>
-
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialBtn}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              <span>Download CV</span>
-            </a>
+            {profileData.contact.email}
+          </a>
+          <div>
+            <Magnetic strength={0.3}>
+              <button
+                type="button"
+                className={`${styles.copyBtn} ${copied ? 'btn-copied' : ''}`}
+                onClick={handleCopyEmail}
+                aria-live="polite"
+                data-cursor="link"
+                data-magnetic="0.3"
+              >
+                <RollText>{copied ? 'Copied' : 'Copy email'}</RollText>
+              </button>
+            </Magnetic>
           </div>
         </div>
 
-        {/* Right Column: Message Form */}
-        <SpotlightCard
-          as="form"
-          noValidate
-          className={styles.formCard}
-          contentClassName={styles.formCardContent}
-          tiltIntensity={4}
-          onSubmit={handleSubmit}
+        {/* 3. Form Tile (surface, span-7 rows-9) */}
+        <article
+          className={`${styles.tile} ${styles.formTile} span-7 rows-9`}
+          data-tile="surface"
+          aria-label="Contact form"
         >
-          <h2 className={styles.formTitle}>Send a message</h2>
+          {!submitted ? (
+            <>
+              <h2 className={styles.formTitle}>Send a message</h2>
 
-          {submitError && (
-            <div className={styles.errorBanner} role="alert">
-              <div className={styles.errorHeader}>
-                <span className={styles.errorDot} />
-                <span>Form Validation Error</span>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
-                {submitError}
-              </p>
-            </div>
-          )}
-
-          {dispatched && (
-            <div className={styles.dispatchBanner} role="status">
-              <div className={styles.dispatchHeader}>
-                <span className={styles.availDot} />
-                <span>Ready in Email Client</span>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--color-text-secondary)' }}>
-                If your browser didn&apos;t automatically launch your email app, you can copy the full draft:
-              </p>
-              <button
-                type="button"
-                className={styles.dispatchFallbackBtn}
-                onClick={handleCopyDraft}
-              >
-                {draftCopied ? '✓ Full message draft copied to clipboard!' : 'Copy formatted email draft to clipboard &rarr;'}
-              </button>
-            </div>
-          )}
-
-          <div className={styles.formGroup}>
-            <div className={styles.labelRow}>
-              <label htmlFor="contact-name" className={styles.formLabel}>Your Name</label>
-              {touched.name && errors.name && (
-                <span id="name-error" className={styles.fieldError} role="alert">
-                  {errors.name}
-                </span>
+              {submitError && (
+                <div className={styles.errorBanner} role="alert">
+                  <p style={{ margin: 0, fontSize: 'var(--fs-small)', color: 'var(--danger, #FF5A4D)' }}>
+                    {submitError}
+                  </p>
+                </div>
               )}
-            </div>
-            <input
-              id="contact-name"
-              type="text"
-              required
-              aria-required="true"
-              aria-invalid={touched.name && Boolean(errors.name)}
-              aria-describedby={touched.name && errors.name ? 'name-error' : undefined}
-              className={`${styles.formInput} ${touched.name && errors.name ? styles.formInputError : ''}`}
-              placeholder="e.g. Alex Rahman"
-              value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              onBlur={() => handleBlur('name')}
-              autoComplete="name"
-              autoCapitalize="words"
-              disabled={isSubmitting}
-              data-cursor="hide"
-            />
-          </div>
 
-          <div className={styles.formGroup}>
-            <div className={styles.labelRow}>
-              <label htmlFor="contact-email" className={styles.formLabel}>Your Email</label>
-              {touched.email && errors.email && (
-                <span id="email-error" className={styles.fieldError} role="alert">
-                  {errors.email}
-                </span>
-              )}
-            </div>
-            <input
-              id="contact-email"
-              type="email"
-              inputMode="email"
-              required
-              aria-required="true"
-              aria-invalid={touched.email && Boolean(errors.email)}
-              aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
-              className={`${styles.formInput} ${touched.email && errors.email ? styles.formInputError : ''}`}
-              placeholder="e.g. alex@example.com"
-              value={formData.email}
-              onChange={(e) => handleChange('email', e.target.value)}
-              onBlur={() => handleBlur('email')}
-              autoComplete="email"
-              autoCapitalize="none"
-              disabled={isSubmitting}
-              data-cursor="hide"
-            />
-          </div>
+              <form noValidate onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.nameEmailRow}>
+                  <div className={`${styles.field} field`}>
+                    <label htmlFor="contact-name">Your Name</label>
+                    <input
+                      ref={nameInputRef}
+                      id="contact-name"
+                      name="name"
+                      type="text"
+                      required
+                      aria-required="true"
+                      aria-invalid={touched.name && Boolean(errors.name)}
+                      aria-describedby={touched.name && errors.name ? 'name-error' : undefined}
+                      placeholder="e.g. Alex Rahman"
+                      value={formData.name}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                      onBlur={() => handleBlur('name')}
+                      autoComplete="name"
+                      autoCapitalize="words"
+                      disabled={isSubmitting}
+                      data-cursor="hide"
+                    />
+                    {touched.name && errors.name && (
+                      <span id="name-error" className={`${styles.error} error`} role="alert">
+                        {errors.name}
+                      </span>
+                    )}
+                  </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="contact-subject" className={styles.formLabel}>Subject (Optional)</label>
-            <input
-              id="contact-subject"
-              type="text"
-              className={styles.formInput}
-              placeholder="e.g. Internship Opportunity / Project Collaboration"
-              value={formData.subject}
-              onChange={(e) => handleChange('subject', e.target.value)}
-              autoCapitalize="sentences"
-              disabled={isSubmitting}
-              data-cursor="hide"
-            />
-          </div>
+                  <div className={`${styles.field} field`}>
+                    <label htmlFor="contact-email">Your Email</label>
+                    <input
+                      id="contact-email"
+                      name="email"
+                      type="email"
+                      inputMode="email"
+                      required
+                      aria-required="true"
+                      aria-invalid={touched.email && Boolean(errors.email)}
+                      aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
+                      placeholder="e.g. alex@example.com"
+                      value={formData.email}
+                      onChange={(e) => handleChange('email', e.target.value)}
+                      onBlur={() => handleBlur('email')}
+                      autoComplete="email"
+                      autoCapitalize="none"
+                      disabled={isSubmitting}
+                      data-cursor="hide"
+                    />
+                    {touched.email && errors.email && (
+                      <span id="email-error" className={`${styles.error} error`} role="alert">
+                        {errors.email}
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-          <div className={styles.formGroup}>
-            <div className={styles.labelRow}>
-              <label htmlFor="contact-message" className={styles.formLabel}>Message</label>
-              {touched.message && errors.message && (
-                <span id="message-error" className={styles.fieldError} role="alert">
-                  {errors.message}
-                </span>
-              )}
-            </div>
-            <textarea
-              id="contact-message"
-              required
-              aria-required="true"
-              aria-invalid={touched.message && Boolean(errors.message)}
-              aria-describedby={touched.message && errors.message ? 'message-error' : undefined}
-              className={`${styles.formTextarea} ${touched.message && errors.message ? styles.formTextareaError : ''}`}
-              placeholder="Write your message here (min 10 characters)..."
-              value={formData.message}
-              onChange={(e) => handleChange('message', e.target.value)}
-              onBlur={() => handleBlur('message')}
-              autoCapitalize="sentences"
-              disabled={isSubmitting}
-              data-cursor="hide"
-            />
-          </div>
+                <div className={`${styles.field} field`}>
+                  <label htmlFor="contact-subject">Subject (Optional)</label>
+                  <input
+                    id="contact-subject"
+                    name="subject"
+                    type="text"
+                    placeholder="e.g. Internship Opportunity / Project Collaboration"
+                    value={formData.subject}
+                    onChange={(e) => handleChange('subject', e.target.value)}
+                    autoCapitalize="sentences"
+                    disabled={isSubmitting}
+                    data-cursor="hide"
+                  />
+                </div>
 
-          <button
-            type="submit"
-            className={`${styles.sendBtn} ${isSubmitting ? styles.sendBtnLoading : ''}`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <span className={styles.btnSpinner} aria-hidden="true" />
-                <span>Sending message...</span>
-              </>
-            ) : (
-              <>
-                <RollText>Draft &amp; Send Message</RollText>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="22" y1="2" x2="11" y2="13" />
-                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                <div className={`${styles.field} field`}>
+                  <label htmlFor="contact-message">Message</label>
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    required
+                    aria-required="true"
+                    aria-invalid={touched.message && Boolean(errors.message)}
+                    aria-describedby={touched.message && errors.message ? 'message-error' : undefined}
+                    placeholder="Write your message here (min 10 characters)..."
+                    value={formData.message}
+                    onChange={(e) => handleChange('message', e.target.value)}
+                    onBlur={() => handleBlur('message')}
+                    autoCapitalize="sentences"
+                    disabled={isSubmitting}
+                    data-cursor="hide"
+                  />
+                  {touched.message && errors.message && (
+                    <span id="message-error" className={`${styles.error} error`} role="alert">
+                      {errors.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className={styles.submitSection}>
+                  <Magnetic strength={0.3}>
+                    <button
+                      type="submit"
+                      className={`${styles.submitBtn} ${isSubmitting ? styles.submitBtnLoading : ''}`}
+                      disabled={isSubmitting}
+                      data-cursor="link"
+                      data-magnetic="0.3"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className={styles.btnSpinner} aria-hidden="true" />
+                          <span>Drafting message...</span>
+                        </>
+                      ) : (
+                        <>
+                          <RollText>Draft &amp; Send Message</RollText>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </Magnetic>
+                  <p className={styles.mailtoNote}>
+                    Opens your email app with the message filled in.
+                  </p>
+                </div>
+              </form>
+            </>
+          ) : (
+            <div className={styles.successTile} role="status" aria-live="polite">
+              <div className={styles.successIconBadge} aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
                 </svg>
-              </>
+              </div>
+              <h2 ref={successHeadingRef} tabIndex={-1} className={styles.successTitle} style={{ outline: 'none' }}>
+                Draft prepared &amp; ready to send
+              </h2>
+              <p className={styles.successText}>
+                Your default email application has been opened with your pre-filled inquiry.
+                If it didn&apos;t launch automatically, you can copy the full formatted draft below.
+              </p>
+
+              <div className={styles.successActions}>
+                <Magnetic strength={0.3}>
+                  <button
+                    type="button"
+                    className={styles.sendAnotherBtn}
+                    onClick={handleSendAnother}
+                    data-cursor="link"
+                    data-magnetic="0.3"
+                  >
+                    <RollText>Send another message</RollText>
+                  </button>
+                </Magnetic>
+
+                <Magnetic strength={0.3}>
+                  <button
+                    type="button"
+                    className={`${styles.copyDraftBtn} ${draftCopied ? 'btn-copied' : ''}`}
+                    onClick={handleCopyDraft}
+                    aria-live="polite"
+                    data-cursor="link"
+                    data-magnetic="0.3"
+                  >
+                    <RollText>{draftCopied ? 'Draft copied!' : 'Copy formatted email draft'}</RollText>
+                  </button>
+                </Magnetic>
+              </div>
+            </div>
+          )}
+        </article>
+
+        {/* 4. Local Time Tile (surface, span-5 rows-2) */}
+        <div
+          className={`${styles.tile} ${styles.timeTile} span-5 rows-2`}
+          data-tile="surface"
+          aria-label="Local Time"
+        >
+          <div className={styles.timeHeader}>
+            <span className={styles.timeLocation}>Dhaka, Bangladesh (UTC+6)</span>
+          </div>
+          <div className={styles.dhakaTimeDisplay}>
+            <span className={styles.dhakaTimeDigits}>{dhakaTime || '14:32'}</span>
+            <span className={styles.dhakaTimeSub}>Local Time</span>
+          </div>
+        </div>
+
+        {/* 5. Links Tile (INVERTED, span-5 rows-2) */}
+        <div
+          className={`${styles.tile} ${styles.linksTile} span-5 rows-2`}
+          data-tile="inverted"
+          aria-label="Direct Profiles & Links"
+        >
+          <div className={styles.linksRow}>
+            {profileData.contact.githubUrl && (
+              <Magnetic strength={0.3}>
+                <a
+                  href={profileData.contact.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.invertedLink}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                  </svg>
+                  <RollText>GitHub</RollText>
+                </a>
+              </Magnetic>
             )}
-          </button>
-        </SpotlightCard>
-      </div>
+
+            {profileData.contact.resumeUrl && (
+              <Magnetic strength={0.3}>
+                <a
+                  href={profileData.contact.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.invertedLink}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <RollText>Download CV</RollText>
+                </a>
+              </Magnetic>
+            )}
+
+            {profileData.contact.linkedinUrl && (
+              <Magnetic strength={0.3}>
+                <a
+                  href={profileData.contact.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.invertedLink}
+                  data-cursor="link"
+                  data-magnetic="0.3"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
+                  </svg>
+                  <RollText>LinkedIn</RollText>
+                </a>
+              </Magnetic>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

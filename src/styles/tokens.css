@@ -20,6 +20,7 @@
   --focus: #FFB224;
   --ok: #5BD6A0;
   --error: #FF5C5C;
+  --danger: #FF5A4D;
 }
 
 [data-theme="light"] {
@@ -40,6 +41,7 @@
   --focus: #0E1A36;
   --ok: #0B7A4B;
   --error: #C5221F;
+  --danger: #D93829;
 }
 
 :root {
