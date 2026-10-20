@@ -11,5 +11,7 @@ export declare function toggleTheme(
   apply: (next: 'dark' | 'light') => void
 ): void;
 
+export declare function initTileReveals(container?: Element | Document): void;
+
 export { gsap, ScrollTrigger, SplitText, Flip };
 export { initAtmosphere, setLive, dhakaHour, phaseFor } from "./atmosphere.js";

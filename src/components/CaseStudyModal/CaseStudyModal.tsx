@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useLayoutEffect, useCallback } from 'react';
+import { gsap } from '../../motion/index';
 import type { ProjectData } from '../../data/projects';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
@@ -11,25 +12,87 @@ interface CaseStudyModalProps {
 
 export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'architecture' | 'interventions' | 'code'>('architecture');
   const [copied, setCopied] = useState(false);
-  const [prevId, setPrevId] = useState<string | null>(null);
+  const isClosingRef = useRef(false);
 
   useScrollLock(Boolean(project));
   useFocusTrap(modalRef, Boolean(project));
 
-  if (project && project.id !== prevId) {
-    setPrevId(project.id);
-    setActiveTab('architecture');
-    setCopied(false);
-  }
+  // Smooth exit animation matching Controls Popover
+  const handleClose = useCallback(() => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+
+    const el = modalRef.current;
+    const backdrop = backdropRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (!el || reduce) {
+      onClose();
+      return;
+    }
+
+    gsap.killTweensOf(el);
+    if (backdrop) gsap.killTweensOf(backdrop);
+
+    gsap.to(el, {
+      opacity: 0,
+      scale: 0.97,
+      y: 8,
+      duration: 0.2,
+      ease: 'power2.in',
+      onComplete: () => {
+        onClose();
+        isClosingRef.current = false;
+      },
+    });
+
+    if (backdrop) {
+      gsap.to(backdrop, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.in',
+      });
+    }
+  }, [onClose]);
+
+  // Smooth enter animation matching Controls Popover
+  useLayoutEffect(() => {
+    if (!project || !modalRef.current) return;
+    const el = modalRef.current;
+    const backdrop = backdropRef.current;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    gsap.killTweensOf(el);
+    if (backdrop) gsap.killTweensOf(backdrop);
+
+    if (reduce) {
+      gsap.set(el, { opacity: 1, scale: 1, y: 0 });
+      if (backdrop) gsap.set(backdrop, { opacity: 1 });
+    } else {
+      gsap.fromTo(
+        el,
+        { opacity: 0, scale: 0.97, y: 8 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.25, ease: 'expo.out', overwrite: true }
+      );
+      if (backdrop) {
+        gsap.fromTo(
+          backdrop,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.25, ease: 'power2.out', overwrite: true }
+        );
+      }
+    }
+  }, [project]);
 
   useEffect(() => {
     if (!project) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     };
 
@@ -39,7 +102,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [project, onClose]);
+  }, [project, handleClose]);
 
   if (!project) return null;
 
@@ -53,10 +116,11 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
 
   return (
     <div
+      ref={backdropRef}
       className={styles.backdrop}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
-          onClose();
+          handleClose();
         }
       }}
       role="dialog"
@@ -84,9 +148,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
           <button
             type="button"
             className={styles.closeBtn}
-            onClick={() => {
-              onClose();
-            }}
+            onClick={handleClose}
             aria-label="Close case study (Esc)"
             title="Close (Esc)"
             data-cursor="link"
@@ -104,9 +166,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
           <button
             type="button"
             className={`${styles.tabBtn} ${activeTab === 'architecture' ? styles.tabBtnActive : ''}`}
-            onClick={() => {
-              setActiveTab('architecture');
-            }}
+            onClick={() => setActiveTab('architecture')}
             role="tab"
             aria-selected={activeTab === 'architecture'}
           >
@@ -116,9 +176,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
           <button
             type="button"
             className={`${styles.tabBtn} ${activeTab === 'interventions' ? styles.tabBtnActive : ''}`}
-            onClick={() => {
-              setActiveTab('interventions');
-            }}
+            onClick={() => setActiveTab('interventions')}
             role="tab"
             aria-selected={activeTab === 'interventions'}
           >
@@ -129,9 +187,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
             <button
               type="button"
               className={`${styles.tabBtn} ${activeTab === 'code' ? styles.tabBtnActive : ''}`}
-              onClick={() => {
-                setActiveTab('code');
-              }}
+              onClick={() => setActiveTab('code')}
               role="tab"
               aria-selected={activeTab === 'code'}
             >
@@ -168,10 +224,10 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
                         fontFamily: 'var(--font-mono)',
                         fontSize: '12px',
                         padding: '0.25rem 0.6rem',
-                        borderRadius: 'var(--radius-xs)',
-                        background: 'var(--color-bg-card)',
-                        border: '1px solid var(--color-border-hairline)',
-                        color: 'var(--color-text-secondary)',
+                        borderRadius: 'var(--r-pill)',
+                        background: 'var(--surface)',
+                        border: '1px solid var(--line)',
+                        color: 'var(--muted)',
                       }}
                     >
                       {env}
@@ -191,7 +247,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
                       style={{
                         fontFamily: 'var(--font-mono)',
                         fontSize: '11px',
-                        color: 'var(--color-accent)',
+                        color: 'var(--accent)',
                         fontWeight: 700,
                       }}
                     >
@@ -232,7 +288,7 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
 
         {/* Footer */}
         <div className={styles.footer}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-tertiary)' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--muted)' }}>
             STATUS: PRODUCTION VERIFIED
           </span>
 

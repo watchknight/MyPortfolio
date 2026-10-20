@@ -3,7 +3,7 @@ import { useRouter } from './hooks/useRouter';
 import { projects, type ProjectData } from './data/projects';
 import { initCursor } from './motion/cursor';
 import { initAtmosphere } from './motion/atmosphere.js';
-import { initMotion, ScrollTrigger, gsap } from './motion/index';
+import { initMotion, ScrollTrigger, gsap, initTileReveals } from './motion/index';
 import { sound, initSound } from './audio/sound.js';
 import { initSoundHooks, initSections } from './audio/hooks.js';
 import { refreshSections } from './lib/sections.js';
@@ -115,8 +115,9 @@ export default function App({ initialPath, routes }: AppProps) {
 
   // Close any open modals on route change
   useEffect(() => {
-    setSelectedProject(null);
-    setSysCheckOpen(false);
+    // oxlint-disable-next-line react/set-state-in-effect
+    setSelectedProject((prev) => (prev ? null : prev));
+    setSysCheckOpen((prev) => (prev ? false : prev));
   }, [currentPath]);
 
   // Effect on displayPath: refresh sections after the new route DOM exists
@@ -157,6 +158,7 @@ export default function App({ initialPath, routes }: AppProps) {
       }
       updateDocumentTitle(currentPath);
       mainEl?.focus({ preventScroll: true });
+      if (mainEl) initTileReveals(mainEl);
       ScrollTrigger.refresh();
       refreshSections();
       return;
@@ -185,6 +187,7 @@ export default function App({ initialPath, routes }: AppProps) {
             ease: 'power2.out',
             overwrite: true,
             onComplete: () => {
+              initTileReveals(mainEl);
               ScrollTrigger.refresh();
               refreshSections();
             },
@@ -240,7 +243,7 @@ export default function App({ initialPath, routes }: AppProps) {
       </a>
       <Suspense fallback={null}>
         {sysCheckOpen && <LazySysDiagnosticModal isOpen={sysCheckOpen} onClose={() => setSysCheckOpen(false)} />}
-        {selectedProject && <LazyCaseStudyModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
+        {selectedProject && <LazyCaseStudyModal key={selectedProject.id} project={selectedProject} onClose={() => setSelectedProject(null)} />}
       </Suspense>
       <Nav currentPath={currentPath} onNavigate={navigate} />
 

@@ -7,12 +7,6 @@
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: flex-end;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 .sheet {
@@ -20,17 +14,12 @@
   max-width: 44rem;
   height: 100vh;
   height: 100svh;
-  background-color: var(--bg);
+  background-color: var(--raised);
   border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
 }
 
 .header {
@@ -38,8 +27,8 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: max(1.75rem, calc(1.75rem + env(safe-area-inset-top))) 2rem 1rem 2rem;
-  border-bottom: 1px solid var(--color-border-hairline);
-  background-color: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--line);
+  background-color: var(--surface);
   gap: 1rem;
 }
 
@@ -50,39 +39,42 @@
 }
 
 .categoryTag {
-  font-family: var(--font-mono);
-  font-size: var(--text-micro);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--muted);
+  letter-spacing: 0.04em;
 }
 
 .title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  margin: 0;
 }
 
 .subtitle {
-  font-size: var(--text-meta);
-  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
 }
 
 .closeBtn {
   min-height: 44px;
   min-width: 44px;
-  padding: 0 0.75rem;
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-subtle);
-  border: 1px solid var(--color-border-hairline);
-  color: var(--color-text-secondary);
+  padding: 0 0.85rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--muted);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   cursor: pointer;
   transition: all var(--duration-fast) ease;
   flex-shrink: 0;
@@ -93,7 +85,7 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--color-text-secondary);
+  color: var(--subtle);
   transition: color var(--duration-fast) ease;
 }
 
@@ -104,9 +96,9 @@
 }
 
 .closeBtn:hover {
-  background: var(--color-bg-card-hover);
+  background: var(--raised);
   color: var(--text);
-  border-color: var(--accent);
+  border-color: var(--control);
 }
 
 .closeBtn:hover .closeKbd {
@@ -118,34 +110,35 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 2rem;
-  background-color: var(--color-bg-card);
-  border-bottom: 1px solid var(--color-border-hairline);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--line);
   overflow-x: auto;
 }
 
 .tabBtn {
-  font-family: var(--font-body);
-  font-size: var(--text-meta);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
   font-weight: 500;
   padding: 0.5rem 0.85rem;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
-  border-radius: var(--radius-xs);
+  border-radius: var(--r-md);
   background: transparent;
   border: none;
-  color: var(--color-text-tertiary);
+  color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
   transition: all var(--duration-fast) ease;
 }
 
 .tabBtn:hover {
-  color: var(--color-text-primary);
+  color: var(--text);
+  background: var(--raised);
 }
 
 .tabBtnActive {
-  background-color: var(--color-bg-subtle);
+  background-color: var(--raised);
   color: var(--text);
   font-weight: 600;
   border-bottom: 2px solid var(--accent);
@@ -160,7 +153,7 @@
   flex-direction: column;
   gap: 2rem;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-strong) transparent;
+  scrollbar-color: var(--line) transparent;
 }
 
 .sectionBlock {
@@ -170,17 +163,20 @@
 }
 
 .sectionHeading {
-  font-family: var(--font-display);
-  font-size: var(--text-subsection);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: -0.01em;
+  margin: 0;
 }
 
 .sectionText {
-  font-size: var(--text-body);
-  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--muted);
   line-height: 1.65;
+  margin: 0;
 }
 
 .interventionsList {
@@ -191,34 +187,37 @@
 
 .interventionCard {
   padding: 1.25rem;
-  border-radius: var(--radius-sm);
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--r-md);
+  background-color: var(--surface);
+  border: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
 
 .interventionName {
-  font-family: var(--font-display);
-  font-size: var(--text-subsection);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
 }
 
 .interventionDetail {
-  font-size: var(--text-meta);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
   line-height: 1.55;
-  color: var(--color-text-secondary);
+  color: var(--muted);
+  margin: 0;
 }
 
 .interventionDetail strong {
-  color: var(--color-text-primary);
+  color: var(--text);
   font-weight: 600;
 }
 
 .codeBox {
-  border-radius: var(--radius-sm);
+  border-radius: var(--r-md);
   border: 1px solid var(--line);
   background-color: var(--surface);
   overflow: hidden;
@@ -232,18 +231,18 @@
   background-color: var(--raised);
   border-bottom: 1px solid var(--line);
   font-family: var(--font-mono);
-  font-size: var(--text-micro);
-  color: var(--subtle);
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 
 .copyBtn {
   font-family: var(--font-mono);
   font-size: 11px;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-xs);
-  background-color: var(--raised);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--r-pill);
+  background-color: var(--surface);
   border: 1px solid var(--line);
-  color: var(--muted);
+  color: var(--text);
   cursor: pointer;
   transition: all var(--duration-fast) ease;
 }
@@ -259,9 +258,10 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: var(--muted);
+  color: var(--text);
   overflow-x: auto;
   margin: 0;
+  background: var(--bg);
 }
 
 .footer {
@@ -285,20 +285,21 @@
   gap: 0.45rem;
   padding: 0.65rem 1.15rem;
   min-height: 44px;
-  border-radius: var(--radius-pill);
-  background-color: var(--surface);
-  border: 1px solid var(--ok);
-  color: var(--ok);
-  font-family: var(--font-body);
-  font-size: var(--text-meta);
+  border-radius: var(--r-pill);
+  background-color: var(--raised);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
   font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
   transition: all var(--duration-fast) ease;
 }
 
 .liveAction:hover {
-  background-color: var(--ok);
-  color: var(--bg);
+  border-color: var(--control);
+  background-color: var(--surface);
 }
 
 .liveDot {
@@ -314,18 +315,20 @@
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
   min-height: 44px;
-  border-radius: var(--radius-pill);
-  background-color: var(--color-text-primary);
-  color: var(--color-bg-base);
-  font-family: var(--font-body);
-  font-size: var(--text-meta);
+  border-radius: var(--r-pill);
+  background-color: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
   font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
-  transition: opacity var(--duration-fast) ease;
+  transition: all var(--duration-fast) ease;
 }
 
 .primaryAction:hover {
-  opacity: 0.9;
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 640px) {

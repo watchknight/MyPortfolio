@@ -18,11 +18,9 @@ export function initMotion() {
     const title = document.querySelector("[data-hero-title]");
     const heroIn = gsap.utils.toArray("[data-hero-in]");
     const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-    const tiles = gsap.utils.toArray("section:not([aria-label='Introduction']) [data-tile]");
     const seen = sessionStorage.getItem("hero-seen") === "1";
 
-    gsap.set(tiles, { autoAlpha: 0 });
-    if (!seen) gsap.set(heroIn, { autoAlpha: 0, y: 14 });
+    if (!seen && heroIn.length > 0) gsap.set(heroIn, { autoAlpha: 0, y: 14 });
     html.classList.remove("js-motion");
 
     if (title && !seen) {
@@ -57,12 +55,7 @@ export function initMotion() {
       window.dispatchEvent(new CustomEvent("hero-intro-complete"));
     }
 
-    ScrollTrigger.batch(tiles, {
-      start: "top 88%",
-      once: true,
-      onEnter: (els) =>
-        gsap.fromTo(els, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.07, overwrite: true, clearProps: "transform" }),
-    });
+    initTileReveals(document);
 
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
   });
@@ -73,6 +66,31 @@ export function initMotion() {
   });
 
   return () => mm.revert();
+}
+
+export function initTileReveals(container = document) {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+
+  const tiles = gsap.utils.toArray("section:not([aria-label='Introduction']) [data-tile]:not(.tile-revealed)", container);
+  if (tiles.length === 0) return;
+
+  gsap.set(tiles, { autoAlpha: 0 });
+  ScrollTrigger.batch(tiles, {
+    start: "top 88%",
+    once: true,
+    onEnter: (els) => {
+      els.forEach((el) => {
+        if (el instanceof Element) el.classList.add("tile-revealed");
+      });
+      gsap.fromTo(
+        els,
+        { autoAlpha: 0, y: 24 },
+        { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.07, overwrite: true, clearProps: "transform" }
+      );
+    },
+  });
 }
 
 export function toggleTheme(next, x, y, apply) {

@@ -1,60 +1,180 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { sound } from '../../audio/sound.js';
 import styles from './ProjectSimulator.module.css';
 
 interface ProjectSimulatorProps {
   projectId: string;
+  isRunning?: boolean;
 }
 
-export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
-  const [inView, setInView] = useState(false);
-  const simRef = useRef<HTMLDivElement>(null);
+const BLOCKED_DOMAINS = [
+  'facebook.com',
+  'instagram.com',
+  'reddit.com',
+  'tiktok.com',
+];
 
-  useEffect(() => {
-    const el = simRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      setInView(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '200px 0px' }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+const PANTRY_ITEMS = [
+  { id: 'Hilsha', name: 'Hilsha (ইলিশ)' },
+  { id: 'Mustard Paste', name: 'Mustard Paste (সরিষা বাটা)' },
+  { id: 'Green Chili', name: 'Green Chili (কাঁচা মরিচ)' },
+  { id: 'Aubergine', name: 'Aubergine (বেগুন)' },
+  { id: 'Rui Fish', name: 'Rui Fish (রুই মাছ)' },
+  { id: 'Potato', name: 'Potato (আলু)' },
+];
 
+export function ProjectSimulator({ projectId, isRunning = false }: ProjectSimulatorProps) {
   // PureFeed state
   const [pureFeedEnabled, setPureFeedEnabled] = useState(true);
+  const [pfLatency, setPfLatency] = useState('11.4ms');
 
   // FocusGuard state
-  const [testedDomain, setTestedDomain] = useState<string | null>(null);
-  const blockedDomains = [
-    'facebook.com',
-    'instagram.com',
-    'reddit.com',
-    'tiktok.com',
-  ];
+  const [testedDomain, setTestedDomain] = useState<string>('facebook.com');
 
   // DocLensBD state
   const [selectedFrame, setSelectedFrame] = useState<'wayfarer' | 'aviator' | 'titanium'>('wayfarer');
+  const [meshAngle, setMeshAngle] = useState(0);
+  const [meshPupilShift, setMeshPupilShift] = useState(0);
 
   // Rannabanna state
   const [selectedPantry, setSelectedPantry] = useState<string[]>(['Hilsha', 'Mustard Paste']);
+  const [rbSimQuery, setRbSimQuery] = useState('0.8ms SQL');
 
-  const pantryItems = [
-    { id: 'Hilsha', name: 'Hilsha (ইলিশ)' },
-    { id: 'Mustard Paste', name: 'Mustard Paste (সরিষা বাটা)' },
-    { id: 'Green Chili', name: 'Green Chili (কাঁচা মরিচ)' },
-    { id: 'Aubergine', name: 'Aubergine (বেগুন)' },
-    { id: 'Rui Fish', name: 'Rui Fish (রুই মাছ)' },
-    { id: 'Potato', name: 'Potato (আলু)' },
-  ];
+  // POSHRA state
+  const [activeStep, setActiveStep] = useState(1);
+
+  // Portfolio DSP state
+  const [dspFreqBar, setDspFreqBar] = useState([35, 60, 45, 80, 55, 90, 70, 40]);
+
+  // 1. PureFeed animation loop (runs only when isRunning is true)
+  useEffect(() => {
+    if (!isRunning || projectId !== 'purefeed') {
+      return;
+    }
+
+    let animId: number;
+    let lastUpdate = performance.now();
+
+    const loop = (now: number) => {
+      if (now - lastUpdate >= 400) {
+        lastUpdate = now;
+        const jitter = (10.5 + Math.random() * 2.8).toFixed(1);
+        setPfLatency(`${jitter}ms`);
+      }
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(animId);
+      setPfLatency('11.4ms');
+    };
+  }, [isRunning, projectId]);
+
+  // 2. DocLensBD 3D head/glasses sway animation loop (runs only when isRunning is true)
+  useEffect(() => {
+    if (!isRunning || projectId !== 'doclensbd') {
+      return;
+    }
+
+    let animId: number;
+    const start = performance.now();
+
+    const loop = (now: number) => {
+      const elapsed = (now - start) / 1000;
+      const angle = Math.sin(elapsed * 1.8) * 5;
+      const shift = Math.sin(elapsed * 2.2) * 2;
+      setMeshAngle(angle);
+      setMeshPupilShift(shift);
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(animId);
+      setMeshAngle(0);
+      setMeshPupilShift(0);
+    };
+  }, [isRunning, projectId]);
+
+  // 3. FocusGuard domain cycling timer (runs only when isRunning is true)
+  useEffect(() => {
+    if (!isRunning || projectId !== 'focusguard') return;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      index = (index + 1) % BLOCKED_DOMAINS.length;
+      setTestedDomain(BLOCKED_DOMAINS[index]);
+    }, 2400);
+
+    return () => clearInterval(interval);
+  }, [isRunning, projectId]);
+
+  // 4. Rannabanna query time simulation (runs only when isRunning is true)
+  useEffect(() => {
+    if (!isRunning || projectId !== 'rannabanna') {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const times = ['0.7ms SQL', '0.8ms SQL', '0.9ms SQL', '0.6ms SQL'];
+      setRbSimQuery(times[Math.floor(Math.random() * times.length)]);
+    }, 1800);
+
+    return () => {
+      clearInterval(interval);
+      setRbSimQuery('0.8ms SQL');
+    };
+  }, [isRunning, projectId]);
+
+  // 5. POSHRA pipeline step cycling (runs only when isRunning is true)
+  useEffect(() => {
+    if (!isRunning || projectId !== 'poshra') {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev % 3) + 1);
+    }, 1500);
+
+    return () => {
+      clearInterval(interval);
+      setActiveStep(1);
+    };
+  }, [isRunning, projectId]);
+
+  // 6. Portfolio DSP waveform animation (runs only when isRunning is true)
+  useEffect(() => {
+    if (!isRunning || projectId !== 'myportfolio') {
+      return;
+    }
+
+    let animId: number;
+    let lastTime = performance.now();
+
+    const loop = (now: number) => {
+      if (now - lastTime >= 120) {
+        lastTime = now;
+        setDspFreqBar([
+          Math.floor(25 + Math.random() * 50),
+          Math.floor(40 + Math.random() * 55),
+          Math.floor(30 + Math.random() * 60),
+          Math.floor(50 + Math.random() * 45),
+          Math.floor(35 + Math.random() * 55),
+          Math.floor(60 + Math.random() * 38),
+          Math.floor(40 + Math.random() * 50),
+          Math.floor(20 + Math.random() * 45),
+        ]);
+      }
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(animId);
+      setDspFreqBar([35, 60, 45, 80, 55, 90, 70, 40]);
+    };
+  }, [isRunning, projectId]);
 
   const handleTestDomain = (domain: string) => {
     setTestedDomain(domain);
@@ -66,56 +186,6 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
     );
   };
 
-  // Render lightweight reserved placeholder when not in view
-  if (!inView) {
-    return (
-      <div
-        ref={simRef}
-        className={styles.simWrapper}
-        onClick={() => setInView(true)}
-        style={{ cursor: 'pointer', minHeight: '220px', display: 'flex', flexDirection: 'column' }}
-      >
-        <div className={styles.simHeader}>
-          <div className={styles.macControls}>
-            <span className={`${styles.dot} ${styles.dotRed}`} />
-            <span className={`${styles.dot} ${styles.dotYellow}`} />
-            <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>
-              {projectId === 'doclensbd'
-                ? 'doclensbd.onrender.com/virtual-tryon'
-                : projectId === 'purefeed'
-                ? 'youtube.com/watch?v=system_mesh'
-                : 'system.local/preview'}
-            </span>
-          </div>
-          <span className={styles.simTag}>
-            {projectId === 'doclensbd' ? 'MediaPipe 3D' : 'Interactive Mock'}
-          </span>
-        </div>
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '2rem',
-            gap: '0.5rem',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--muted)',
-            textAlign: 'center',
-          }}
-        >
-          <span>⚡ Simulation ready</span>
-          <span style={{ fontSize: '10px', color: 'var(--subtle)' }}>
-            Tap or scroll into view to load live runtime
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   // PureFeed Simulator
   if (projectId === 'purefeed') {
     return (
@@ -125,10 +195,9 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>youtube.com/watch?v=system_mesh</span>
           </div>
           <div className={styles.simToggleWrap}>
-            <span className={styles.toggleLabel}>PureFeed Engine:</span>
+            <span className={styles.toggleLabel}>PureFeed:</span>
             <button
               type="button"
               className={`${styles.toggleSwitch} ${pureFeedEnabled ? styles.toggleActive : ''}`}
@@ -154,7 +223,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
                 <div className={styles.pfCenterIcon}>▶</div>
                 <div className={styles.pfHudOverlay}>
                   <span className={styles.pfPillSuccess}>✓ STREAM LIVE — 0 ADS</span>
-                  <span className={styles.pfPillMeta}>LATENCY: 11.4ms (MV3 MAIN-WORLD)</span>
+                  <span className={styles.pfPillMeta}>LATENCY: {pfLatency} (MV3 MAIN-WORLD)</span>
                 </div>
               </div>
               <div className={styles.pfStatusBar}>
@@ -189,7 +258,6 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>C:\Windows\System32\drivers\etc\hosts</span>
           </div>
           <span className={styles.simTag}>OS Sinkhole</span>
         </div>
@@ -200,7 +268,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
           </div>
 
           <div className={styles.fgDomainPills}>
-            {blockedDomains.map((dom) => (
+            {BLOCKED_DOMAINS.map((dom) => (
               <button
                 key={dom}
                 type="button"
@@ -245,7 +313,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>doclensbd.onrender.com/virtual-tryon</span>
+            <span className={styles.simUrl}>doclensbd.onrender.com</span>
           </div>
           <span className={styles.simTag}>MediaPipe 3D</span>
         </div>
@@ -255,12 +323,24 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             {/* Visual face wireframe representation */}
             <div className={styles.dlFaceGraphic}>
               <div className={styles.dlMeshLines}>
-                <span className={styles.dlPupilL} />
-                <span className={styles.dlPupilR} />
+                <span
+                  className={styles.dlPupilL}
+                  style={{ transform: `translateX(${meshPupilShift}px)` }}
+                />
+                <span
+                  className={styles.dlPupilR}
+                  style={{ transform: `translateX(${meshPupilShift}px)` }}
+                />
                 <span className={styles.dlNoseBridge} />
               </div>
               {/* Virtual glasses overlay */}
-              <div className={`${styles.dlGlasses} ${styles['frame_' + selectedFrame]}`}>
+              <div
+                className={`${styles.dlGlasses} ${styles['frame_' + selectedFrame]}`}
+                style={{
+                  transform: `rotate(${meshAngle}deg) translate(${meshPupilShift}px, 0)`,
+                  transformOrigin: 'center center',
+                }}
+              >
                 <span className={styles.dlLensL} />
                 <span className={styles.dlBridge} />
                 <span className={styles.dlLensR} />
@@ -326,7 +406,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>rannabanna.onrender.com/matcher</span>
+            <span className={styles.simUrl}>rannabanna.onrender.com</span>
           </div>
           <span className={styles.simTag}>SQLite Heuristics</span>
         </div>
@@ -338,7 +418,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
           </div>
 
           <div className={styles.rbPantryGrid}>
-            {pantryItems.map((item) => (
+            {PANTRY_ITEMS.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -354,7 +434,7 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
           <div className={styles.rbResultCard}>
             <div className={styles.rbResultHead}>
               <span className={styles.rbBadge}>Top Heuristic Match</span>
-              <span className={styles.rbQueryTime}>0.8ms SQL</span>
+              <span className={styles.rbQueryTime}>{rbSimQuery}</span>
             </div>
 
             <div className={styles.rbRecipeName}>
@@ -388,26 +468,26 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>poshra.onrender.com/checkout</span>
+            <span className={styles.simUrl}>poshra.onrender.com</span>
           </div>
-          <span className={styles.simTag}>Next.js &bull; SSLCommerz</span>
+          <span className={styles.simTag}>SSLCommerz</span>
         </div>
 
         <div className={styles.simBody}>
           <div className={styles.poshraPipeline}>
-            <div className={styles.poshraStep}>
+            <div className={`${styles.poshraStep} ${activeStep === 1 ? styles.stepActive : ''}`}>
               <span className={styles.stepNum}>1</span>
               <span className={styles.stepTitle}>Cart State</span>
               <span className={styles.stepSub}>3 Items (৳ 4,250)</span>
             </div>
             <span className={styles.stepArrow}>&rarr;</span>
-            <div className={styles.poshraStep}>
+            <div className={`${styles.poshraStep} ${activeStep === 2 ? styles.stepActive : ''}`}>
               <span className={styles.stepNum}>2</span>
               <span className={styles.stepTitle}>Zod Validation</span>
               <span className={styles.stepSub}>100% Type-Safe</span>
             </div>
             <span className={styles.stepArrow}>&rarr;</span>
-            <div className={styles.poshraStep}>
+            <div className={`${styles.poshraStep} ${activeStep === 3 ? styles.stepActive : ''}`}>
               <span className={styles.stepNum}>3</span>
               <span className={styles.stepTitle}>SSLCommerz</span>
               <span className={styles.stepSub}>Regional Gateway</span>
@@ -432,9 +512,9 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>audio.ts &bull; Web Audio DSP</span>
+            <span className={styles.simUrl}>moayed-portfolio.onrender.com</span>
           </div>
-          <span className={styles.simTag}>Realtime DSP</span>
+          <span className={styles.simTag}>Web Audio DSP</span>
         </div>
 
         <div className={styles.simBody}>
@@ -496,6 +576,21 @@ export function ProjectSimulator({ projectId }: ProjectSimulatorProps) {
           </div>
 
           <div className={styles.dspTelemetry}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '18px', margin: '4px 0' }} aria-hidden="true">
+              {dspFreqBar.map((h, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    flex: 1,
+                    height: `${h}%`,
+                    background: 'var(--accent)',
+                    borderRadius: '1px',
+                    opacity: 0.8,
+                    transition: isRunning ? 'height 0.12s ease' : 'none',
+                  }}
+                />
+              ))}
+            </div>
             <span className={styles.dspBadge}>DSP HARDWARE SYNTHESIS</span>
             <span className={styles.dspDesc}>
               Pure Web Audio pentatonic synthesis oscillators with dynamic filters. Zero external audio downloads.

@@ -18,6 +18,7 @@ export interface ProjectData {
   tech: string[];
   domain: string;
   likes: number;
+  featured?: boolean;
   metric: {
     label: string;
     value: string;
@@ -40,6 +41,7 @@ export interface ProjectData {
 export const projects: ProjectData[] = [
   {
     id: 'purefeed',
+    featured: true,
     title: 'PureFeed',
     subtitle: 'Browser engine and anti-adblock countermeasures',
     role: 'Lead Systems & Extension Engineer',
@@ -100,6 +102,72 @@ function isSponsoredText(cleanText) {
     },
     repository: 'https://github.com/watchknight/PureFeed',
     githubUrl: 'https://github.com/watchknight/purefeed',
+  },
+  {
+    id: 'doclensbd',
+    featured: true,
+    title: 'DocLensBD',
+    subtitle: 'Real-time computer vision virtual try-on and optical storefront',
+    role: 'Frontend & Computer Vision Engineer',
+    category: 'Computer Vision & Optical Frontend',
+    categoryType: 'Web App',
+    status: 'Live on Render',
+    serial: 'SYS_03 // 3D_TRYON',
+    perf: '60 FPS WebGL',
+    shortDescription:
+      'A modern online glasses shop with an instant 3D webcam virtual try-on. Customers can see real-time frame fittings on their face using accurate face tracking at 60 FPS.',
+    tech: ['React', 'MediaPipe 3D', 'Tailwind CSS', 'Node.js'],
+    domain: 'doclensbd.ai',
+    likes: 41,
+    metric: {
+      label: 'Landmark Rate',
+      value: '60 FPS',
+    },
+    environment: ['React', 'TypeScript', 'MediaPipe Face Mesh', 'Tailwind CSS', 'Netlify'],
+    problem:
+      'Optical retail e-commerce across Bangladesh (centered around Dhaka optical hubs) suffers from extreme customer hesitation and high return rates because buyers cannot verify frame geometry, pupillary distance, or temple fit without visiting physical optometrists.',
+    architecture:
+      'Client-side optical storefront integrating Google MediaPipe Face Mesh for 468-point 3D landmark tracking, webcam streaming, and real-time canvas glasses rendering paired with zero-shift faceted product filtering on standard laptops and mobile clients.',
+    interventions: [
+      {
+        name: 'Real-Time Facial Landmark Mesh',
+        cause:
+          'Traditional 2D image overlays fail when users turn their heads or move closer to the camera.',
+        fix:
+          'Integrated MediaPipe Face Mesh to extract 468 facial landmark coordinates in real time, calculating inter-pupillary distance and 3D head yaw/pitch/roll angles.',
+      },
+      {
+        name: '6DOF Landmark Coordinate Smoothing',
+        cause:
+          'Raw camera feed jitter causes glasses models to vibrate erratically on screen.',
+        fix:
+          'Implemented a weighted temporal smoothing filter (smoothedRef) that interpolates landmark coordinates across consecutive video frames to deliver stable 60fps rendering.',
+      },
+      {
+        name: 'Faceted Frame Geometry Filtering',
+        cause:
+          'High-density optical catalogs cause layout shifts and slow response times during multi-attribute searches.',
+        fix:
+          'Built an instantaneous client-side filter engine categorizing products by frame shape, rim type, bridge width, and lens material with zero layout shift.',
+      },
+    ],
+    codeHighlight: {
+      filename: 'VirtualTryOn.tsx',
+      language: 'typescript',
+      code: `// 6DOF Landmark Smoothing Filter for Optical Canvas
+const angle = Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x);
+const currentWidth = Math.hypot(rightEye.x - leftEye.x, rightEye.y - leftEye.y) * 2.2;
+smoothedRef.current = {
+  x: smoothed.x * 0.7 + targetX * 0.3,
+  y: smoothed.y * 0.7 + targetY * 0.3,
+  angle: smoothed.angle * 0.8 + angle * 0.2
+};`,
+      explanation:
+        'Calculates real-time eye vector angles and applies temporal interpolation to eliminate camera frame jitter during 60fps virtual try-on.',
+    },
+    repository: 'https://github.com/watchknight/DocLensBD',
+    githubUrl: 'https://github.com/watchknight/doclensbd',
+    liveUrl: 'https://doclensbd.onrender.com/',
   },
   {
     id: 'focusguard',
@@ -220,71 +288,6 @@ const scaledCookTime = Math.round(baseCookTime * Math.min(1.3, 1 + 0.15 * Math.l
     repository: 'https://github.com/watchknight/Rannabanna',
     githubUrl: 'https://github.com/watchknight/rannabanna',
     liveUrl: 'https://rannabanna.onrender.com/',
-  },
-  {
-    id: 'doclensbd',
-    title: 'DocLensBD',
-    subtitle: 'Real-time computer vision virtual try-on and optical storefront',
-    role: 'Frontend & Computer Vision Engineer',
-    category: 'Computer Vision & Optical Frontend',
-    categoryType: 'Web App',
-    status: 'Live on Render',
-    serial: 'SYS_03 // 3D_TRYON',
-    perf: '60 FPS WebGL',
-    shortDescription:
-      'A modern online glasses shop with an instant 3D webcam virtual try-on. Customers can see real-time frame fittings on their face using accurate face tracking at 60 FPS.',
-    tech: ['React', 'MediaPipe 3D', 'Tailwind CSS', 'Node.js'],
-    domain: 'doclensbd.ai',
-    likes: 41,
-    metric: {
-      label: 'Landmark Rate',
-      value: '60 FPS',
-    },
-    environment: ['React', 'TypeScript', 'MediaPipe Face Mesh', 'Tailwind CSS', 'Netlify'],
-    problem:
-      'Optical retail e-commerce across Bangladesh (centered around Dhaka optical hubs) suffers from extreme customer hesitation and high return rates because buyers cannot verify frame geometry, pupillary distance, or temple fit without visiting physical optometrists.',
-    architecture:
-      'Client-side optical storefront integrating Google MediaPipe Face Mesh for 468-point 3D landmark tracking, webcam streaming, and real-time canvas glasses rendering paired with zero-shift faceted product filtering on standard laptops and mobile clients.',
-    interventions: [
-      {
-        name: 'Real-Time Facial Landmark Mesh',
-        cause:
-          'Traditional 2D image overlays fail when users turn their heads or move closer to the camera.',
-        fix:
-          'Integrated MediaPipe Face Mesh to extract 468 facial landmark coordinates in real time, calculating inter-pupillary distance and 3D head yaw/pitch/roll angles.',
-      },
-      {
-        name: '6DOF Landmark Coordinate Smoothing',
-        cause:
-          'Raw camera feed jitter causes glasses models to vibrate erratically on screen.',
-        fix:
-          'Implemented a weighted temporal smoothing filter (smoothedRef) that interpolates landmark coordinates across consecutive video frames to deliver stable 60fps rendering.',
-      },
-      {
-        name: 'Faceted Frame Geometry Filtering',
-        cause:
-          'High-density optical catalogs cause layout shifts and slow response times during multi-attribute searches.',
-        fix:
-          'Built an instantaneous client-side filter engine categorizing products by frame shape, rim type, bridge width, and lens material with zero layout shift.',
-      },
-    ],
-    codeHighlight: {
-      filename: 'VirtualTryOn.tsx',
-      language: 'typescript',
-      code: `// 6DOF Landmark Smoothing Filter for Optical Canvas
-const angle = Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x);
-const currentWidth = Math.hypot(rightEye.x - leftEye.x, rightEye.y - leftEye.y) * 2.2;
-smoothedRef.current = {
-  x: smoothed.x * 0.7 + targetX * 0.3,
-  y: smoothed.y * 0.7 + targetY * 0.3,
-  angle: smoothed.angle * 0.8 + angle * 0.2
-};`,
-      explanation:
-        'Calculates real-time eye vector angles and applies temporal interpolation to eliminate camera frame jitter during 60fps virtual try-on.',
-    },
-    repository: 'https://github.com/watchknight/DocLensBD',
-    githubUrl: 'https://github.com/watchknight/doclensbd',
-    liveUrl: 'https://doclensbd.onrender.com/',
   },
   {
     id: 'poshra',
