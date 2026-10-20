@@ -1,9 +1,14 @@
-import { useState } from 'react';
-import { SpotlightCard } from '../SpotlightCard/SpotlightCard';
+import { useState, useRef, useEffect } from 'react';
+import { sound } from '../../utils/audio';
 import styles from './DeveloperASTCard.module.css';
 
-export function DeveloperASTCard() {
+interface DeveloperASTCardProps {
+  className?: string;
+}
+
+export function DeveloperASTCard({ className = '' }: DeveloperASTCardProps) {
   const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const rawSchema = `/**
  * @title Systems Architect & Countermeasure Engineer Schema
@@ -34,96 +39,102 @@ export interface SystemsArchitect {
 }`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(rawSchema);
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(rawSchema).catch(() => {});
+      }
+    } catch {
+      // ignore clipboard error in restricted/headless environments
+    }
     setCopied(true);
-    setTimeout(() => setCopied(false), 2200);
+    sound.play('chime');
+
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = setTimeout(() => {
+      setCopied(false);
+      copyTimeoutRef.current = null;
+    }, 1600); // 1.6s per spec
   };
 
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <SpotlightCard
-      className={styles.cardContainer}
-      contentClassName={styles.cardInner}
-      tiltIntensity={4}
+    <article
+      className={`${styles.manifestCard} ${className}`.trim()}
+      data-tile="surface"
+      data-cursor="inspect"
+      data-degree="5"
       aria-label="Systems Architect Type Schema"
     >
-      <header className={styles.cardHeader}>
+      <header className={styles.terminalHeader}>
         <div className={styles.headerLeft}>
-          <span className={styles.fileIcon}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
-            </svg>
-          </span>
-          <span className={styles.fileName}>architect.schema.ts</span>
-          <span className={styles.fileBadge}>TypeScript AST</span>
+          <div className={styles.macControls} aria-hidden="true">
+            <span className={`${styles.dot} ${styles.dotRed}`} />
+            <span className={`${styles.dot} ${styles.dotYellow}`} />
+            <span className={`${styles.dot} ${styles.dotGreen}`} />
+          </div>
+          <span className={styles.windowTitle}>architect.schema.ts</span>
+          <span className={styles.windowBadge}>TypeScript AST</span>
         </div>
         <button
           type="button"
           className={styles.copyButton}
           onClick={handleCopy}
-          aria-label={copied ? 'Copied to clipboard' : 'COPY .TS — Copy TypeScript Schema to Clipboard'}
+          aria-label={copied ? 'Copied' : 'Copy .ts'}
+          data-cursor="link"
+          data-magnetic="0.3"
         >
-          {copied ? '✓ COPIED' : 'COPY .TS'}
+          {copied ? 'Copied' : 'Copy .ts'}
         </button>
       </header>
 
-      <pre className={styles.codeArea} tabIndex={0} role="region" aria-label="TypeScript Schema Code">
+      <pre className={`code ${styles.codeArea}`} tabIndex={0} role="region" aria-label="TypeScript Schema Code">
         <code>
-          <span className={styles.comment}>/**</span><br />
-          <span className={styles.comment}> * @title Systems Architect &amp; Countermeasure Engineer Schema</span><br />
-          <span className={styles.comment}> * @node Dhaka Node (23.8103° N, 90.4125° E)</span><br />
-          <span className={styles.comment}> * @rigor East West University (EWU) // Board Merit Scholar</span><br />
-          <span className={styles.comment}> */</span><br />
-          <span className={styles.keyword}>export interface </span>
-          <span className={styles.typeName}>SystemsArchitect </span>
-          <span className={styles.punct}>{'{'}</span><br />
-          {'  '}<span className={styles.keyword}>readonly </span>
-          <span className={styles.propKey}>engineer</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Abdur Rahman Moayed"</span><span className={styles.punct}>;</span><br />
-          {'  '}<span className={styles.keyword}>readonly </span>
-          <span className={styles.propKey}>location</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Dhaka, Bangladesh [23.8103° N, 90.4125° E]"</span><span className={styles.punct}>;</span><br />
-          {'  '}<span className={styles.keyword}>readonly </span>
-          <span className={styles.propKey}>academicBase</span><span className={styles.punct}>: {'{'}</span><br />
-          {'    '}<span className={styles.propKey}>institution</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"East West University (EWU)"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>degree</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"B.Sc. in Computer Science &amp; Engineering (2025—Present)"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>distinctions</span><span className={styles.punct}>: [</span><br />
-          {'      '}<span className={styles.stringVal}>"Board General Merit Scholarship (JSC Class 8)"</span><span className={styles.punct}>,</span><br />
-          {'      '}<span className={styles.stringVal}>"Board General Merit Scholarship (SSC Class 10)"</span><span className={styles.punct}>,</span><br />
-          {'      '}<span className={styles.stringVal}>"Board Distinction Perfect GPA 5.0 (PSC Class 5)"</span><br />
-          {'    '}<span className={styles.punct}>];</span><br />
-          {'  '}<span className={styles.punct}>{'}'};</span><br />
-          {'  '}<span className={styles.keyword}>readonly </span>
-          <span className={styles.propKey}>productionSystems</span><span className={styles.punct}>: {'{'}</span><br />
-          {'    '}<span className={styles.propKey}>purefeed</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Chromium MV3 Main-World Anti-Adblock Defeat Engine (&lt;16ms)"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>focusguard</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"OS-Level DNS Sinkhole &amp; Windows Registry Machine Policy (580+ Hosts)"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>rannabanna</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Bengali Recipe Matchmaker &amp; Heuristic Scaling Engine (0.8ms SQLite)"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>doclensbd</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"MediaPipe 468-Point 3D Face Mesh Client Virtual Try-On (60 FPS)"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>poshra</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Next.js App Router Fashion Commerce &amp; SSLCommerz Regional Gateway"</span><span className={styles.punct}>;</span><br />
-          {'    '}<span className={styles.propKey}>sentinelPortfolio</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Zero-Deadspace HUD, Canvas Reticle Grid &amp; Web Audio DSP Synthesizer"</span><span className={styles.punct}>;</span><br />
-          {'  '}<span className={styles.punct}>{'}'};</span><br />
-          {'  '}<span className={styles.keyword}>readonly </span>
-          <span className={styles.propKey}>technicalPhilosophy</span><span className={styles.punct}>: </span>
-          <span className={styles.stringVal}>"Zero deadweight, hardware-native execution, verified engineering"</span><span className={styles.punct}>;</span><br />
-          <span className={styles.punct}>{'}'}</span>
+          <span className="c">/**</span>{'\n'}
+          <span className="c"> * @title Systems Architect &amp; Countermeasure Engineer Schema</span>{'\n'}
+          <span className="c"> * @node Dhaka Node (23.8103° N, 90.4125° E)</span>{'\n'}
+          <span className="c"> * @rigor East West University (EWU) // Board Merit Scholar</span>{'\n'}
+          <span className="c"> */</span>{'\n'}
+          <span className="k">export interface </span><span className="t">SystemsArchitect</span> {'{'}{'\n'}
+          {'  '}<span className="k">readonly </span>engineer: <span className="s">"Abdur Rahman Moayed"</span>;{'\n'}
+          {'  '}<span className="k">readonly </span>location: <span className="s">"Dhaka, Bangladesh [23.8103° N, 90.4125° E]"</span>;{'\n'}
+          {'  '}<span className="k">readonly </span>academicBase: {'{'}{'\n'}
+          {'    '}institution: <span className="s">"East West University (EWU)"</span>;{'\n'}
+          {'    '}degree: <span className="s">"B.Sc. in Computer Science &amp; Engineering (2025—Present)"</span>;{'\n'}
+          {'    '}distinctions: [{'\n'}
+          {'      '}<span className="s">"Board General Merit Scholarship (JSC Class 8)"</span>,{'\n'}
+          {'      '}<span className="s">"Board General Merit Scholarship (SSC Class 10)"</span>,{'\n'}
+          {'      '}<span className="s">"Board Distinction Perfect GPA 5.0 (PSC Class 5)"</span>{'\n'}
+          {'    '}];{'\n'}
+          {'  '}{'}'};{'\n'}
+          {'  '}<span className="k">readonly </span>productionSystems: {'{'}{'\n'}
+          {'    '}purefeed: <span className="s">"Chromium MV3 Main-World Anti-Adblock Defeat Engine (&lt;16ms)"</span>;{'\n'}
+          {'    '}focusguard: <span className="s">"OS-Level DNS Sinkhole &amp; Windows Registry Machine Policy (580+ Hosts)"</span>;{'\n'}
+          {'    '}rannabanna: <span className="s">"Bengali Recipe Matchmaker &amp; Heuristic Scaling Engine (0.8ms SQLite)"</span>;{'\n'}
+          {'    '}doclensbd: <span className="s">"MediaPipe 468-Point 3D Face Mesh Client Virtual Try-On (60 FPS)"</span>;{'\n'}
+          {'    '}poshra: <span className="s">"Next.js App Router Fashion Commerce &amp; SSLCommerz Regional Gateway"</span>;{'\n'}
+          {'    '}sentinelPortfolio: <span className="s">"Zero-Deadspace HUD, Canvas Reticle Grid &amp; Web Audio DSP Synthesizer"</span>;{'\n'}
+          {'  '}{'}'};{'\n'}
+          {'  '}<span className="k">readonly </span>technicalPhilosophy: <span className="s">"Zero deadweight, hardware-native execution, verified engineering"</span>;{'\n'}
+          {'}'}
         </code>
       </pre>
 
-      <footer className={styles.cardFooter}>
+      <footer className={styles.terminalFooter}>
         <div className={styles.footerNode}>
-          <span className={styles.pulseDot} />
+          <span className={styles.pulseDot} aria-hidden="true" />
           <span>ORIGIN NODE // ASIA-SOUTH-1 (DHAKA)</span>
         </div>
         <div>SHA-256 // VERIFIED SCHEMA</div>
       </footer>
-    </SpotlightCard>
+    </article>
   );
 }

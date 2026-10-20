@@ -15,3 +15,4 @@ export declare function initTileReveals(container?: Element | Document): void;
 
 export { gsap, ScrollTrigger, SplitText, Flip };
 export { initAtmosphere, setLive, dhakaHour, phaseFor } from "./atmosphere.js";
+export { initTimeline } from "./timeline.js";

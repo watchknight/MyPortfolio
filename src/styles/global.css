@@ -406,3 +406,21 @@ html.grade-off .grade, html.grade-off .grade-soft, html.grade-off .grade-hard, h
   .bento > [class*="span-"] { grid-column: 1; }
 }
 
+/* ── Phase P4: Timeline & Foundation Code Utilities ── */
+.timeline { position: relative; display: grid; gap: 28px; padding-left: 44px; }
+.timeline::before { content: ""; position: absolute; left: 11px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+[data-timeline-line] { position: absolute; left: 11px; top: 6px; bottom: 6px; width: 2px; background: var(--accent); transform-origin: top center; }
+[data-timeline-item] { position: relative; color: var(--muted); }
+[data-timeline-item][data-primary] { color: var(--text); }
+[data-timeline-item][data-primary] h3 { font-size: var(--fs-h3); }
+[data-timeline-item]::before { content: ""; position: absolute; left: -38px; top: 6px; width: 12px; height: 12px; box-sizing: border-box; border-radius: 50%; background: var(--surface); border: 2px solid var(--control); transition: background-color .3s, border-color .3s; }
+[data-timeline-item].is-lit::before { background: var(--accent); border-color: var(--accent); }
+.timeline__year { font-variant-numeric: tabular-nums; color: var(--subtle); font-size: var(--fs-small); }
+.code { font-family: var(--font-mono); font-size: .8125rem; line-height: 1.7; white-space: pre; overflow-x: auto; tab-size: 2; }
+.code .k { color: var(--accent); } .code .s { color: var(--text); } .code .t { color: var(--muted); } .code .c { color: var(--subtle); }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-timeline-line] { transform: none !important; }
+  [data-timeline-item]::before { background: var(--accent) !important; border-color: var(--accent) !important; transition: none !important; }
+}
+
