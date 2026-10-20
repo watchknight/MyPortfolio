@@ -202,3 +202,13 @@
     gap: 0.75rem;
   }
 }
+
+@media print {
+  .footerSection,
+  .footerSectionOnly,
+  .contactCard,
+  .footer {
+    display: none !important;
+  }
+}
+

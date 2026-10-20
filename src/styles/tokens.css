@@ -43,6 +43,11 @@
 }
 
 :root {
+  /* ── Physical Paper Tokens (Phase P5) ── */
+  --paper: #F5F1E8;
+  --ink: #0E1A36;
+  --ink-2: #46557A;
+
   /* ── Typography: Families ── */
   --font-sans: "Bricolage Grotesque Variable", "Bricolage Fallback", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", "JetBrains Fallback", ui-monospace, monospace;

@@ -424,3 +424,29 @@ html.grade-off .grade, html.grade-off .grade-soft, html.grade-off .grade-hard, h
   [data-timeline-item]::before { background: var(--accent) !important; border-color: var(--accent) !important; transition: none !important; }
 }
 
+/* ── Pristine A4 Print Suppression (Phase P5) ── */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  .atmo,
+  .grain-layer,
+  .cursor-ring,
+  .cursor-dot,
+  nav,
+  footer,
+  .footerSection,
+  .footerSectionOnly,
+  .contactCard,
+  [aria-label*="Footer"],
+  [aria-label*="Contact and Footer"],
+  .resume-rail,
+  [data-print="hide"],
+  dialog,
+  [role="dialog"] {
+    display: none !important;
+  }
+}
+

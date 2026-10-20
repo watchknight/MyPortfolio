@@ -69,6 +69,7 @@ export function FooterBand({ showCta = true, onNavigate }: FooterBandProps) {
       {...(showCta ? { id: 'contact', 'data-section': 'contact' } : {})}
       className={showCta ? styles.footerSection : styles.footerSectionOnly}
       aria-label={showCta ? 'Contact and Footer' : 'Site Footer'}
+      data-print="hide"
     >
       {showCta && (
         <div className={styles.contactCard} data-tile="surface">
