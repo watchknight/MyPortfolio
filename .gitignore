@@ -32,4 +32,5 @@ screenshots/
 edge-profile*
 lighthouse-*.json
 desktop.ini
+.agents/
 
