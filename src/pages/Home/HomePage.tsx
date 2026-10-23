@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import { gsap } from '../../motion/index';
 import { RollText } from '../../components/RollText/RollText';
 import { RotatingClause } from '../../components/RotatingClause/RotatingClause';
@@ -7,11 +7,17 @@ import { ProjectLedger } from '../../components/CaseStudy/ProjectLedger';
 import { SignatureCanvas } from '../../components/SignatureCanvas/SignatureCanvas';
 import { TerminalTile } from '../../components/TerminalTile/TerminalTile';
 import { Magnetic } from '../../components/Magnetic/Magnetic';
+import { TelemetryRail } from '../../components/TelemetryRail/TelemetryRail';
+import { DecryptText } from '../../components/DecryptText/DecryptText';
 import { projects } from '../../data/projects';
 import { profileData } from '../../data/profile';
 import { sound } from '../../utils/audio';
 import { copyToClipboard } from '../../utils/clipboard';
 import styles from './HomePage.module.css';
+
+const LazySystemsCore = lazy(() =>
+  import('../../components/SystemsCore/SystemsCore').then((m) => ({ default: m.SystemsCore }))
+);
 
 interface HomePageProps {
   onNavigate: (path: string) => void;
@@ -204,20 +210,31 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
 
   return (
     <div className={styles.homeContainer}>
+      <TelemetryRail />
       {/* ── 2. HERO (min-height 100svh, content bottom-aligned, left-aligned) ── */}
       <section className={styles.heroSection} data-section="hero" aria-label="Introduction">
         <div className={styles.heroGrid}>
-          {/* Cols 1–8: Headline, typewriter, CTAs */}
+          {/* Cols 1–8: Headline, typewriter, CTAs + 3D Systems Core */}
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle} data-hero-title>
-              Hi, this is Moayed.
-              <br />
-              I build fast, reliable software.
-            </h1>
+            <div className={styles.heroHeadlineAndCore}>
+              <div className={styles.heroTitleBlock}>
+                <h1 className={styles.heroTitle} data-hero-title>
+                  Hi, this is Moayed.
+                  <br />
+                  I build fast, reliable software.
+                </h1>
 
-            <p className={styles.heroLead} data-hero-in>
-              I build software that <RotatingClause />
-            </p>
+                <p className={styles.heroLead} data-hero-in>
+                  I build software that <RotatingClause />
+                </p>
+              </div>
+
+              <div className={styles.heroCoreSlot} data-hero-in>
+                <Suspense fallback={<div className={styles.coreFallback} />}>
+                  <LazySystemsCore />
+                </Suspense>
+              </div>
+            </div>
 
             <div className={styles.heroActions} data-hero-in>
               <Magnetic strength={0.3}>
@@ -228,7 +245,7 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   data-cursor="link"
                   data-magnetic="0.3"
                 >
-                  <RollText>View My Works</RollText>
+                  <RollText decrypt>View My Works</RollText>
                 </button>
               </Magnetic>
 
@@ -403,7 +420,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   <div className={styles.tileHeaderLeft}>
                     <span className={styles.categoryBadge}>{purefeed.category}</span>
                   </div>
-                  <span className={styles.metricChip}>{purefeed.perf}</span>
+                  <span className={styles.metricChip}>
+                    <DecryptText text={purefeed.perf} />
+                  </span>
                 </div>
 
                 <div className={styles.tileBody}>
@@ -492,7 +511,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
                   <div className={styles.tileHeaderLeft}>
                     <span className={styles.categoryBadge}>{doclensbd.category}</span>
                   </div>
-                  <span className={styles.metricChip}>{doclensbd.perf}</span>
+                  <span className={styles.metricChip}>
+                    <DecryptText text={doclensbd.perf} />
+                  </span>
                 </div>
 
                 <div className={styles.tileBody}>
@@ -578,7 +599,9 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
               >
                 <div className={styles.tileHeaderBar}>
                   <span className={styles.categoryBadge}>{p.category}</span>
-                  <span className={styles.metricChip}>{p.perf}</span>
+                  <span className={styles.metricChip}>
+                    <DecryptText text={p.perf} />
+                  </span>
                 </div>
 
                 <div className={styles.tileBody}>
@@ -816,19 +839,27 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
             <div className={styles.telemetryList}>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemLabel}>EDGE RTT:</span>
-                <span className={styles.telemVal}>{ping} ms</span>
+                <span className={styles.telemVal}>
+                  <DecryptText text={`${ping} ms`} />
+                </span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemLabel}>BUDGET:</span>
-                <span className={styles.telemVal}>{fps} FPS</span>
+                <span className={styles.telemVal}>
+                  <DecryptText text={`${fps} FPS`} />
+                </span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemLabel}>CONCURRENCY:</span>
-                <span className={styles.telemVal}>{cores} Cores</span>
+                <span className={styles.telemVal}>
+                  <DecryptText text={`${cores} Cores`} />
+                </span>
               </div>
               <div className={styles.telemetryItem}>
                 <span className={styles.telemLabel}>NODE:</span>
-                <span className={styles.telemVal}>Dhaka (UTC+6)</span>
+                <span className={styles.telemVal}>
+                  <DecryptText text="Dhaka (UTC+6)" />
+                </span>
               </div>
             </div>
           </article>

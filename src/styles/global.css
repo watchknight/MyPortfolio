@@ -217,6 +217,49 @@ html.has-cursor iframe[data-cursor="hide"] {
   transition: opacity 0.2s, background-color 0.25s, border-color 0.25s;
 }
 
+/* Tactical HUD Reticle Corner Brackets (┌ ┐ └ ┘) */
+.reticle-corner {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  opacity: 0.35;
+  box-sizing: border-box;
+  transition: opacity 0.2s, border-color 0.2s, width 0.2s, height 0.2s;
+}
+
+.reticle-corner--tl {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid var(--accent);
+  border-left: 1.5px solid var(--accent);
+  border-top-left-radius: 2px;
+}
+
+.reticle-corner--tr {
+  top: -1px;
+  right: -1px;
+  border-top: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+  border-top-right-radius: 2px;
+}
+
+.reticle-corner--br {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+  border-bottom-right-radius: 2px;
+}
+
+.reticle-corner--bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 1.5px solid var(--accent);
+  border-left: 1.5px solid var(--accent);
+  border-bottom-left-radius: 2px;
+}
+
 .cursor-dot {
   width: 7px;
   height: 7px;
@@ -240,8 +283,21 @@ html.has-cursor iframe[data-cursor="hide"] {
   border-color: var(--accent);
 }
 
+.cursor-ring.is-locked {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
 .cursor-ring.is-inspect {
   background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border: 1px solid var(--accent);
+}
+
+.cursor-ring.is-locked .reticle-corner,
+.cursor-ring.is-inspect .reticle-corner {
+  opacity: 1;
+  width: 8px;
+  height: 8px;
   border-color: var(--accent);
 }
 
@@ -253,12 +309,14 @@ html.has-cursor iframe[data-cursor="hide"] {
   border-radius: 999px;
   background: var(--accent);
   color: var(--on-accent);
-  font: 600 12px/1.5 var(--font-sans);
+  font: 600 11px/1.5 var(--font-mono);
+  letter-spacing: 0.05em;
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
+.cursor-ring.is-locked .cursor-label:not(:empty),
 .cursor-ring.is-inspect .cursor-label:not(:empty) {
   opacity: 1;
 }

@@ -60,7 +60,22 @@ function mount() {
   dot.setAttribute("aria-hidden", "true");
   label.className = "cursor-label";
   label.setAttribute("aria-hidden", "true");
-  ring.append(label);
+
+  // Tactical HUD 4-corner reticle brackets
+  const cTL = document.createElement("span");
+  cTL.className = "reticle-corner reticle-corner--tl";
+  cTL.setAttribute("aria-hidden", "true");
+  const cTR = document.createElement("span");
+  cTR.className = "reticle-corner reticle-corner--tr";
+  cTR.setAttribute("aria-hidden", "true");
+  const cBR = document.createElement("span");
+  cBR.className = "reticle-corner reticle-corner--br";
+  cBR.setAttribute("aria-hidden", "true");
+  const cBL = document.createElement("span");
+  cBL.className = "reticle-corner reticle-corner--bl";
+  cBL.setAttribute("aria-hidden", "true");
+
+  ring.append(cTL, cTR, cBR, cBL, label);
   document.body.append(ring, dot);
   html.classList.add("has-cursor");
 
@@ -149,13 +164,13 @@ function mount() {
       const rect = el.getBoundingClientRect();
       const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 12;
       snap = { el, rect };
-      label.textContent = el.dataset.cursorLabel || "";
+      label.textContent = el.dataset.cursorLabel || "[INSPECT]";
       ring.classList.add("is-inspect");
       gsap.to(ring, {
         width: rect.width + 12,
         height: rect.height + 12,
         borderRadius: `${radius + 6}px`,
-        duration: 0.5,
+        duration: 0.45,
         ease: "expo.out",
         overwrite: "auto",
       });
@@ -167,9 +182,28 @@ function mount() {
     } else if (mode === "hide") {
       ring.classList.add("is-hidden");
       dot.classList.add("is-hidden");
+    } else if (el.matches("a, button, [role='button']") || mode === "link" || mode === "action") {
+      const rect = el.getBoundingClientRect();
+      const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 8;
+      snap = { el, rect };
+      label.textContent = el.dataset.cursorLabel || "";
+      ring.classList.add("is-locked");
+      gsap.to(ring, {
+        width: rect.width + 8,
+        height: rect.height + 8,
+        borderRadius: `${Math.min(radius + 4, 16)}px`,
+        duration: 0.35,
+        ease: "expo.out",
+        overwrite: "auto",
+      });
+      gsap.to(dot, { scale: 0, duration: 0.2, overwrite: "auto" });
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      rx(cx + (lastX - cx) * 0.05);
+      ry(cy + (lastY - cy) * 0.05);
     } else {
       ring.classList.add("is-hover");
-      gsap.to(ring, { scale: 1.6, duration: 0.35, ease: "expo.out", overwrite: "auto" });
+      gsap.to(ring, { scale: 1.5, duration: 0.35, ease: "expo.out", overwrite: "auto" });
     }
   }
 
@@ -179,7 +213,7 @@ function mount() {
     snap = null;
     magnet?.release();
     magnet = null;
-    ring.classList.remove("is-inspect", "is-hover", "is-hidden");
+    ring.classList.remove("is-inspect", "is-locked", "is-hover", "is-hidden");
     dot.classList.remove("is-hidden");
     label.textContent = "";
     gsap.to(ring, {

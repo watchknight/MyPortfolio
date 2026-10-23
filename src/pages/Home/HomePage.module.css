@@ -59,6 +59,45 @@
   }
 }
 
+.heroHeadlineAndCore {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .heroHeadlineAndCore {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+}
+
+.heroTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.heroCoreSlot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coreFallback {
+  width: 100%;
+  max-width: 280px;
+  min-height: 220px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
 .heroTitle {
   font-family: var(--font-sans);
   font-size: var(--fs-display);

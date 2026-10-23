@@ -1,0 +1,132 @@
+/* ── Mission Control Telemetry Scroll Rail ── */
+
+.rail {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  pointer-events: none;
+  user-select: none;
+}
+
+.railCard {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  transition: border-color var(--duration-fast) ease;
+}
+
+.railCard:hover {
+  border-color: var(--control);
+}
+
+.trackWrapper {
+  position: relative;
+  width: 2px;
+  height: 96px;
+  background-color: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trackProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--accent);
+  border-radius: 999px;
+  transition: height 0.1s linear;
+}
+
+.sectorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sectorBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  border-radius: 50%;
+  transition: color var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.sectorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--line);
+  transition: all var(--duration-fast) ease;
+}
+
+.sectorBtn:hover .sectorDot {
+  background-color: var(--control);
+  transform: scale(1.2);
+}
+
+.sectorBtnActive .sectorDot {
+  background-color: var(--accent);
+  transform: scale(1.4);
+}
+
+.sectorTooltip {
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.sectorBtn:hover .sectorTooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.percentTag {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--subtle);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 1024px) {
+  .rail {
+    display: none !important;
+  }
+}

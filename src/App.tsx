@@ -11,6 +11,7 @@ import { migrateOldSoundStorage } from './utils/audio';
 import { Nav } from './components/Nav/Nav';
 import { FooterBand } from './components/FooterBand/FooterBand';
 import { HomePage } from './pages/Home/HomePage';
+import { KernelBoot } from './components/KernelBoot/KernelBoot';
 import { useScrollLock } from './utils/scrollLock';
 
 import { WorksPage } from './pages/Works/WorksPage';
@@ -245,6 +246,7 @@ export default function App({ initialPath, routes }: AppProps) {
         {sysCheckOpen && <LazySysDiagnosticModal isOpen={sysCheckOpen} onClose={() => setSysCheckOpen(false)} />}
         {selectedProject && <LazyCaseStudyModal key={selectedProject.id} project={selectedProject} onClose={() => setSelectedProject(null)} />}
       </Suspense>
+      <KernelBoot />
       <Nav currentPath={currentPath} onNavigate={navigate} />
 
       <main

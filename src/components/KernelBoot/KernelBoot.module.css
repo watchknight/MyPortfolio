@@ -1,0 +1,154 @@
+/* ── Kernel Boot Sequence (HUD Preloader) ── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in srgb, var(--bg) 92%, transparent);
+  opacity: 1;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.overlayLeaving {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.hudCard {
+  position: relative;
+  width: min(92vw, 480px);
+  padding: 1.75rem 2rem;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, var(--accent));
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  cursor: pointer;
+}
+
+.hudHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.75rem;
+}
+
+.hudBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  animation: pulseDot 1s infinite alternate ease-in-out;
+}
+
+@keyframes pulseDot {
+  0% { opacity: 0.4; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1.1); }
+}
+
+.hudTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.hudPercent {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  color: var(--text);
+  background: var(--raised);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+}
+
+.terminalLog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  min-height: 120px;
+}
+
+.logLine {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--subtle);
+  transition: color 0.15s ease;
+}
+
+.logLineActive {
+  color: var(--text);
+}
+
+.logLineDone {
+  color: var(--muted);
+}
+
+.logPrefix {
+  color: var(--control);
+  font-size: 0.75rem;
+  min-width: 18px;
+}
+
+.logPrefixSuccess {
+  color: var(--ok);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 3px;
+  background-color: var(--line);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hudFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--subtle);
+  border-top: 1px solid var(--line);
+  padding-top: 0.5rem;
+}
+
+.skipHint {
+  color: var(--muted);
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    display: none !important;
+  }
+}

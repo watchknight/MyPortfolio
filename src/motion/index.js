@@ -23,36 +23,60 @@ export function initMotion() {
     if (!seen && heroIn.length > 0) gsap.set(heroIn, { autoAlpha: 0, y: 14 });
     html.classList.remove("js-motion");
 
-    if (title && !seen) {
-      if (!isMobile) {
-        SplitText.create(title, {
-          type: "lines",
-          mask: "lines",
-          autoSplit: true,
-          onSplit(self) {
-            gsap.set(title, { autoAlpha: 1 });
-            return gsap.timeline({ defaults: { ease: "expo.out" } })
-              .from(self.lines, { yPercent: 110, duration: 1, stagger: 0.09 })
-              .to(heroIn, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, "-=0.65")
-              .add(() => {
-                sessionStorage.setItem("hero-seen", "1");
-                window.dispatchEvent(new CustomEvent("hero-intro-complete"));
-              });
-          },
-        });
-      } else {
-        gsap.set(title, { autoAlpha: 1 });
-        gsap.timeline({ defaults: { ease: "expo.out" } })
-          .from(title, { y: 10, duration: 0.6 })
-          .to(heroIn, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 }, "-=0.4")
-          .add(() => {
-            sessionStorage.setItem("hero-seen", "1");
-            window.dispatchEvent(new CustomEvent("hero-intro-complete"));
+    const startHero = () => {
+      if (title && !seen) {
+        if (!isMobile) {
+          SplitText.create(title, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            onSplit(self) {
+              gsap.set(title, { autoAlpha: 1 });
+              return gsap.timeline({ defaults: { ease: "expo.out" } })
+                .from(self.lines, { yPercent: 110, duration: 1, stagger: 0.09 })
+                .to(heroIn, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 }, "-=0.65")
+                .add(() => {
+                  sessionStorage.setItem("hero-seen", "1");
+                  window.dispatchEvent(new CustomEvent("hero-intro-complete"));
+                });
+            },
           });
+        } else {
+          gsap.set(title, { autoAlpha: 1 });
+          gsap.timeline({ defaults: { ease: "expo.out" } })
+            .from(title, { y: 10, duration: 0.6 })
+            .to(heroIn, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.06 }, "-=0.4")
+            .add(() => {
+              sessionStorage.setItem("hero-seen", "1");
+              window.dispatchEvent(new CustomEvent("hero-intro-complete"));
+            });
+        }
+      } else {
+        if (title) gsap.set(title, { autoAlpha: 1 });
+        window.dispatchEvent(new CustomEvent("hero-intro-complete"));
       }
+    };
+
+    let bootPending = false;
+    try {
+      bootPending = sessionStorage.getItem("kernel_boot_done") !== "1";
+    } catch {
+      bootPending = false;
+    }
+
+    if (bootPending && !seen) {
+      let started = false;
+      const onKernelReady = () => {
+        if (started) return;
+        started = true;
+        window.removeEventListener("kernel-ready", onKernelReady);
+        clearTimeout(bootTimer);
+        startHero();
+      };
+      const bootTimer = setTimeout(onKernelReady, 1800);
+      window.addEventListener("kernel-ready", onKernelReady);
     } else {
-      if (title) gsap.set(title, { autoAlpha: 1 });
-      window.dispatchEvent(new CustomEvent("hero-intro-complete"));
+      startHero();
     }
 
     initTileReveals(document);
