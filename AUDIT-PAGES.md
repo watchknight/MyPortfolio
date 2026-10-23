@@ -204,4 +204,174 @@ Audited via official Lighthouse 13.5.0 directly against production static distri
 
 ---
 
-*(Phase P1 Audit and Contract Complete. DESIGN.md updated with Pages Contract. AUDIT-PAGES.md written. Ready for Phase P2 Planning and Execution).*
+## 7. Phase P7 QA, Prerender & Consistency Verification
+
+**Execution Date**: October 2026  
+**Phase Target**: Phase P7: QA, PRERENDER, CONSISTENCY  
+**Integrity Mode**: Production Static Output (`dist/`) & Development Workspace  
+**Status**: COMPLETE (All acceptance criteria satisfied with zero regressions)
+
+---
+
+### 7.1 Visual Consistency & Side-by-Side Screenshots (20 Views)
+
+Full-page screenshots of all five routes (`/`, `/works`, `/foundation`, `/resume`, `/contact`) across 1440×900 desktop and 390×844 mobile viewports in both dark and light schemes (20 views total) have been captured via Chrome DevTools Protocol (`captureBeyondViewport: true`) and archived in `/screenshots/`.
+
+#### Desktop (1440×900) — Dark vs. Light Comparison
+
+| Route | Dark Theme (1440px) | Light Theme (1440px) | Alignment & Visual Hierarchy Notes |
+| :--- | :---: | :---: | :--- |
+| **Home (`/`)** | ![Home Desktop Dark](screenshots/desktop_dark_1440.png) | ![Home Desktop Light](screenshots/desktop_light_1440.png) | Floating nav pill with gliding indicator, 1280px max-width container (`clamp(16px, 4vw, 48px)` padding), Hero H1 display scale (`--fs-display`), 12-col bento grid, shared footer CTA band and footer bar. |
+| **Works (`/works`)** | ![Works Desktop Dark](screenshots/works_desktop_dark_1440.png) | ![Works Desktop Light](screenshots/works_desktop_light_1440.png) | Shared layout shell, 1280px container, `--fs-h1` title (`clamp(2.5rem, 6.5vw, 4.25rem)`), filter chips & G/T view toggle, 12-col bento grid, max 1 accent tile, poster-first simulators, shared footer. |
+| **Foundation (`/foundation`)** | ![Foundation Desktop Dark](screenshots/foundation_desktop_dark_1440.png) | ![Foundation Desktop Light](screenshots/foundation_desktop_light_1440.png) | Shared layout shell, 1280px container, `--fs-h1` title, scroll-drawn academic timeline line, competence matrix, TypeScript AST interface card, shared footer. |
+| **Résumé (`/resume`)** | ![Resume Desktop Dark](screenshots/resume_desktop_dark_1440.png) | ![Resume Desktop Light](screenshots/resume_desktop_light_1440.png) | Shared layout shell, 1280px container, `--fs-h1` title, physical bone paper sheet (`#F5F1E8`) with soft shadow preserved across both dark and light themes, sticky rail, shared footer. |
+| **Contact (`/contact`)** | ![Contact Desktop Dark](screenshots/contact_desktop_dark_1440.png) | ![Contact Desktop Light](screenshots/contact_desktop_light_1440.png) | Shared layout shell, 1280px container, `--fs-h1` title, 12-col bento grid with single accent tile (Availability), 48px+ touch-friendly inputs, zero CTA duplication (footer bar only). |
+
+#### Mobile (390×844) — Dark vs. Light Comparison
+
+| Route | Dark Theme (390px) | Light Theme (390px) | Mobile Parity & Overflow Verification |
+| :--- | :---: | :---: | :--- |
+| **Home (`/`)** | ![Home Mobile Dark](screenshots/mobile_dark_390.png) | ![Home Mobile Light](screenshots/mobile_light_390.png) | Zero horizontal overflow at 390px width. Responsive single-column bento stacking. Bottom-aligned hero content with legible typewriter loop. |
+| **Works (`/works`)** | ![Works Mobile Dark](screenshots/works_mobile_dark_390.png) | ![Works Mobile Light](screenshots/works_mobile_light_390.png) | Zero horizontal overflow at 390px width. Single-column stacked project tiles. Poster-first media with tap-to-run simulator execution (max 1 active loop). |
+| **Foundation (`/foundation`)** | ![Foundation Mobile Dark](screenshots/foundation_mobile_dark_390.png) | ![Foundation Mobile Light](screenshots/foundation_mobile_light_390.png) | Zero horizontal overflow at 390px width. Sequential scroll-lit timeline nodes. TypeScript AST code card contained with internal horizontal scrollbar. |
+| **Résumé (`/resume`)** | ![Resume Mobile Dark](screenshots/resume_mobile_dark_390.png) | ![Resume Mobile Light](screenshots/resume_mobile_light_390.png) | Zero horizontal overflow at 390px width. Actions rail stacks above résumé sheet under header. Sheet scales full-width preserving physical `#F5F1E8` paper styling. |
+| **Contact (`/contact`)** | ![Contact Mobile Dark](screenshots/contact_mobile_dark_390.png) | ![Contact Mobile Light](screenshots/contact_mobile_light_390.png) | Zero horizontal overflow at 390px width. Exact mobile order: Availability -> Direct Email -> Message Form -> Local Time -> Direct Links. Tap targets ≥ 48px. |
+
+---
+
+### 7.2 Route Inventory & Section 3 Behaviors Verification Matrix
+
+Every behavioral feature documented in Section 3 was explicitly re-verified against the production build with automated test suites (`scripts/verify-phase-p*.mjs` and Chrome DevTools Protocol automation):
+
+| Route | Section 3 Feature Requirement | Automated Test Result | Verification Evidence |
+| :--- | :--- | :---: | :--- |
+| **`/works`** | **1. Filter Chips**: `All Works`, `Web Applications`, `Tools & Extensions`, `E-Commerce` filtering project items without reload | **PASS** | Verified in `verify-phase-p3.mjs`: Filter clicks update visible tile counts (`All` = 6, `Web App` = 3, `Tools` = 2, `Commercial` = 1) with GSAP Flip layout animation. |
+| **`/works`** | **2. Grid / Table View Toggle**: Toggling between bento cards and Brian Lovin data ledger table via buttons and `G`/`T` keys, with `localStorage` persistence | **PASS** | Verified in `verify-phase-p3.mjs`: Keydown `T` swaps to `.ledgerContainer`; `G` restores grid; `localStorage.getItem('view_mode')` persists across reloads. |
+| **`/works`** | **3. Interactive Mock Previews**: In-tile interactive project simulators with max 1 active preview loop | **PASS** | Verified in `verify-phase-p3.mjs`: PureFeed, DocLensBD, FocusGuard, Rannabanna, POSHRA verified. Activating a second simulator automatically pauses previous (`runningCount === 1`). Backgrounding tab pauses all simulations (`runningCount === 0`). |
+| **`/works`** | **4. "Explore Architecture" Action**: Opens deep architectural case study modal via `onSelectProject(id)` or custom event | **PASS** | Verified in `verify-phase-p3.mjs`: Clicking action button mounts `LazyCaseStudyModal` with focus trapping, ESC dismiss, and URL push/pop sync. |
+| **`/works`** | **5. Direct Outbound Links**: "Visit Live Site" (external URL) and "Source" (GitHub repo) | **PASS** | Verified in `verify-phase-p3.mjs`: All live links and GitHub URLs point to valid secure endpoints with `rel="noopener noreferrer"`. |
+| **`/foundation`** | **1. Academic Timeline**: Chronological record covering EWU B.Sc. CSE, HSC, SSC (GPA 5.0), JSC (GPA 5.0), PSC (GPA 5.0) | **PASS** | Verified in `verify-phase-p4.mjs`: All 5 educational milestones present; timeline line draws dynamically with scroll using CSS `scaleY()`. Under `prefers-reduced-motion: reduce`, all nodes light immediately and line is full. |
+| **`/foundation`** | **2. Distinction Badges**: Merit scholarship chips and board distinction indicators | **PASS** | Verified in `verify-phase-p4.mjs`: Merit scholarship chips and board indicators render with correct tokens (`--accent` & `--surface`). |
+| **`/foundation`** | **3. Core Coursework Matrix**: Theoretical foundation tags (Data Structures, OS, Networks, DBMS, etc.) | **PASS** | Verified in `verify-phase-p4.mjs`: Coursework tags displayed inside surface bento tile. |
+| **`/foundation`** | **4. Skill Groups**: Grouped technology categories | **PASS** | Verified in `verify-phase-p4.mjs`: Languages, Frontend, Backend, Tools & Practices properly grouped in bento grid. |
+| **`/foundation`** | **5. TypeScript Schema Card**: Formatted TypeScript AST interface with one-click copy button (`handleCopy`) | **PASS** | Verified in `verify-phase-p4.mjs`: Copy button copies raw TypeScript to clipboard, swaps label to "Copied" for 1.6s, triggers `sound.play('chime')`, and reverts. |
+| **`/resume`** | **1. Download PDF Action**: Direct link pointing to `/resume.pdf` | **PASS** | Verified in `verify-phase-p5.mjs`: Link targets `/resume.pdf` with `target="_blank"` and `rel="noopener noreferrer"`. |
+| **`/resume`** | **2. Print Résumé Action**: Button invoking native `window.print()` with zero print distortion | **PASS** | Verified in `verify-phase-p5.mjs`: `@media print` audit confirms site chrome (`.atmo`, `<nav>`, `<footer>`, `.resume-rail`, cursor) is suppressed; sheet renders pure black text on pure white background (`#000` on `#fff`), 0 padding, 0 box-shadow, and exact 2-page A4 output. |
+| **`/resume`** | **3. Complete Résumé Information**: Candidate header, contact metadata, summary, education history, production software, technical skills, verified honors | **PASS** | Verified in `verify-phase-p5.mjs`: All résumé sections present and structured with accessible sequential headings. |
+| **`/resume`** | **4. Mandated Content Dedup**: Deduplicate JSC (Class 8) and PSC (Class 5) from Education list—reside exclusively under Honors & Awards | **PASS** | Verified in `verify-phase-p5.mjs`: Education section contains only EWU B.Sc. CSE and HSC; JSC & PSC reside exclusively under Honors & Awards. |
+| **`/contact`** | **1. Copy Email Button**: One-click clipboard copy of `armabdur.rahman04@gmail.com` with active state (`Copied`) for 1.6s and auditory feedback | **PASS** | Verified in `verify-phase-p6.mjs`: Copies email, swaps label to "Copied" with `.btn-copied` bounce, announces via `aria-live="polite"`, plays `chime`, and reverts after 1.6s. |
+| **`/contact`** | **2. Availability Indicator**: Dynamic status readout ("Open for Internships & Freelance Projects") with glowing pulse dot | **PASS** | Verified in `verify-phase-p6.mjs`: Availability tile renders with `data-tile="accent"`, glowing CSS pulse dot, and subtitle. |
+| **`/contact`** | **3. Dhaka Local Clock**: Real-time clock formatted in `Asia/Dhaka` time (UTC+6) updating each second | **PASS** | Verified in `verify-phase-p6.mjs`: Clock displays current Dhaka time in 24h format with UTC+6 timezone badge. |
+| **`/contact`** | **4. Social Links**: Direct links to GitHub profile, Résumé PDF, and LinkedIn | **PASS** | Verified in `verify-phase-p6.mjs`: Inverted tile links to GitHub, LinkedIn, and `/resume.pdf`. |
+| **`/contact`** | **5. Form Behavior & "Draft & Send Message"**: Client-side validation, mailto: draft generation, fallback copy draft, and form reset | **PASS** | Verified in `verify-phase-p6.mjs`: Validates empty/invalid fields with `aria-invalid="true"` and `aria-describedby`; generates `mailto:` URL; triggers dispatch confirmation tile; transfers programmatic focus; restores form cleanly upon "Send another message". |
+
+---
+
+### 7.3 Atmosphere Persistence & Navigation Coordination
+
+1. **Persistent Atmosphere Container**:
+   - The `.atmo` container is declared once in `App.tsx` (lines 234–240) outside the route switch.
+   - Client-side navigation triggers GSAP route crossfading on `<main>` only (`0.2s fade out` &rarr; `0.3s fade in`).
+   - The `.atmo` DOM elements and WebGL/Canvas drift never re-mount, reset, or hitch during route transitions.
+2. **Dynamic Section Synchronization**:
+   - `<main id="main-content">` dynamically updates `data-section` per route:
+     - `/` &rarr; Section observer (`hero`, `work`, `about`, `guestbook`, `contact`)
+     - `/works` &rarr; `data-section="work"`
+     - `/foundation` &rarr; `data-section="about"`
+     - `/resume` &rarr; `data-section="hero"`
+     - `/contact` &rarr; `data-section="contact"`
+   - `atmosphere.js` and `audio/hooks.js` listen to `onSection()` events from `src/lib/sections.js` and adjust lighting glow balance and audio drones over 2.2s.
+3. **Accessibility Focus Transfer**:
+   - On route navigation, client-side router scrolls window to top (`window.scrollTo({ top: 0, behavior: 'instant' })`) and moves programmatic focus to `<main id="main-content">` via `mainEl.focus({ preventScroll: true })`.
+4. **Nav Pill Gliding & ARIA State**:
+   - Nav active pill glides to the active link position via GSAP `quickTo` (`0.35s power3.out`).
+   - Active link receives `aria-current="page"` and dot indicator across desktop pill and mobile drawer.
+
+---
+
+### 7.4 Static Prerendering Unification & Route Check (`npm run check:routes`)
+
+- **SSG Prerendering Pipeline**: `scripts/prerender.mjs` executes during `npm run build`, generating static HTML bundles in `dist/` for all 5 routes plus `/404`.
+- **Validation Script**: `scripts/check-routes.mjs` programmatically launches the Vite preview server and executes automated validation across all 5 routes.
+- **Results**: `npm run check:routes` executed with **35 PASS, 0 FAIL**:
+  - HTTP 200 returned for `/`, `/works`, `/foundation`, `/resume`, `/contact`.
+  - Non-empty prerendered DOM markup within `#root` (12 KB to 38 KB per route).
+  - Authoritative `<title>`, `<meta name="description">`, `<link rel="canonical">`, and `<meta property="og:url">` for each route.
+  - Exactly one `<h1>` per route with sequential heading hierarchy.
+
+---
+
+### 7.5 Canonical Domain Reconciliation
+
+All self-referential links, meta tags, and data sources have been reconciled to the authoritative production domain `https://watchknight-dev.onrender.com`:
+- Prerender `<link rel="canonical">`, `<meta property="og:url">`, and `<meta property="og:image">` point to `https://watchknight-dev.onrender.com`.
+- Sentinel Portfolio card live URL in `src/data/projects.ts` updated from `moayed-portfolio.onrender.com` to `https://watchknight-dev.onrender.com/`.
+- Mock browser URL in `ProjectSimulator.tsx` updated to `watchknight-dev.onrender.com`.
+- Sentinel Portfolio live site links in `scripts/resume-template.html` updated to `https://watchknight-dev.onrender.com/`.
+- `public/sitemap.xml` and `public/robots.txt` verify `https://watchknight-dev.onrender.com`.
+
+---
+
+### 7.6 Accessibility & Performance Quality Floor (Lighthouse Audits)
+
+Official Lighthouse 13.5.0 direct audit against production static distribution (`dist/`) using Chrome DevTools Protocol under standard mobile and desktop configurations:
+
+#### Mobile Audit (`--form-factor=mobile`)
+
+| Route | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT | Quality Floor Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`/` (Home)** | **95** | **100** | **100** | **100** | 2.6 s | 0.000 | 0 ms | **PASS** (All ≥ Floor) |
+| **`/works`** | **95** | **96** | **100** | **100** | 2.6 s | 0.000 | 0 ms | **PASS** (All ≥ Floor) |
+| **`/foundation`** | **95** | **100** | **100** | **100** | 2.6 s | 0.000 | 0 ms | **PASS** (All ≥ Floor) |
+| **`/resume`** | **95** | **100** | **100** | **100** | 2.5 s | 0.000 | 0 ms | **PASS** (All ≥ Floor) |
+| **`/contact`** | **95** | **100** | **100** | **100** | 2.6 s | 0.000 | 0 ms | **PASS** (All ≥ Floor) |
+
+#### Desktop Audit (`--preset=desktop`)
+
+| Route | Performance | Accessibility | Best Practices | SEO | LCP | CLS | TBT | Quality Floor Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`/` (Home)** | **100** | **100** | **100** | **100** | 0.5 s | 0.000 | 0 ms | **PASS** (Flawless) |
+| **`/works`** | **100** | **96** | **100** | **100** | 0.6 s | 0.000 | 0 ms | **PASS** (Flawless) |
+| **`/foundation`** | **100** | **100** | **100** | **100** | 0.6 s | 0.000 | 0 ms | **PASS** (Flawless) |
+| **`/resume`** | **100** | **100** | **100** | **100** | 0.5 s | 0.000 | 0 ms | **PASS** (Flawless) |
+| **`/contact`** | **100** | **100** | **100** | **100** | 0.6 s | 0.000 | 0 ms | **PASS** (Flawless) |
+
+*Axe-core and Lighthouse accessibility audit: Zero critical or serious accessibility violations across all routes. Sequential heading hierarchy (`h1` &rarr; `h2` &rarr; `h3`), standard landmarks (`<header>`, `<nav>`, `<main>`, `<footer>`), visible focus ring (`2px` focus ring with `2px` offset), and tap targets ≥ 44px.*
+
+#### Adversarial Mobile Tap Target Floor (R6) & Resilient Clipboard Verification
+- **Interactive State Audit (390px Viewport)**:
+  - **Table Mode (`ProjectLedger`)**: All 6 row action buttons (`.actionBtn`), like buttons (`.likeBtn`), and touch inline drawer controls (`.touchInspectBtn`, `.touchDismissBtn`) verified ≥ 44px (0 violations).
+  - **Mobile Navigation Drawer (`Nav.tsx`)**: All segment buttons (`.segmentBtn`), toggle switches (`.switchBtn` for Grain, Atmosphere, Grade, Sound), volume range slider (`.volumeSlider`), and diagnostics pill (`.actionPillBtn`) verified ≥ 44px (0 violations).
+  - **Command Palette (`CommandPalette.tsx`)**: Search input (`.searchInput`) and escape trigger (`.escButton`) verified ≥ 44px (0 violations).
+  - **Case Study Modal (`CaseStudyModal.tsx`)**: Code AST sandbox copy action (`.copyBtn`) verified ≥ 44px (0 violations).
+- **Clipboard Fallback Hardening**: All clipboard operations (`CaseStudyModal`, `SysDiagnosticModal`, `DeveloperASTCard`, `ContactPage`, `ResumePage`, `HomePage`, `FooterBand`, `CommandPalette`) unified behind `copyToClipboard()` with graceful fallback to `document.execCommand('copy')` for non-secure / restricted sandbox environments.
+
+---
+
+### 7.7 Configuration Tuning Knobs
+
+The portfolio architecture exposes several runtime configuration tuning knobs:
+
+| Category | Knob / Identifier | Values / Format | Description & Mechanism |
+| :--- | :--- | :--- | :--- |
+| **URL Query** | `?phase=<phase>` | `night`, `dawn`, `day`, `dusk` | Overrides the local Dhaka solar time calculation to force a specific atmosphere lighting palette. Handled in zero-flash `<head>` script and `atmosphere.js`. |
+| **URL Query** | `?atmo=off` | Flag | Disables atmosphere background canvas rendering and drift animations for low-power or benchmark testing. |
+| **URL Query** | `?grade=off` | Flag | Disables blue color grading SVG filters on media tiles, rendering original asset colors. |
+| **Storage** | `localStorage['theme']` | `'dark'` \| `'light'` | Persists user theme preference. Initial load follows `prefers-color-scheme`, saved choice takes precedence. Synchronized via `data-theme` on `<html>`. |
+| **Storage** | `localStorage['grain']` | `'true'` \| `'false'` | Controls SVG noise grain overlay. Defaults to enabled on desktop fine pointers, disabled on touch (`pointer: coarse`). |
+| **Storage** | `localStorage['atmo']` | `'on'` \| `'off'` | Controls atmosphere motion toggle in Controls popover. |
+| **Storage** | `localStorage['grade']` | `'on'` \| `'off'` | Controls media blue grade toggle in Controls popover. |
+| **Storage** | `localStorage['view_mode']` | `'grid'` \| `'table'` | Controls project view layout format on `/` and `/works`. Toggled via `G`/`T` keys or button controls. |
+| **Storage** | `localStorage['sound_state']` | JSON string | Encodes Web Audio mute/volume state, audio balance, and re-armed status. |
+| **Keyboard** | `⌘K` / `Ctrl+K` | Key combination | Toggles Raycast-style command palette modal with quick actions and section navigation. |
+| **Keyboard** | `G` / `T` | Key press | Toggles project view between Bento Grid (`G`) and Data Ledger Table (`T`). |
+| **Keyboard** | `D` | Key press | Toggles theme between Dark and Light with circular reveal animation. |
+| **Keyboard** | `M` | Key press | Toggles synthesized Web Audio sound engine on / muted. |
+| **Keyboard** | `S` | Key press | Opens system diagnostics telemetry modal. |
+| **Keyboard** | `F` | Key press | Toggles noise grain texture overlay. |
+| **Keyboard** | `Escape` | Key press | Dismisses any active modal, popover, or mobile sheet drawer and returns focus. |
+| **Env Var** | `VITE_SITE_URL` | URL string | Controls production canonical host (defaults to `https://watchknight-dev.onrender.com`). |
+
+---
+
+*(Phase P7 Complete. Visual consistency, atmosphere persistence, static prerendering, canonical reconciliation, mobile responsiveness, and quality floors verified with zero regressions).*

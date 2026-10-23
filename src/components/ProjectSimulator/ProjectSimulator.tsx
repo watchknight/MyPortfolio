@@ -512,7 +512,7 @@ export function ProjectSimulator({ projectId, isRunning = false }: ProjectSimula
             <span className={`${styles.dot} ${styles.dotRed}`} />
             <span className={`${styles.dot} ${styles.dotYellow}`} />
             <span className={`${styles.dot} ${styles.dotGreen}`} />
-            <span className={styles.simUrl}>moayed-portfolio.onrender.com</span>
+            <span className={styles.simUrl}>watchknight-dev.onrender.com</span>
           </div>
           <span className={styles.simTag}>Web Audio DSP</span>
         </div>

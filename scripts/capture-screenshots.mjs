@@ -43,16 +43,17 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const PORT = 4755;
+const PORT = 4788;
 await new Promise((resolve) => server.listen(PORT, '127.0.0.1', resolve));
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const tempProfile = path.join(os.tmpdir(), '.chrome-temp-ss-' + Date.now());
-const CDP_PORT = 9489;
+const CDP_PORT = 9498;
 const chromeProcess = spawn(chromePath, [
   '--headless=new',
   `--remote-debugging-port=${CDP_PORT}`,
   '--disable-gpu',
+  '--hide-scrollbars',
   '--no-first-run',
   '--no-default-browser-check',
   '--user-data-dir=' + tempProfile,
@@ -96,35 +97,81 @@ async function evalJs(expr) {
   return res.result ? res.result.value : undefined;
 }
 
-async function capture(fileName, width, height, theme, dsf = 1, mobile = false) {
+async function capture(routePath, fileName, width, height, theme, dsf = 1, mobile = false) {
   await send('Emulation.setDeviceMetricsOverride', {
     width,
     height,
     deviceScaleFactor: dsf,
     mobile,
   });
-  await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` });
-  await new Promise((r) => setTimeout(r, 800));
+  await send('Page.navigate', { url: `http://127.0.0.1:${PORT}${routePath}` });
+  await new Promise((r) => setTimeout(r, 600));
 
   if (theme) {
     await evalJs(`document.documentElement.setAttribute('data-theme', '${theme}')`);
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 200));
   }
 
-  const { data } = await send('Page.captureScreenshot', { format: 'png' });
+  const { data } = await send('Page.captureScreenshot', {
+    format: 'png',
+    captureBeyondViewport: true,
+  });
   const buffer = Buffer.from(data, 'base64');
   const dest = path.join(screenshotsDir, fileName);
   fs.writeFileSync(dest, buffer);
-  console.log(`Saved screenshot: ${dest} (${width}x${height}, ${theme || 'default'})`);
+  console.log(`Saved screenshot: ${fileName} (${width}x${height}, ${theme})`);
 }
+
+const routes = [
+  { path: '/', slug: 'home' },
+  { path: '/works', slug: 'works' },
+  { path: '/foundation', slug: 'foundation' },
+  { path: '/resume', slug: 'resume' },
+  { path: '/contact', slug: 'contact' },
+];
 
 try {
   await send('Page.enable');
-  await capture('desktop_dark_1440.png', 1440, 900, 'dark', 1, false);
-  await capture('desktop_light_1440.png', 1440, 900, 'light', 1, false);
-  await capture('mobile_dark_390.png', 390, 844, 'dark', 3, true);
-  await capture('mobile_light_390.png', 390, 844, 'light', 3, true);
-  console.log('All screenshots captured successfully!');
+  console.log('Capturing all 20 views across 5 routes at 1440px and 390px in dark & light...');
+
+  for (const r of routes) {
+    console.log(`\n--- Capturing route: ${r.path} ---`);
+    // 1440px Desktop Dark
+    const dDark = r.slug === 'home' ? 'desktop_dark_1440.png' : `${r.slug}_desktop_dark_1440.png`;
+    await capture(r.path, dDark, 1440, 900, 'dark', 1, false);
+    if (r.slug !== 'home') {
+      fs.copyFileSync(path.join(screenshotsDir, dDark), path.join(screenshotsDir, `${r.slug}_desktop_1440.png`));
+    } else {
+      fs.copyFileSync(path.join(screenshotsDir, dDark), path.join(screenshotsDir, 'home_desktop_dark_1440.png'));
+      fs.copyFileSync(path.join(screenshotsDir, dDark), path.join(screenshotsDir, 'home_desktop_1440.png'));
+    }
+
+    // 1440px Desktop Light
+    const dLight = r.slug === 'home' ? 'desktop_light_1440.png' : `${r.slug}_desktop_light_1440.png`;
+    await capture(r.path, dLight, 1440, 900, 'light', 1, false);
+    if (r.slug === 'home') {
+      fs.copyFileSync(path.join(screenshotsDir, dLight), path.join(screenshotsDir, 'home_desktop_light_1440.png'));
+    }
+
+    // 390px Mobile Dark
+    const mDark = r.slug === 'home' ? 'mobile_dark_390.png' : `${r.slug}_mobile_dark_390.png`;
+    await capture(r.path, mDark, 390, 844, 'dark', 2, true);
+    if (r.slug !== 'home') {
+      fs.copyFileSync(path.join(screenshotsDir, mDark), path.join(screenshotsDir, `${r.slug}_mobile_390.png`));
+    } else {
+      fs.copyFileSync(path.join(screenshotsDir, mDark), path.join(screenshotsDir, 'home_mobile_dark_390.png'));
+      fs.copyFileSync(path.join(screenshotsDir, mDark), path.join(screenshotsDir, 'home_mobile_390.png'));
+    }
+
+    // 390px Mobile Light
+    const mLight = r.slug === 'home' ? 'mobile_light_390.png' : `${r.slug}_mobile_light_390.png`;
+    await capture(r.path, mLight, 390, 844, 'light', 2, true);
+    if (r.slug === 'home') {
+      fs.copyFileSync(path.join(screenshotsDir, mLight), path.join(screenshotsDir, 'home_mobile_light_390.png'));
+    }
+  }
+
+  console.log('\n✨ All 20 full-page screenshots captured successfully!');
 } finally {
   try { ws.close(); } catch {}
   try { chromeProcess.kill(); } catch {}

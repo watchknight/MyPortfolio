@@ -247,6 +247,17 @@
   transition: all var(--duration-fast) ease;
 }
 
+@media (pointer: coarse), (max-width: 639px) {
+  .copyBtn {
+    min-height: 44px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+}
+
 .copyBtn:hover {
   color: var(--on-accent);
   background-color: var(--accent);

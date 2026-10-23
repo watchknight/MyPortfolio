@@ -49,6 +49,9 @@
   font-size: 16px;
   color: var(--color-text-primary);
   outline: none;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0.5rem 0;
 }
 
 .searchInput:focus-visible {
@@ -72,6 +75,9 @@
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
+  width: 44px;
+  height: 44px;
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 

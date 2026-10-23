@@ -245,6 +245,42 @@
     padding: 8px 14px;
     font-size: 0.8125rem;
   }
+
+  .switchBtn {
+    width: 64px;
+    height: 44px;
+    min-height: 44px;
+    min-width: 44px;
+    box-sizing: border-box;
+    padding: 4px;
+  }
+
+  .switchKnob {
+    width: 28px;
+    height: 28px;
+  }
+
+  .switchBtnActive .switchKnob {
+    transform: translateX(26px);
+  }
+
+  .switchStateText {
+    font-size: 0.75rem;
+  }
+
+  .switchBtnActive .switchStateText {
+    left: 8px;
+  }
+
+  .switchBtn:not(.switchBtnActive) .switchStateText {
+    right: 8px;
+  }
+
+  .volumeSlider {
+    height: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
 }
 
 .previewChip:not(:disabled):hover {

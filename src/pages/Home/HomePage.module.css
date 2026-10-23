@@ -308,6 +308,8 @@
   align-items: center;
   gap: 0.45rem;
   padding-top: 1.5rem;
+  min-height: 44px;
+  box-sizing: border-box;
   color: var(--subtle);
   font-family: var(--font-sans);
   font-size: 0.75rem;

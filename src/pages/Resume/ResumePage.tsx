@@ -4,6 +4,7 @@ import { Magnetic } from '../../components/Magnetic/Magnetic';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { sound } from '../../audio/sound.js';
 import { profileData } from '../../data/profile';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './ResumePage.module.css';
 
 export function ResumePage() {
@@ -22,35 +23,8 @@ export function ResumePage() {
     window.print();
   };
 
-  const handleCopyEmail = () => {
-    const email = profileData.contact.email;
-    const fallbackCopy = () => {
-      try {
-        const textArea = document.createElement('textarea');
-        textArea.value = email;
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-      } catch {
-        // ignore
-      }
-    };
-
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(email).catch(() => {
-          fallbackCopy();
-        });
-      } else {
-        fallbackCopy();
-      }
-    } catch {
-      fallbackCopy();
-    }
-
+  const handleCopyEmail = async () => {
+    await copyToClipboard(profileData.contact.email);
     setCopied(true);
     sound.play('chime');
 
@@ -124,7 +98,6 @@ export function ResumePage() {
                 onClick={handleCopyEmail}
                 data-cursor="link"
                 data-magnetic="0.25"
-                aria-label={copied ? 'Email copied to clipboard' : 'Copy candidate email address'}
                 aria-live="polite"
               >
                 {copied ? (

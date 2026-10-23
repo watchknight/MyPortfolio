@@ -85,7 +85,7 @@
   border: 1px solid var(--accent);
   border-radius: var(--r-pill);
   padding: 0.4rem 0.95rem;
-  min-height: 36px;
+  min-height: 44px;
   box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;

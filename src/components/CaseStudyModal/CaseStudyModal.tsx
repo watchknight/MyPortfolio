@@ -3,6 +3,7 @@ import { gsap } from '../../motion/index';
 import type { ProjectData } from '../../data/projects';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './CaseStudyModal.module.css';
 
 interface CaseStudyModalProps {
@@ -106,9 +107,9 @@ export function CaseStudyModal({ project, onClose }: CaseStudyModalProps) {
 
   if (!project) return null;
 
-  const copyCode = () => {
+  const copyCode = async () => {
     if (project.codeHighlight) {
-      navigator.clipboard.writeText(project.codeHighlight.code);
+      await copyToClipboard(project.codeHighlight.code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }

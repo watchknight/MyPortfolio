@@ -430,6 +430,6 @@ playClick(freq = 850, duration = 0.02, volume = 0.06): void {
     },
     repository: 'https://github.com/watchknight/MyPortfolio',
     githubUrl: 'https://github.com/watchknight/MyPortfolio',
-    liveUrl: 'https://moayed-portfolio.onrender.com/',
+    liveUrl: 'https://watchknight-dev.onrender.com/',
   },
 ];

@@ -3,6 +3,7 @@ import { RollText } from '../RollText/RollText';
 import { Magnetic } from '../Magnetic/Magnetic';
 import { profileData } from '../../data/profile';
 import { sound } from '../../utils/audio';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './FooterBand.module.css';
 
 export interface FooterBandProps {
@@ -37,14 +38,8 @@ export function FooterBand({ showCta = true, onNavigate }: FooterBandProps) {
     window.scrollTo({ top: 0, behavior: reduce ? 'instant' : 'smooth' });
   }, []);
 
-  const handleCopyEmail = useCallback(() => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(profileData.contact.email).catch(() => {});
-      }
-    } catch {
-      // ignore clipboard error in headless/restricted environments
-    }
+  const handleCopyEmail = useCallback(async () => {
+    await copyToClipboard(profileData.contact.email);
     setCopiedEmail(true);
     sound.play('chime');
     if (copyTimeoutRef.current) {

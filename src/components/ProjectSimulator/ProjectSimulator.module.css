@@ -53,9 +53,9 @@
 }
 
 :global(.media) .dlBtn {
-  min-height: 34px;
-  padding: 0.3rem 0.55rem;
-  font-size: 10px;
+  min-height: 44px;
+  padding: 0.35rem 0.65rem;
+  font-size: 11px;
 }
 
 @media (max-width: 639px) {
@@ -84,9 +84,9 @@
     top: 10px;
   }
   :global(.media) .dlBtn {
-    min-height: 30px;
-    padding: 0.2rem 0.45rem;
-    font-size: 9px;
+    min-height: 44px;
+    padding: 0.35rem 0.55rem;
+    font-size: 10px;
   }
 }
 

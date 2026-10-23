@@ -286,11 +286,13 @@ try {
     const ringHidden = !ring || getComputedStyle(ring).display === 'none';
     const dotHidden = !dot || getComputedStyle(dot).display === 'none';
 
-    // Verify touch target sizes
-    const interactive = Array.from(document.querySelectorAll('button, a[href]'));
+    // Verify touch target sizes (>= 44px floor per DESIGN.md & R6)
+    const interactive = Array.from(document.querySelectorAll('button, a[href], input, textarea, select, [role="button"]'));
     const smallTargets = interactive.filter((el) => {
       const rect = el.getBoundingClientRect();
-      return rect.width > 0 && rect.height > 0 && (rect.width < 40 || rect.height < 40);
+      const style = window.getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+      return rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
     });
 
     return {
@@ -300,7 +302,64 @@ try {
     };
   })()`);
   assert('Custom cursor ring and dot hidden under touch emulation', touchCheck.cursorHidden);
-  assert('Touch interactive targets satisfy minimum hit dimensions', touchCheck.minTapTargetsMet, `small=${touchCheck.smallCount}`);
+  assert('Touch interactive targets on / satisfy >=44px floor', touchCheck.minTapTargetsMet, `small=${touchCheck.smallCount}`);
+
+  for (const r of ['/works', '/foundation', '/resume', '/contact']) {
+    await send('Page.navigate', { url: `http://127.0.0.1:${PORT}${r}` });
+    await new Promise((res) => setTimeout(res, 600));
+    const smallCount = await evalJs(`(() => {
+      const interactive = Array.from(document.querySelectorAll('button, a[href], input, textarea, select, [role="button"]'));
+      return interactive.filter((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = window.getComputedStyle(el);
+        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+        return rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
+      }).length;
+    })()`);
+    assert(`Touch interactive targets on ${r} satisfy >=44px floor`, smallCount === 0, `small=${smallCount}`);
+  }
+
+  // Interactive Table Mode touch target verification
+  await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/works` });
+  await new Promise((r) => setTimeout(r, 600));
+  await evalJs(`(() => {
+    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Table [T]'));
+    if (btn) btn.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 400));
+  const tableSmallCount = await evalJs(`(() => {
+    const interactive = Array.from(document.querySelectorAll('button, a[href], input, textarea, select, [role="button"]'));
+    return interactive.filter((el) => {
+      const rect = el.getBoundingClientRect();
+      const style = window.getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+      return rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
+    }).length;
+  })()`);
+  assert('Touch interactive targets in Table mode on /works satisfy >=44px floor', tableSmallCount === 0, `small=${tableSmallCount}`);
+
+  // Interactive Mobile Navigation Drawer touch target verification
+  await evalJs(`(() => {
+    const burger = document.querySelector('button[aria-label*="navigation menu"]');
+    if (burger) burger.click();
+  })()`);
+  await new Promise((r) => setTimeout(r, 400));
+  const drawerSmallCount = await evalJs(`(() => {
+    const dialog = document.querySelector('[role="dialog"][aria-label="Navigation Menu"]');
+    if (!dialog) return 999;
+    const interactive = Array.from(dialog.querySelectorAll('button, a[href], input, textarea, select, [role="button"]'));
+    return interactive.filter((el) => {
+      const rect = el.getBoundingClientRect();
+      const style = window.getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+      return rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
+    }).length;
+  })()`);
+  assert('Touch interactive targets in Mobile Navigation Drawer satisfy >=44px floor', drawerSmallCount === 0, `small=${drawerSmallCount}`);
+
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape' });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape' });
+  await new Promise((r) => setTimeout(r, 300));
 
   // No-JS static archive check
   const noJsHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');

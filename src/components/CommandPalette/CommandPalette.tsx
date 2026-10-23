@@ -4,6 +4,7 @@ import { sound } from '../../audio/sound.js';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
 import { profileData } from '../../data/profile';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './CommandPalette.module.css';
 
 export interface CommandItem {
@@ -201,8 +202,8 @@ export function CommandPalette({
       title: 'Copy Primary Email Address',
       subtitle: `${profileData.contact.email} (Instant clipboard copy)`,
       shortcut: 'C',
-      action: () => {
-        navigator.clipboard.writeText(profileData.contact.email);
+      action: async () => {
+        await copyToClipboard(profileData.contact.email);
         sound.play('chime');
       },
     },

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { sound } from '../../utils/audio';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './DeveloperASTCard.module.css';
 
 interface DeveloperASTCardProps {
@@ -38,14 +39,8 @@ export interface SystemsArchitect {
   readonly technicalPhilosophy: "Zero deadweight, hardware-native execution, verified engineering";
 }`;
 
-  const handleCopy = () => {
-    try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(rawSchema).catch(() => {});
-      }
-    } catch {
-      // ignore clipboard error in restricted/headless environments
-    }
+  const handleCopy = async () => {
+    await copyToClipboard(rawSchema);
     setCopied(true);
     sound.play('chime');
 

@@ -10,6 +10,7 @@ import { Magnetic } from '../../components/Magnetic/Magnetic';
 import { projects } from '../../data/projects';
 import { profileData } from '../../data/profile';
 import { sound } from '../../utils/audio';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './HomePage.module.css';
 
 interface HomePageProps {
@@ -171,14 +172,8 @@ export function HomePage({ onNavigate, onSelectProject }: HomePageProps) {
     return () => clearInterval(interval);
   }, [isTelemetryVisible]);
 
-  const handleCopyEmail = useCallback(() => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(profileData.contact.email).catch(() => {});
-      }
-    } catch {
-      // ignore clipboard error in headless/restricted environments
-    }
+  const handleCopyEmail = useCallback(async () => {
+    await copyToClipboard(profileData.contact.email);
     setCopiedEmail(true);
     sound.play('chime');
     if (copyTimeoutRef.current) {

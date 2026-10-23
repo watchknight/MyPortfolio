@@ -628,6 +628,8 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.65rem 1rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   background-color: var(--color-accent);
   color: var(--color-accent-contrast);
@@ -648,6 +650,8 @@
   align-items: center;
   justify-content: center;
   padding: 0.65rem 1rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   background-color: var(--color-bg-subtle);
   color: var(--color-text-secondary);
@@ -678,9 +682,29 @@
     order: 3;
   }
 
-  .likeBtn, .actionBtn {
+  .likeBtn,
+  .actionBtn {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: auto;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0.5rem 0.85rem;
+  }
+}
+
+@media (pointer: coarse) {
+  .likeBtn,
+  .actionBtn {
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0.5rem 0.85rem;
+  }
+  .touchInspectBtn,
+  .touchDismissBtn {
+    min-height: 44px;
+    box-sizing: border-box;
   }
 }
 

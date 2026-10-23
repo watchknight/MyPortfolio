@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useScrollLock } from '../../utils/scrollLock';
 import { useFocusTrap } from '../../utils/focusTrap';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './SysDiagnosticModal.module.css';
 
 interface SysDiagnosticModalProps {
@@ -239,9 +240,9 @@ export function SysDiagnosticModal({ isOpen, onClose }: SysDiagnosticModalProps)
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleCopyCert = () => {
+  const handleCopyCert = async () => {
     if (!certToken) return;
-    navigator.clipboard.writeText(certToken);
+    await copyToClipboard(certToken);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };

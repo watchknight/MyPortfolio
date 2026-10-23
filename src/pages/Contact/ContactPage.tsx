@@ -4,6 +4,7 @@ import { RollText } from '../../components/RollText/RollText';
 import { Magnetic } from '../../components/Magnetic/Magnetic';
 import { sound } from '../../audio/sound.js';
 import { profileData } from '../../data/profile';
+import { copyToClipboard } from '../../utils/clipboard';
 import styles from './ContactPage.module.css';
 
 export function ContactPage() {
@@ -12,6 +13,7 @@ export function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [draftCopied, setDraftCopied] = useState(false);
+  const [draftCopyFailed, setDraftCopyFailed] = useState(false);
   const [dhakaTime, setDhakaTime] = useState('');
   const [formData, setFormData] = useState({
     name: '',
@@ -110,39 +112,8 @@ export function ContactPage() {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).catch(() => {
-          fallbackClipboardCopy(text);
-        });
-        return;
-      }
-    } catch {
-      // fallback
-    }
-    fallbackClipboardCopy(text);
-  };
-
-  const fallbackClipboardCopy = (text: string) => {
-    try {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
-      textArea.style.top = '-999999px';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-    } catch {
-      // ignore
-    }
-  };
-
-  const handleCopyEmail = () => {
-    copyToClipboard(profileData.contact.email);
+  const handleCopyEmail = async () => {
+    await copyToClipboard(profileData.contact.email);
     setCopied(true);
     sound.play('chime');
     if (copyTimeoutRef.current) {
@@ -154,18 +125,23 @@ export function ContactPage() {
     }, 1600);
   };
 
-  const handleCopyDraft = () => {
+  const handleCopyDraft = async () => {
     const draft = `To: ${profileData.contact.email}\r\nSubject: ${formData.subject || 'Project Inquiry'}\r\n\r\nName: ${formData.name}\r\nEmail: ${formData.email}\r\n\r\nMessage:\r\n${formData.message}`;
-    copyToClipboard(draft);
-    setDraftCopied(true);
-    sound.play('chime');
-    if (draftTimeoutRef.current) {
-      clearTimeout(draftTimeoutRef.current);
+    const ok = await copyToClipboard(draft);
+    if (ok) {
+      setDraftCopied(true);
+      setDraftCopyFailed(false);
+      sound.play('chime');
+      if (draftTimeoutRef.current) {
+        clearTimeout(draftTimeoutRef.current);
+      }
+      draftTimeoutRef.current = setTimeout(() => {
+        setDraftCopied(false);
+        draftTimeoutRef.current = null;
+      }, 3000);
+    } else {
+      setDraftCopyFailed(true);
     }
-    draftTimeoutRef.current = setTimeout(() => {
-      setDraftCopied(false);
-      draftTimeoutRef.current = null;
-    }, 3000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -223,6 +199,7 @@ export function ContactPage() {
     setErrors({});
     setSubmitError(null);
     setDraftCopied(false);
+    setDraftCopyFailed(false);
     if (draftTimeoutRef.current) {
       clearTimeout(draftTimeoutRef.current);
       draftTimeoutRef.current = null;
@@ -472,6 +449,21 @@ export function ContactPage() {
                   </button>
                 </Magnetic>
               </div>
+
+              {draftCopyFailed && (
+                <div className={styles.draftFallbackContainer}>
+                  <p className={styles.draftFallbackNotice}>
+                    Clipboard access was not permitted. You can select and copy your pre-formatted draft directly:
+                  </p>
+                  <textarea
+                    readOnly
+                    className={styles.draftFallbackArea}
+                    value={`To: ${profileData.contact.email}\r\nSubject: ${formData.subject || 'Project Inquiry'}\r\n\r\nName: ${formData.name}\r\nEmail: ${formData.email}\r\n\r\nMessage:\r\n${formData.message}`}
+                    onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+                    aria-label="Formatted email draft text"
+                  />
+                </div>
+              )}
             </div>
           )}
         </article>

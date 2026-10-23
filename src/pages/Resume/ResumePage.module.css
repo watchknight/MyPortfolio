@@ -167,6 +167,8 @@
   font-weight: 500;
   color: var(--muted);
   padding: 0.45rem 0.65rem;
+  min-height: 44px;
+  box-sizing: border-box;
   border-radius: var(--r-md);
   text-decoration: none;
   transition: all var(--duration-fast) ease;
@@ -278,6 +280,10 @@
   transition: color var(--duration-fast) ease;
   word-break: break-word;
   overflow-wrap: anywhere;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  box-sizing: border-box;
 }
 
 .contactLink:hover {
@@ -423,6 +429,8 @@
   display: inline-flex;
   align-items: center;
   font-weight: 500;
+  min-height: 44px;
+  box-sizing: border-box;
   transition: color var(--duration-fast) ease;
 }
 
@@ -490,9 +498,14 @@
   }
 
   .jumpLink {
-    padding: 0.35rem 0.65rem;
+    padding: 0.45rem 0.75rem;
     font-size: 0.85rem;
     background: var(--raised);
+    min-height: 44px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

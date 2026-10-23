@@ -398,6 +398,14 @@
   color: var(--text);
 }
 
+@media (pointer: coarse), (max-width: 639px) {
+  .previewToggleBtn {
+    min-height: 44px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
 .previewDot {
   width: 6px;
   height: 6px;

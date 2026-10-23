@@ -806,6 +806,32 @@
   min-height: 44px;
 }
 
+.mobileControlsBox .segmentBtn {
+  min-height: 44px;
+  padding: 0.5rem 0.85rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileControlsBox .switchBtn {
+  min-height: 44px;
+  padding: 0.5rem 0.85rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mobileControlsBox .actionPillBtn {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ── Hide Shortcuts on Touch ── */
 @media (hover: none), (pointer: coarse) {
   .cmdKBadge,
@@ -836,6 +862,55 @@
     right: 6px;
     left: 6px;
     min-width: unset;
+  }
+  .segmentBtn {
+    min-height: 44px;
+    padding: 0.5rem 0.85rem;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .switchBtn {
+    min-height: 44px;
+    padding: 0.5rem 0.85rem;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+  }
+  .actionPillBtn {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (pointer: coarse) {
+  .segmentBtn {
+    min-height: 44px;
+    padding: 0.5rem 0.85rem;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .switchBtn {
+    min-height: 44px;
+    padding: 0.5rem 0.85rem;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+  }
+  .actionPillBtn {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
